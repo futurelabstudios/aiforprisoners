@@ -1,28 +1,27 @@
 import { useNavigate } from 'react-router-dom';
 import { useApp, Language } from '../context/AppContext';
-import { speakWithElevenLabs } from '../utils/tts';
 
 const languages = [
   {
     id: 'hindi' as Language,
     label: 'हिंदी',
-    sub: 'Hindi',
-    desc: 'सिर्फ हिंदी में',
+    sub: 'सिर्फ हिंदी में',
     flag: '🇮🇳',
+    desc: 'Sirf Hindi',
   },
   {
     id: 'hinglish' as Language,
     label: 'Hinglish',
-    sub: 'हिंदी + English',
-    desc: 'Hindi aur English mix',
+    sub: 'Hindi + English mix',
     flag: '💬',
+    desc: 'Hindi aur English',
   },
   {
     id: 'english' as Language,
     label: 'English',
-    sub: 'अंग्रेज़ी',
-    desc: 'Simple English only',
+    sub: 'Simple English only',
     flag: '🔤',
+    desc: 'Only English',
   },
 ];
 
@@ -36,76 +35,147 @@ export default function LanguageSelect() {
   };
 
   return (
-    <div className="min-h-dvh bg-[#F7F6F3] flex flex-col">
-      {/* Top brand bar */}
-      <div className="bg-[#1C0A02] px-6 py-4 flex items-center gap-3">
-        <span className="text-2xl">⚖️</span>
-        <div>
-          <span className="text-white font-extrabold text-lg tracking-tight">न्याय सेतु</span>
-          <span className="text-[#C85828] text-sm font-medium ml-2">Nyay Setu</span>
+    <div className="min-h-dvh flex flex-col" style={{ background: 'var(--c-bg)' }}>
+
+      {/* ── Top hero section ── */}
+      <div
+        className="flex flex-col items-center justify-center text-center px-6 pt-16 pb-10"
+        style={{
+          background: 'linear-gradient(160deg, #100600 0%, #1C0A02 55%, #2E1208 100%)',
+        }}
+      >
+        {/* Brand badge */}
+        <div className="mb-6">
+          <div
+            className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl mx-auto mb-4"
+            style={{
+              background: 'linear-gradient(135deg, #C85828, #E07C35)',
+              boxShadow: '0 8px 32px rgba(200,88,40,0.50), 0 0 0 1px rgba(255,255,255,0.08)',
+            }}
+          >
+            ⚖️
+          </div>
+          <h1 className="text-white text-4xl font-extrabold tracking-tight leading-none mb-1">
+            न्याय सेतु
+          </h1>
+          <p className="text-[#C85828] text-base font-semibold tracking-wide">
+            Nyay Setu
+          </p>
+        </div>
+
+        {/* Hero text */}
+        <h2 className="text-white text-2xl font-bold leading-snug mb-2 max-w-xs">
+          Bridge to Justice
+        </h2>
+        <p className="text-white/60 text-sm max-w-xs leading-relaxed mb-6">
+          Free legal help for prisoners &amp; families across India
+        </p>
+
+        {/* Trust pill */}
+        <div
+          className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold"
+          style={{
+            background: 'rgba(200,88,40,0.15)',
+            color: '#FBBF8A',
+            border: '1px solid rgba(200,88,40,0.25)',
+          }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
+          Available 24×7 • Bilkul Free
         </div>
       </div>
 
-      {/* Hero */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-10 text-center">
-        <div className="w-20 h-20 rounded-3xl bg-[#C85828] flex items-center justify-center text-4xl shadow-lg mb-6">
-          ⚖️
+      {/* ── Wave divider ── */}
+      <div style={{ background: 'linear-gradient(160deg, #2E1208 0%, #1C0A02 100%)', lineHeight: 0 }}>
+        <svg viewBox="0 0 390 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+          <path d="M0 0 Q195 24 390 0 L390 24 L0 24 Z" fill="var(--c-bg)" />
+        </svg>
+      </div>
+
+      {/* ── Language section ── */}
+      <div className="flex-1 px-5 pt-6 pb-6">
+
+        {/* Label */}
+        <div className="text-center mb-5">
+          <p className="text-xs font-extrabold uppercase tracking-widest mb-1" style={{ color: 'var(--c-label)' }}>
+            Step 1 of 1
+          </p>
+          <h3 className="text-lg font-extrabold" style={{ color: 'var(--c-heading)' }}>
+            अपनी भाषा चुनें
+          </h3>
+          <p className="text-sm mt-0.5" style={{ color: 'var(--c-muted)' }}>
+            Choose your language to continue
+          </p>
         </div>
-        <h1 className="text-[#111827] text-3xl md:text-4xl font-extrabold tracking-tight leading-tight mb-2">
-          Bridge to Justice
-        </h1>
-        <p className="text-[#6B7280] text-base max-w-sm mb-1">
-          Free legal help for prisoners & families in India
-        </p>
-        <p className="text-[#6B7280] text-sm mb-10">
-          Qanooni Madad • कानूनी सहायता
-        </p>
 
-        {/* Voice instructions button */}
-        <button
-          onClick={() => speakWithElevenLabs('Namaste. Kripya apni bhasha chuniye. Hindi, Hinglish, ya English.')}
-          className="mb-6 flex items-center gap-2 px-4 py-2.5 rounded-full border border-[#E5E7EB] bg-white text-sm font-semibold text-[#6B7280] hover:border-[#C85828] hover:text-[#C85828] transition-all"
-        >
-          🔊 Tap to hear instructions
-        </button>
-
-        {/* Language label */}
-        <p className="text-[#111827] font-bold text-lg mb-4">
-          अपनी भाषा चुनें / Choose your language
-        </p>
-
-        {/* Language buttons */}
-        <div className="w-full max-w-sm space-y-3">
+        {/* Language cards */}
+        <div className="max-w-sm mx-auto space-y-3">
           {languages.map((lang) => (
             <button
               key={lang.id}
               onClick={() => handleSelect(lang.id)}
-              className="w-full bg-white border-2 border-[#E5E7EB] rounded-2xl px-5 py-4
-                         flex items-center gap-4 active:scale-95 transition-all duration-150
-                         hover:border-[#C85828] hover:shadow-md group text-left"
+              className="lang-card group"
             >
-              <span className="text-3xl">{lang.flag}</span>
+              <div
+                className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 transition-all"
+                style={{
+                  background: 'var(--c-primary-l)',
+                  boxShadow: '0 2px 8px rgba(200,88,40,0.12)',
+                }}
+              >
+                {lang.flag}
+              </div>
               <div className="flex-1">
-                <div className="text-xl font-extrabold text-[#111827] group-hover:text-[#C85828] transition-colors">
+                <div
+                  className="text-xl font-extrabold leading-tight transition-colors group-hover:text-[#C85828]"
+                  style={{ color: 'var(--c-heading)' }}
+                >
                   {lang.label}
                 </div>
-                <div className="text-sm text-[#6B7280]">{lang.desc}</div>
+                <div className="text-sm mt-0.5" style={{ color: 'var(--c-muted)' }}>
+                  {lang.sub}
+                </div>
               </div>
-              <div className="text-[#C85828] text-xl font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
+                           opacity-0 group-hover:opacity-100 transition-all"
+                style={{ background: 'var(--c-primary)', color: 'white' }}
+              >
                 →
               </div>
             </button>
           ))}
         </div>
+
+        {/* Disclaimer note */}
+        <p className="text-center text-xs mt-6 max-w-xs mx-auto leading-relaxed" style={{ color: 'var(--c-label)' }}>
+          यह जानकारी शैक्षिक उद्देश्य के लिए है।
+          <br />
+          For educational purposes. Always consult a lawyer.
+        </p>
       </div>
 
-      {/* Footer */}
-      <div className="border-t border-[#E5E7EB] bg-white px-6 py-4 text-center">
-        <p className="text-[#9CA3AF] text-xs mb-0.5">Kunji Helpline (Toll Free) — Daily 8am–11pm</p>
-        <a href="tel:18003134963" className="text-[#C85828] font-extrabold text-xl">
+      {/* ── Footer helpline ── */}
+      <div
+        className="px-5 py-5 text-center"
+        style={{
+          background: 'var(--c-surface)',
+          borderTop: '1px solid var(--c-border)',
+        }}
+      >
+        <p className="text-xs font-semibold mb-1" style={{ color: 'var(--c-muted)' }}>
+          📞 Kunji Helpline — Free — Daily 8am to 11pm
+        </p>
+        <a
+          href="tel:18003134963"
+          className="text-2xl font-extrabold block"
+          style={{ color: 'var(--c-primary)' }}
+        >
           1800-313-4963
         </a>
-        <p className="text-[#9CA3AF] text-xs mt-0.5">Project Second Chance • TYCIA Foundation</p>
+        <p className="text-xs mt-1" style={{ color: 'var(--c-label)' }}>
+          Project Second Chance • TYCIA Foundation
+        </p>
       </div>
     </div>
   );

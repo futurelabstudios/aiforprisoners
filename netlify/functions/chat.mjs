@@ -140,9 +140,9 @@ export default async (req) => {
         }
 
         const geminiStream = await client.models.generateContentStream({
-          model: "gemini-2.5-flash",
+          model: "gemini-2.0-flash",
           contents: formattedMessages,
-          config: { systemInstruction: systemWithLang, maxOutputTokens: 2048 },
+          config: { systemInstruction: systemWithLang, maxOutputTokens: 2048, temperature: 0.7 },
         });
 
         for await (const chunk of geminiStream) {
