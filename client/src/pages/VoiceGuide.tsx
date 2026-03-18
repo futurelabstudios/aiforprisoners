@@ -146,7 +146,7 @@ export default function VoiceGuide() {
   };
 
   return (
-    <div className="flex flex-col h-dvh bg-[#F0E8D5]">
+    <div className="flex flex-col h-dvh bg-[#F7F6F3]">
       <div className="theme-header px-4 pt-10 pb-4">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate('/home')} className="text-2xl text-white">←</button>
@@ -159,7 +159,7 @@ export default function VoiceGuide() {
                 hinglish: 'Live Voice Guide',
               })}
             </h1>
-            <p className="text-orange-100 text-xs">
+            <p className="text-white/50 text-xs">
               {t(language, {
                 hindi: 'बोलें और तुरंत आवाज़ में जवाब पाएं',
                 english: 'Speak and hear instant guidance',
@@ -173,7 +173,7 @@ export default function VoiceGuide() {
 
       <div className="px-4 py-4 space-y-4 overflow-y-auto pb-24 max-w-5xl mx-auto w-full">
         <div className="flex justify-center">
-          <div className="w-24 h-24 rounded-full flex items-center justify-center shadow-2xl border border-white/30" style={{background:'linear-gradient(135deg,#6B2010,#C85828,#E07C35)'}}>
+          <div className="w-24 h-24 rounded-full flex items-center justify-center shadow-2xl border border-white/30" style={{background:'#C85828'}}>
             <span className="text-3xl">🧠</span>
           </div>
         </div>
@@ -191,15 +191,15 @@ export default function VoiceGuide() {
           onClick={toggleRecording}
           disabled={isLoading}
           className={`w-full rounded-3xl py-8 text-white text-2xl font-extrabold shadow-xl active:scale-95 transition-all
-                      ${isRecording ? 'bg-red-500 mic-recording' : 'bg-saffron-500'}
+                      ${isRecording ? 'bg-red-500 mic-recording' : 'bg-[#C85828]'}
                       ${isLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
         >
           {isRecording ? '🔴 STOP' : '🎤 TALK NOW'}
         </button>
 
         {heardText && (
-          <div className="card" style={{borderColor:'var(--brand-border)'}}>
-            <div className="text-xs font-bold mb-1" style={{color:'var(--brand-muted)'}}>
+          <div className="card" style={{borderColor:'var(--c-border)'}}>
+            <div className="text-xs font-bold mb-1" style={{color:'var(--c-muted)'}}>
               {t(language, { hindi: 'आपने कहा', english: 'You said', hinglish: 'Aapne kaha' })}
             </div>
             <div className="text-base">{heardText}</div>
@@ -212,7 +212,7 @@ export default function VoiceGuide() {
               <div className="typing-dot" />
               <div className="typing-dot" />
               <div className="typing-dot" />
-              <span className="text-sm" style={{color:'var(--brand-muted)'}}>
+              <span className="text-sm" style={{color:'var(--c-muted)'}}>
                 {t(language, {
                   hindi: 'आवाज़ में जवाब तैयार हो रहा है...',
                   english: 'Preparing voice response...',
@@ -224,8 +224,8 @@ export default function VoiceGuide() {
         )}
 
         {replyText && (
-          <div className="card" style={{borderColor:'var(--brand-primary)'}}>
-            <div className="text-xs font-bold mb-1" style={{color:'var(--brand-dark)'}}>
+          <div className="card" style={{borderColor:'var(--c-primary)'}}>
+            <div className="text-xs font-bold mb-1" style={{color:'var(--c-primary-d)'}}>
               {t(language, { hindi: 'गाइड जवाब', english: 'Guide Reply', hinglish: 'Guide ka jawab' })}
             </div>
             <div className="text-base leading-relaxed">{replyText}</div>

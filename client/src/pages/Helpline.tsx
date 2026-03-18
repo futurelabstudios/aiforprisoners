@@ -25,7 +25,7 @@ const helplines: HelplineItem[] = [
       hinglish: 'Released prisoners aur family ke liye free legal help. Project Second Chance.',
     },
     timing: 'Daily 8am–11pm | FREE',
-    color: 'bg-saffron-500',
+    color: 'bg-[#C85828]',
     borderColor: 'border-orange-400',
     important: true,
   },
@@ -40,7 +40,7 @@ const helplines: HelplineItem[] = [
       hinglish: 'Free vakeel aur court representation — bilkul muft, 24/7 available',
     },
     timing: '24/7 | FREE',
-    color: 'bg-navy-800',
+    color: 'bg-[#1C0A02]',
     borderColor: 'border-blue-400',
     important: true,
   },
@@ -191,7 +191,7 @@ export default function Helpline() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col h-dvh bg-[#F0E8D5]">
+    <div className="flex flex-col h-dvh bg-[#F7F6F3]">
       {/* Header */}
       <div className="theme-header px-4 pt-10 pb-4">
         <div className="flex items-center gap-3">
@@ -205,7 +205,7 @@ export default function Helpline() {
                 hinglish: 'Helpline Numbers',
               })}
             </h1>
-            <p className="text-orange-100 text-xs">
+            <p className="text-white/50 text-xs">
               {t(language, {
                 hindi: 'किसी को भी कॉल करें — सब मुफ्त',
                 english: 'Call anyone — all free',
@@ -233,10 +233,10 @@ export default function Helpline() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-bold text-base text-gray-900">{h.name}</div>
-              <div className="text-saffron-600 font-extrabold text-xl">{h.number}</div>
+              <div className="text-[#C85828] font-extrabold text-xl">{h.number}</div>
               <div className="text-gray-500 text-xs mt-0.5 leading-tight">{h.desc[language]}</div>
               {h.timing && (
-                <div className="text-xs text-jade-600 font-semibold mt-1">⏰ {h.timing}</div>
+                <div className="text-xs text-[#16A34A] font-semibold mt-1">⏰ {h.timing}</div>
               )}
             </div>
             <div className="text-green-500 text-2xl">📲</div>
@@ -262,7 +262,7 @@ export default function Helpline() {
                 <div className="text-gray-700 font-extrabold text-lg">{h.number}</div>
                 <div className="text-gray-500 text-xs leading-tight">{h.desc[language]}</div>
                 {h.timing && (
-                  <div className="text-xs text-jade-600 font-medium mt-0.5">⏰ {h.timing}</div>
+                  <div className="text-xs text-[#16A34A] font-medium mt-0.5">⏰ {h.timing}</div>
                 )}
               </div>
               <div className="text-gray-300 text-lg">›</div>

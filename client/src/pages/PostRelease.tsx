@@ -282,7 +282,7 @@ export default function PostRelease() {
   const cat = categories[activeTab];
 
   return (
-    <div className="flex flex-col h-dvh bg-[#F0E8D5]">
+    <div className="flex flex-col h-dvh bg-[#F7F6F3]">
       {/* Header */}
       <div className="theme-header px-4 pt-10 pb-4">
         <div className="flex items-center gap-3 mb-2">
@@ -292,7 +292,7 @@ export default function PostRelease() {
             <h1 className="font-extrabold text-lg">
               {t(language, { hindi: 'जेल के बाद सहायता', english: 'After Release Support', hinglish: 'Jail Ke Baad Madad' })}
             </h1>
-            <p className="text-orange-100 text-xs">
+            <p className="text-white/50 text-xs">
               {t(language, { hindi: 'मुफ्त संसाधन और सहायता', english: 'Free resources & support', hinglish: 'Free resources aur support' })}
             </p>
           </div>
@@ -307,7 +307,7 @@ export default function PostRelease() {
 
       <div className="content-shell pt-4">
         <div className="glass-panel p-3">
-          <p className="text-xs font-bold text-navy-700 uppercase tracking-wide mb-2">
+          <p className="text-xs font-bold text-[#6B7280] uppercase tracking-wide mb-2">
             {t(language, {
               hindi: 'सभी विकल्प (आसान पहुंच)',
               english: 'All Support Areas',
@@ -322,10 +322,10 @@ export default function PostRelease() {
                 className={`rounded-xl p-3 text-left border transition-all active:scale-95
                            ${i === activeTab
                     ? 'text-white border-transparent shadow-lg'
-                    : 'text-navy-800 hover:bg-[#EDE5D5]'}
+                    : 'text-[#111827] hover:bg-[#F7F6F3]'}
                   style={i === activeTab
-                    ? {background:'linear-gradient(135deg,#8B3215,#C85828)',borderColor:'transparent'}
-                    : {background:'var(--brand-surface)',borderColor:'var(--brand-border)'}}`}
+                    ? {background:'#C85828',borderColor:'transparent'}
+                    : {background:'var(--c-surface)',borderColor:'var(--c-border)'}}`}
               >
                 <div className="text-xl">{c.emoji}</div>
                 <div className="font-bold text-xs mt-1">{c.label[language]}</div>
@@ -349,7 +349,7 @@ export default function PostRelease() {
             <span>{cat.emoji}</span>
             <span>{cat.label[language]}</span>
           </span>
-          <span className="text-xs font-bold text-navy-700 bg-navy-100 px-2 py-1 rounded-full">
+          <span className="text-xs font-bold text-[#6B7280] bg-[#F7F6F3] px-2 py-1 rounded-full border border-[#E5E7EB]">
             {cat.resources.length} {t(language, { hindi: 'सहायता', english: 'supports', hinglish: 'supports' })}
           </span>
         </h2>
@@ -370,7 +370,7 @@ export default function PostRelease() {
                   className="inline-flex items-center justify-center w-full md:w-auto gap-2
                              text-white rounded-xl px-4 py-2 text-sm font-bold
                              active:scale-95 transition-all shadow-sm"
-                  style={{background:'linear-gradient(135deg,#8B3215,#C85828)'}}
+                  style={{background:'#C85828'}}
                 >
                   📞 {t(language, { hindi: 'कॉल करें', english: 'Call Now', hinglish: 'Call Karo' })}: {res.phone}
                 </a>

@@ -5,227 +5,161 @@ import { Language } from '../context/AppContext';
 const cards = [
   {
     emoji: '⚖️',
-    color: 'from-[#8B3215] to-[#C85828]',
-    border: 'border-[#D4C4A0]',
+    bg: '#C85828',
     path: '/chat',
-    titles: {
-      hindi: 'कानूनी मदद',
-      english: 'Legal Help',
-      hinglish: 'Kanoon Mein Madad',
-    },
-    subs: {
-      hindi: 'FIR, जमानत, धारा की जानकारी',
-      english: 'FIR, Bail, Sections explained',
-      hinglish: 'FIR, Bail, Sections samjhein',
-    },
+    titles: { hindi: 'कानूनी मदद', english: 'Legal Help', hinglish: 'Kanoon Ki Madad' },
+    subs: { hindi: 'FIR, जमानत, धारा समझें', english: 'FIR, Bail, Sections', hinglish: 'FIR, Bail, Sections' },
   },
   {
     emoji: '🏠',
-    color: 'from-emerald-600 to-green-700',
-    border: 'border-green-200',
+    bg: '#16A34A',
     path: '/post-release',
-    titles: {
-      hindi: 'जेल के बाद',
-      english: 'After Release',
-      hinglish: 'Jail Ke Baad',
-    },
-    subs: {
-      hindi: 'नौकरी, घर, दस्तावेज़, स्वास्थ्य',
-      english: 'Jobs, Shelter, Documents, Health',
-      hinglish: 'Naukri, Ghar, Documents, Sehat',
-    },
+    titles: { hindi: 'जेल के बाद', english: 'After Release', hinglish: 'Jail Ke Baad' },
+    subs: { hindi: 'नौकरी, घर, दस्तावेज़', english: 'Jobs, Shelter, Documents', hinglish: 'Naukri, Ghar, Docs' },
   },
   {
     emoji: '📞',
-    color: 'from-rose-600 to-red-700',
-    border: 'border-red-200',
+    bg: '#DC2626',
     path: '/helpline',
-    titles: {
-      hindi: 'हेल्पलाइन',
-      english: 'Helplines',
-      hinglish: 'Helpline Numbers',
-    },
-    subs: {
-      hindi: 'आपातकालीन नंबर, मुफ़्त सहायता',
-      english: 'Emergency numbers, Free help',
-      hinglish: 'Emergency numbers, Free help',
-    },
+    titles: { hindi: 'हेल्पलाइन', english: 'Helplines', hinglish: 'Helpline' },
+    subs: { hindi: 'आपातकालीन नंबर', english: 'Emergency numbers', hinglish: 'Emergency numbers' },
   },
   {
     emoji: '👨‍👩‍👧',
-    color: 'from-[#C85828] to-[#E07C35]',
-    border: 'border-[#D4C4A0]',
+    bg: '#7C3AED',
     path: '/chat',
-    titles: {
-      hindi: 'परिवार की मदद',
-      english: 'Family Support',
-      hinglish: 'Parivaar Ki Madad',
-    },
-    subs: {
-      hindi: 'मुलाकात, केस की जानकारी, मदद',
-      english: 'Visiting, case info, support',
-      hinglish: 'Mulakat, case info, support',
-    },
+    titles: { hindi: 'परिवार', english: 'Family', hinglish: 'Parivaar' },
+    subs: { hindi: 'मुलाकात, केस जानकारी', english: 'Visits, case info', hinglish: 'Mulakat, case info' },
   },
 ];
 
-const greetings = {
-  hindi: 'नमस्ते 🙏',
-  english: 'Welcome 🙏',
-  hinglish: 'Namaste 🙏',
-};
-
-const subtitles = {
-  hindi: 'आज हम आपकी कैसे मदद करें?',
-  english: 'How can we help you today?',
-  hinglish: 'Aaj hum aapki kaise madad karein?',
-};
+const quickQs = [
+  { hindi: '🔒 जमानत मिलेगी?', english: '🔒 Can I get bail?', hinglish: '🔒 Bail milegi kya?' },
+  { hindi: '📋 FIR में क्या है?', english: '📋 What is in FIR?', hinglish: '📋 FIR mein kya hai?' },
+  { hindi: '⚠️ धाराएं कितनी गंभीर हैं?', english: '⚠️ How serious are sections?', hinglish: '⚠️ Sections kitne serious hain?' },
+];
 
 export default function Home() {
   const { language } = useApp();
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-dvh bg-[#F0E8D5] flex flex-col">
+    <div className="min-h-dvh bg-[#F7F6F3] flex flex-col">
       {/* Header */}
-      <div className="theme-header px-5 pt-10 pb-6 text-white relative">
-        {/* Language toggle */}
-        <button
-          onClick={() => navigate('/')}
-          className="absolute top-4 right-4 bg-white/10 rounded-xl px-3 py-1 text-xs font-semibold"
-        >
-          🌐 {language === 'hindi' ? 'हिंदी' : language === 'english' ? 'EN' : 'HG'}
-        </button>
-
-        <div className="flex items-center gap-3 mb-4">
-          <span className="text-4xl">⚖️</span>
-          <div>
-            <h1 className="text-2xl font-extrabold">न्याय सेतु</h1>
-            <p className="text-gray-300 text-sm">Nyay Setu</p>
+      <div className="bg-[#1C0A02] px-5 pt-10 pb-5 text-white">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#C85828] flex items-center justify-center text-xl">⚖️</div>
+            <div>
+              <div className="font-extrabold text-lg leading-tight">न्याय सेतु</div>
+              <div className="text-[#C85828] text-xs font-medium">Nyay Setu</div>
+            </div>
           </div>
+          <button
+            onClick={() => navigate('/')}
+            className="bg-white/10 hover:bg-white/20 rounded-xl px-3 py-1.5 text-xs font-semibold transition-all"
+          >
+            🌐 {language === 'hindi' ? 'हिंदी' : language === 'english' ? 'EN' : 'HG'}
+          </button>
         </div>
-
-        <div className="ai-chip mb-3">✨ AI Justice Copilot</div>
-
-        <p className="text-xl font-bold">{t(language, greetings)}</p>
-        <p className="text-gray-300 text-base mt-1">{t(language, subtitles)}</p>
+        <div className="text-xl font-bold mb-0.5">
+          {t(language, { hindi: 'नमस्ते 🙏', english: 'Welcome 🙏', hinglish: 'Namaste 🙏' })}
+        </div>
+        <div className="text-white/60 text-sm">
+          {t(language, {
+            hindi: 'आज हम आपकी कैसे मदद करें?',
+            english: 'How can we help you today?',
+            hinglish: 'Aaj hum aapki kaise madad karein?',
+          })}
+        </div>
       </div>
 
       {/* Emergency Banner */}
-      <a href="tel:18003134963" className="emergency-banner flex items-center justify-center gap-2">
+      <a href="tel:18003134963" className="emergency-banner">
         <span>📞</span>
-        <span>Kunji Helpline (Free): 1800-313-4963 | Daily 8am–11pm</span>
+        <span className="font-bold">Kunji Helpline: 1800-313-4963</span>
+        <span className="text-amber-700 font-normal">Free • Daily 8am–11pm</span>
       </a>
 
-      {/* Main Cards */}
-      <div className="flex-1 content-shell py-5 md:py-6">
-        <div className="premium-card mb-4">
-          <div className="section-kicker mb-2">AI-FIRST EXPERIENCE</div>
-          <p className="text-sm text-gray-700 font-semibold leading-relaxed">
-            {t(language, {
-              hindi: 'हर स्क्रीन में आवाज़, चैट और त्वरित मदद जोड़ी गई है ताकि कम पढ़े-लिखे यूज़र भी आसानी से उपयोग कर सकें।',
-              english: 'Every screen now supports voice, chat, and instant help so even non-literate users can navigate easily.',
-              hinglish: 'Har screen mein voice, chat aur turant help hai taaki low-literacy users bhi easily use kar saken.',
-            })}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+      {/* Main content */}
+      <div className="flex-1 content-shell py-5 pb-24">
+
+        {/* Feature cards */}
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-5">
           {cards.map((card, i) => (
             <button
               key={i}
               onClick={() => navigate(card.path)}
-              className={`bg-gradient-to-br ${card.color} text-white rounded-2xl p-5
-                         shadow-lg active:scale-95 transition-all duration-150 text-left
-                         flex flex-col gap-2 min-h-[140px] border border-white/25`}
+              className="rounded-2xl p-4 text-left active:scale-95 transition-all duration-150 text-white flex flex-col gap-3 min-h-[130px]"
+              style={{ background: card.bg, boxShadow: `0 4px 16px ${card.bg}40` }}
             >
-              <span className="text-4xl">{card.emoji}</span>
+              <span className="text-3xl">{card.emoji}</span>
               <div>
-                <div className="font-extrabold text-base leading-tight">
-                  {card.titles[language]}
-                </div>
-                <div className="text-xs opacity-80 mt-1 leading-tight">
-                  {card.subs[language]}
-                </div>
+                <div className="font-extrabold text-sm leading-tight">{card.titles[language as Language]}</div>
+                <div className="text-xs opacity-75 mt-0.5 leading-tight">{card.subs[language as Language]}</div>
               </div>
             </button>
           ))}
         </div>
 
+        {/* Voice CTA */}
         <button
           onClick={() => navigate('/voice-guide')}
-          className="w-full mb-4 rounded-2xl bg-gradient-to-r from-[#6B2010] via-[#C85828] to-[#E07C35] text-white
-                     py-4 px-4 text-left shadow-xl active:scale-95 transition-all border border-white/20"
+          className="w-full mb-4 rounded-2xl p-4 text-left active:scale-95 transition-all flex items-center gap-4"
+          style={{ background: '#1C0A02', boxShadow: '0 4px 20px rgba(28,10,2,0.25)' }}
         >
-          <div className="text-xl font-extrabold">🎙️ {t(language, {
-            hindi: 'आवाज़ में मदद लें',
-            english: 'Get Voice Help',
-            hinglish: 'Voice Mein Madad Lo',
-          })}</div>
-          <div className="text-sm text-orange-50 mt-1">
-            {t(language, {
-              hindi: 'बटन दबाएँ, बोलें, और जवाब सुनें',
-              english: 'Tap, speak, and hear legal guidance',
-              hinglish: 'Tap karo, bolo, aur jawab awaaz mein suno',
-            })}
+          <div className="w-12 h-12 rounded-xl bg-[#C85828] flex items-center justify-center text-2xl flex-shrink-0">
+            🎙️
           </div>
+          <div>
+            <div className="text-white font-extrabold text-base">
+              {t(language, { hindi: 'आवाज़ में मदद लें', english: 'Get Voice Help', hinglish: 'Voice Mein Madad Lo' })}
+            </div>
+            <div className="text-white/50 text-sm">
+              {t(language, { hindi: 'बटन दबाएँ और बोलें', english: 'Tap and speak', hinglish: 'Tap karo aur bolo' })}
+            </div>
+          </div>
+          <div className="ml-auto text-[#C85828] text-xl">→</div>
         </button>
 
-        {/* Quick Action — Legal Chat */}
-        <div className="card glass-panel mb-4">
-          <p className="text-gray-500 text-xs font-semibold uppercase tracking-wide mb-3">
-            {t(language, {
-              hindi: '⚡ जल्दी पूछें',
-              english: '⚡ Quick Questions',
-              hinglish: '⚡ Jaldi Puchein',
-            })}
+        {/* Quick questions */}
+        <div className="card mb-4">
+          <p className="text-[#9CA3AF] text-xs font-bold uppercase tracking-widest mb-3">
+            {t(language, { hindi: '⚡ जल्दी पूछें', english: '⚡ Quick Questions', hinglish: '⚡ Jaldi Puchein' })}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {[
-              {
-                q: { hindi: '🔒 जमानत मिलेगी?', english: '🔒 Can I get bail?', hinglish: '🔒 Bail milegi kya?' },
-              },
-              {
-                q: { hindi: '📋 FIR में क्या है?', english: '📋 What is in FIR?', hinglish: '📋 FIR mein kya hai?' },
-              },
-              {
-                q: { hindi: '⚠️ धाराएं कितनी गंभीर हैं?', english: '⚠️ How serious are the sections?', hinglish: '⚠️ Sections kitne serious hain?' },
-              },
-            ].map((item, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+            {quickQs.map((q, i) => (
               <button
                 key={i}
-                onClick={() => navigate('/chat', { state: { question: item.q[language] } })}
-                className="quick-btn text-left"
+                onClick={() => navigate('/chat', { state: { question: q[language as Language] } })}
+                className="quick-btn"
               >
-                {item.q[language]}
+                {q[language as Language]}
               </button>
             ))}
           </div>
           <button
             onClick={() => navigate('/chat')}
-            className="mt-3 w-full bg-saffron-500 text-white rounded-xl py-3 font-bold text-sm
-                       active:scale-95 transition-all"
+            className="mt-3 w-full rounded-xl py-3 font-bold text-sm text-white active:scale-95 transition-all"
+            style={{ background: '#C85828' }}
           >
-            {t(language, {
-              hindi: 'AI से पूछें →',
-              english: 'Ask AI →',
-              hinglish: 'AI Se Puchein →',
-            })}
+            {t(language, { hindi: 'AI से पूछें →', english: 'Ask AI →', hinglish: 'AI Se Puchein →' })}
           </button>
         </div>
 
-        {/* Info strip */}
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+        {/* Disclaimer */}
+        <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4">
           <p className="text-amber-800 text-sm font-medium">
             {t(language, {
               hindi: '⚠️ यह सामान्य जानकारी है। अपने मामले के लिए कृपया वकील से सलाह लें।',
-              english: '⚠️ This is general information. Please consult a lawyer for your specific case.',
-              hinglish: '⚠️ Yeh general jaankari hai. Apne case ke liye ek vakeel se zaroor milein.',
+              english: '⚠️ General information only. Please consult a lawyer for your specific case.',
+              hinglish: '⚠️ Yeh general jaankari hai. Apne case ke liye vakeel se zaroor milein.',
             })}
           </p>
         </div>
       </div>
 
-      {/* Bottom Nav */}
+      {/* Bottom nav */}
       <div className="bottom-nav">
         {[
           { icon: '🏠', label: { hindi: 'होम', english: 'Home', hinglish: 'Home' }, path: '/home' },
@@ -237,11 +171,11 @@ export default function Home() {
           <button
             key={item.path}
             onClick={() => navigate(item.path)}
-            className={`flex-1 flex flex-col items-center py-3 gap-1 text-xs font-semibold
-                       transition-colors ${item.path === '/home' ? 'nav-item-active' : 'nav-item-inactive'}`}
+            className={`flex-1 flex flex-col items-center py-3 gap-0.5 text-xs font-semibold transition-colors
+                       ${item.path === '/home' ? 'nav-item-active' : 'nav-item-inactive'}`}
           >
             <span className="text-xl">{item.icon}</span>
-            <span>{item.label[language]}</span>
+            <span>{item.label[language as Language]}</span>
           </button>
         ))}
       </div>

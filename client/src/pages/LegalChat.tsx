@@ -311,13 +311,13 @@ export default function LegalChat() {
       if (line.startsWith('• ') || line.startsWith('- ')) {
         return (
           <div key={i} className="flex gap-2 my-1">
-            <span className="text-saffron-500 font-bold mt-0.5">•</span>
+            <span className="text-[#C85828] font-bold mt-0.5">•</span>
             <span>{line.slice(2)}</span>
           </div>
         );
       }
       if (line.startsWith('**') && line.endsWith('**')) {
-        return <div key={i} className="font-bold text-navy-800 mt-2">{line.slice(2, -2)}</div>;
+        return <div key={i} className="font-bold text-[#1C0A02] mt-2">{line.slice(2, -2)}</div>;
       }
       if (line === '') return <div key={i} className="h-2" />;
       return <div key={i}>{line}</div>;
@@ -327,14 +327,14 @@ export default function LegalChat() {
   const currentCat = QUICK_CATEGORIES[activeCategory];
 
   return (
-    <div className="flex flex-col h-dvh bg-[#F0E8D5]">
+    <div className="flex flex-col h-dvh bg-[#F7F6F3]">
       {/* Header */}
       <div className="theme-header px-4 pt-10 pb-3 flex items-center gap-3">
         <button onClick={() => navigate('/home')} className="text-2xl p-1 -ml-1">←</button>
         <div className="text-3xl">⚖️</div>
         <div className="flex-1">
           <div className="font-extrabold text-base">न्याय सेतु — Legal AI</div>
-          <div className="text-xs text-gray-300">
+          <div className="text-xs text-white/50">
             {t(language, { hindi: 'कानूनी सवालों के जवाब', english: 'Legal Q&A', hinglish: 'Legal sawaalon ke jawab' })}
           </div>
         </div>
@@ -346,7 +346,7 @@ export default function LegalChat() {
         </button>
         <button
           onClick={() => navigate('/voice-guide')}
-          className="bg-saffron-500 rounded-xl px-3 py-1.5 text-xs font-bold"
+          className="bg-[#C85828] rounded-xl px-3 py-1.5 text-xs font-bold"
         >
           🎙️
         </button>
@@ -363,7 +363,7 @@ export default function LegalChat() {
 
       {/* Quick Questions Panel */}
       {showQuickQ && (
-        <div className="border-b glass-panel mx-3 mt-2" style={{borderColor:'var(--brand-border)'}}>
+        <div className="border-b glass-panel mx-3 mt-2" style={{borderColor:'var(--c-border)'}}>
           {/* Category tabs */}
           <div className="flex gap-2 px-3 py-2 overflow-x-auto no-scrollbar">
             {QUICK_CATEGORIES.map((cat, i) => (
@@ -399,7 +399,7 @@ export default function LegalChat() {
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} message-enter`}>
             {msg.role === 'assistant' && (
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-base flex-shrink-0 mr-2 mt-1" style={{background:'linear-gradient(135deg,#8B3215,#C85828)'}}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-base flex-shrink-0 mr-2 mt-1" style={{background:'var(--c-primary)'}}>
                 ⚖️
               </div>
             )}
@@ -417,7 +417,7 @@ export default function LegalChat() {
               {msg.role === 'assistant' && msg.content && (
                 <button
                   onClick={() => speakText(msg.content)}
-                  className="mt-2 text-xs font-medium" style={{color:'var(--brand-muted)'}}
+                  className="mt-2 text-xs font-medium" style={{color:'var(--c-muted)'}}
                 >
                   🔊 {t(language, { hindi: 'सुनें', english: 'Listen', hinglish: 'Sunein' })}
                 </button>
@@ -429,7 +429,7 @@ export default function LegalChat() {
       </div>
 
       {/* Input Area */}
-      <div className="border-t px-3 py-3" style={{background:'var(--brand-surface)',borderColor:'var(--brand-border)'}}>
+      <div className="border-t px-3 py-3" style={{background:'var(--c-surface)',borderColor:'var(--c-border)'}}>
         <div className="max-w-5xl mx-auto w-full">
         <div className="flex items-end gap-2">
           <button
@@ -437,8 +437,8 @@ export default function LegalChat() {
             className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0
                        text-xl transition-all ${isRecording
                 ? 'bg-red-500 text-white mic-recording'
-                : 'text-[#7A6548]'}`}
-            style={isRecording ? {} : {background:'var(--brand-chip)'}}
+                : 'text-[#6B7280]'}`}
+            style={isRecording ? {} : {background:'var(--c-bg)'}}
           >
             🎙️
           </button>
@@ -449,9 +449,9 @@ export default function LegalChat() {
             placeholder={placeholders[language]}
             rows={1}
             className="flex-1 rounded-2xl px-4 py-3 text-base resize-none
-                       border-none outline-none focus:ring-2 focus:ring-saffron-500
+                       border-none outline-none focus:ring-2 focus:ring-[#C85828]
                        max-h-24 leading-relaxed"
-            style={{background:'var(--brand-chip)',color:'var(--brand-text)'}}
+            style={{background:'var(--c-bg)',color:'var(--c-text)'}}
             onKeyDown={e => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -465,7 +465,7 @@ export default function LegalChat() {
             className="w-12 h-12 rounded-full text-white flex items-center
                        justify-center text-xl flex-shrink-0 active:scale-90 transition-all
                        disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{background:'linear-gradient(135deg,#8B3215,#C85828)'}}
+            style={{background:'var(--c-primary)'}}
           >
             {isLoading ? '⏳' : '➤'}
           </button>
@@ -478,7 +478,7 @@ export default function LegalChat() {
         <button
           onClick={stopTTS}
           className="w-full mt-2 rounded-xl py-2 text-xs font-bold border"
-            style={{borderColor:'var(--brand-border)',color:'var(--brand-muted)',background:'var(--brand-chip)'}}
+            style={{borderColor:'var(--c-border)',color:'var(--c-muted)',background:'var(--c-bg)'}}
         >
           ⏹ {t(language, { hindi: 'आवाज़ बंद करें', english: 'Stop Voice', hinglish: 'Voice Band Karein' })}
         </button>

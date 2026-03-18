@@ -62,7 +62,7 @@ export default function AccessibilityDock() {
     <div className="fixed right-3 bottom-20 z-40 flex flex-col gap-2 glass-panel p-2">
       <button
         onClick={readScreen}
-        className={`a11y-fab ${isSpeaking ? 'bg-emerald-600' : 'bg-saffron-500'}`}
+        className={`a11y-fab ${isSpeaking ? 'bg-emerald-600' : 'bg-[#C85828]'}`}
       >
         {isSpeaking ? '🔊' : '🗣️'} {t(language, {
           hindi: 'स्क्रीन सुनें',
@@ -72,7 +72,7 @@ export default function AccessibilityDock() {
       </button>
       <button
         onClick={() => navigate('/voice-guide')}
-        className="a11y-fab bg-saffron-400"
+        className="a11y-fab bg-[#C85828]"
       >
         🎙️ {t(language, {
           hindi: 'वॉइस गाइड',

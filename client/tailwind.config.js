@@ -4,25 +4,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Warm parchment + terracotta brand palette
-        navy: {
-          50:  '#FAF6EE',   // warm light surface
-          100: '#EDE5D5',   // warm chip / border
-          600: '#6B3A1F',   // warm mid brown
-          700: '#502A10',   // warm dark brown
-          800: '#3D1A08',   // deepest brown (was dark blue)
-          900: '#2A1005',
-          950: '#1A0802',
+        brand: {
+          DEFAULT: '#C85828',
+          dark:    '#8B3215',
+          light:   '#FEF0E8',
+          ink:     '#1C0A02',
         },
-        saffron: {
-          400: '#D4692E',   // terracotta light
-          500: '#C85828',   // terracotta primary
-          600: '#A84420',   // terracotta dark
-        },
-        jade: {
-          500: '#16a34a',
-          600: '#15803d',
-        },
+        surface: '#FFFFFF',
+        page:    '#F7F6F3',
       },
       fontFamily: {
         sans: ['Inter', 'Noto Sans Devanagari', 'system-ui', 'sans-serif'],
@@ -36,10 +25,6 @@ export default {
         '2xl':  '1.6rem',
         '3xl':  '2rem',
         '4xl':  '2.4rem',
-      },
-      animation: {
-        'pulse-slow':    'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'bounce-gentle': 'bounce 1.5s infinite',
       },
     },
   },
