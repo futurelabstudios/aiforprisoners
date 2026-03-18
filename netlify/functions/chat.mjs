@@ -173,7 +173,7 @@ export default async (req) => {
   }
 
   // Call Gemini REST API with streaming (SSE)
-  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=${apiKey}`;
+  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse&key=${apiKey}`;
 
   const geminiBody = {
     system_instruction: { parts: [{ text: systemText }] },

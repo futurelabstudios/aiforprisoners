@@ -201,7 +201,7 @@ app.post('/api/chat', async (req, res) => {
     }
 
     const stream = await client.models.generateContentStream({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash-lite',
       contents: formattedMessages,
       config: {
         systemInstruction: systemWithLang,
