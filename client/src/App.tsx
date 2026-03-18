@@ -7,8 +7,6 @@ import LegalChat from './pages/LegalChat';
 import PostRelease from './pages/PostRelease';
 import Helpline from './pages/Helpline';
 import VoiceGuide from './pages/VoiceGuide';
-import AccessibilityDock from './components/AccessibilityDock';
-
 export default function App() {
   const [mobileView, setMobileView] = useState(false);
 
@@ -49,7 +47,6 @@ export default function App() {
               <Route path="/voice-guide"  element={<VoiceGuide />} />
               <Route path="*"             element={<Navigate to="/" replace />} />
             </Routes>
-            <AccessibilityDock />
           </div>
         </div>
       </BrowserRouter>

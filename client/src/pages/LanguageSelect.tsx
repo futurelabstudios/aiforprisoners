@@ -41,7 +41,7 @@ export default function LanguageSelect() {
       <div
         className="flex flex-col items-center justify-center text-center px-6 pt-16 pb-10"
         style={{
-          background: 'linear-gradient(160deg, #100600 0%, #1C0A02 55%, #2E1208 100%)',
+          background: 'linear-gradient(160deg, #0D0603 0%, #180A04 50%, #251006 100%)',
         }}
       >
         {/* Brand badge */}
@@ -49,8 +49,8 @@ export default function LanguageSelect() {
           <div
             className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl mx-auto mb-4"
             style={{
-              background: 'linear-gradient(135deg, #C85828, #E07C35)',
-              boxShadow: '0 8px 32px rgba(200,88,40,0.50), 0 0 0 1px rgba(255,255,255,0.08)',
+              background: 'linear-gradient(135deg, #B8521E, #D4753A)',
+              boxShadow: '0 8px 32px rgba(184,82,30,0.45), 0 0 0 1px rgba(255,255,255,0.07)',
             }}
           >
             ⚖️
@@ -75,9 +75,9 @@ export default function LanguageSelect() {
         <div
           className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold"
           style={{
-            background: 'rgba(200,88,40,0.15)',
-            color: '#FBBF8A',
-            border: '1px solid rgba(200,88,40,0.25)',
+            background: 'rgba(184,82,30,0.14)',
+            color: '#F5B07A',
+            border: '1px solid rgba(184,82,30,0.22)',
           }}
         >
           <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
@@ -86,7 +86,7 @@ export default function LanguageSelect() {
       </div>
 
       {/* ── Wave divider ── */}
-      <div style={{ background: 'linear-gradient(160deg, #2E1208 0%, #1C0A02 100%)', lineHeight: 0 }}>
+      <div style={{ background: 'linear-gradient(160deg, #251006 0%, #180A04 100%)', lineHeight: 0 }}>
         <svg viewBox="0 0 390 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
           <path d="M0 0 Q195 24 390 0 L390 24 L0 24 Z" fill="var(--c-bg)" />
         </svg>

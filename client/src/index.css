@@ -3,40 +3,41 @@
 @tailwind utilities;
 
 /* ──────────────────────────────────────────────────
-   DESIGN TOKENS
+   DESIGN TOKENS  —  Premium Soft Palette
    ────────────────────────────────────────────────── */
 :root {
-  --c-bg:        #F5F5F7;
+  /* Surfaces */
+  --c-bg:        #FAF8F5;   /* warm off-white, barely perceptible warmth */
   --c-surface:   #FFFFFF;
-  --c-border:    #E4E4E7;
-  --c-border-l:  #F1F1F3;
+  --c-border:    #EAE6E1;   /* warm stone border */
+  --c-border-l:  #F2EFEA;   /* lighter variant */
 
-  /* Brand */
-  --c-primary:   #C85828;
-  --c-primary-d: #9C4020;
-  --c-primary-l: #FEF0E8;
-  --c-primary-xl:#FFF8F5;
+  /* Brand — terracotta, slightly desaturated for elegance */
+  --c-primary:   #B8521E;   /* richer, deeper terracotta */
+  --c-primary-d: #8C3C12;
+  --c-primary-l: #FDF0E8;   /* blush-peach tint */
+  --c-primary-xl:#FFF8F4;   /* almost white peach */
 
-  /* Ink / text */
-  --c-ink:       #0F0A06;
-  --c-heading:   #18181B;
-  --c-text:      #27272A;
-  --c-muted:     #71717A;
-  --c-label:     #A1A1AA;
+  /* Ink / text — warm tones, never cold grays */
+  --c-ink:       #0D0704;
+  --c-heading:   #1C1410;   /* warm near-black */
+  --c-text:      #2C2218;   /* warm dark brown */
+  --c-muted:     #7A6E65;   /* warm taupe */
+  --c-label:     #A89F97;   /* warm light gray */
 
   /* Semantic */
-  --c-success:   #16A34A;
-  --c-success-l: #F0FDF4;
-  --c-danger:    #DC2626;
-  --c-danger-l:  #FEF2F2;
-  --c-warning:   #D97706;
-  --c-warning-l: #FFFBEB;
-  --c-sos:       #991B1B;
-  --c-sos-l:     #FEF2F2;
+  --c-success:   #1A7A4A;
+  --c-success-l: #F0FDF5;
+  --c-danger:    #C0392B;
+  --c-danger-l:  #FEF3F2;
+  --c-warning:   #C47A1A;
+  --c-warning-l: #FEFBF0;
+  --c-sos:       #7D1F12;   /* deep wine-red, more refined */
+  --c-sos-l:     #FEF3F2;
 
-  /* Header */
-  --c-header:    #100600;
-  --c-header-s:  rgba(255,255,255,0.06);
+  /* Header — ultra deep warm black */
+  --c-header:    #0D0603;
+  --c-header-s:  rgba(255,255,255,0.05);
 }
 
 /* ──────────────────────────────────────────────────

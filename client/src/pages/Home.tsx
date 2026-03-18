@@ -6,8 +6,8 @@ import { Language } from '../context/AppContext';
 const SOS_ACTIONS = [
   {
     icon: '🚨',
-    bg: 'linear-gradient(135deg, #7F1D1D, #991B1B)',
-    shadow: 'rgba(127,29,29,0.45)',
+    bg: 'linear-gradient(145deg, #5C1208, #7D1F12)',
+    shadow: 'rgba(92,18,8,0.35)',
     path: '/chat',
     question: {
       hindi: 'मुझे अभी गिरफ्तार किया जा रहा है। मुझे क्या करना चाहिए और मेरे क्या अधिकार हैं?',
@@ -19,8 +19,8 @@ const SOS_ACTIONS = [
   },
   {
     icon: '🔒',
-    bg: 'linear-gradient(135deg, #9C4020, #C85828)',
-    shadow: 'rgba(156,64,32,0.45)',
+    bg: 'linear-gradient(145deg, #6B2A0A, #8C3C12)',
+    shadow: 'rgba(107,42,10,0.35)',
     path: '/chat',
     question: {
       hindi: 'मुझे जमानत कैसे मिलेगी? अभी क्या करना होगा?',
@@ -129,7 +129,7 @@ export default function Home() {
         <div className="flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-            style={{ background: 'var(--c-primary)' }}
+            style={{ background: 'linear-gradient(135deg, #B8521E, #8C3C12)' }}
           >
             ⚖️
           </div>
@@ -237,7 +237,7 @@ export default function Home() {
                 </div>
                 <div>
                   <div
-                    className="font-extrabold text-sm leading-tight transition-colors group-hover:text-[#C85828]"
+                    className="font-extrabold text-sm leading-tight transition-colors group-hover:text-[#B8521E]"
                     style={{ color: 'var(--c-heading)' }}
                   >
                     {svc.titles[language as Language]}
@@ -256,13 +256,13 @@ export default function Home() {
           onClick={() => navigate('/voice-guide')}
           className="w-full rounded-2xl p-4 text-left flex items-center gap-4 active:scale-[0.98] transition-all"
           style={{
-            background: 'linear-gradient(135deg, #100600, #1C0A02)',
-            boxShadow: '0 6px 24px rgba(16,6,0,0.30)',
+            background: 'linear-gradient(145deg, #0D0603, #180A04)',
+            boxShadow: '0 6px 28px rgba(13,6,3,0.28)',
           }}
         >
           <div
             className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #C85828, #E07C35)' }}
+            style={{ background: 'linear-gradient(135deg, #B8521E, #D4703A)' }}
           >
             <span className="text-2xl">🎙️</span>
           </div>
@@ -273,7 +273,7 @@ export default function Home() {
               </span>
               <span
                 className="text-xs font-bold px-2 py-0.5 rounded-full"
-                style={{ background: 'rgba(200,88,40,0.25)', color: '#FBBF8A' }}
+                style={{ background: 'rgba(184,82,30,0.22)', color: '#F0A878' }}
               >
                 LIVE
               </span>
@@ -376,7 +376,7 @@ export default function Home() {
                 >
                   {item.icon}
                 </div>
-                <span className="font-semibold text-sm flex-1 group-hover:text-[#C85828] transition-colors"
+                <span className="font-semibold text-sm flex-1 group-hover:text-[#B8521E] transition-colors"
                   style={{ color: 'var(--c-heading)' }}>
                   {item.label[language as Language]}
                 </span>
