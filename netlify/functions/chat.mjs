@@ -119,9 +119,9 @@ export default async (req) => {
   };
 
   // Parse body
-  let messages, language;
+  let messages, language, attachment;
   try {
-    ({ messages, language } = await req.json());
+    ({ messages, language, attachment } = await req.json());
   } catch {
     return new Response(
       `data: ${JSON.stringify({ text: "Invalid request body" })}\n\ndata: [DONE]\n\n`,
@@ -150,7 +150,22 @@ export default async (req) => {
     english: "IMPORTANT: Respond ONLY in simple, clear English.",
     hinglish: "IMPORTANT: Respond in Hinglish — natural mix of Hindi (Roman script) and English.",
   };
-  const systemText = SYSTEM_PROMPT + "\n\n" + (langInstructions[language] || langInstructions.hinglish);
+
+  // When a document is attached, add specific document analysis instructions
+  const docInstruction = attachment
+    ? `\n\nDOCUMENT ANALYSIS MODE: The user has shared a legal document (image or PDF).
+Please analyze it thoroughly and respond with:
+1. **Document Type**: What kind of document is this? (FIR / Bail Order / Chargesheet / Court Notice / etc.)
+2. **Key Details**: Date, case number, accused name, sections/charges mentioned (if visible)
+3. **What This Means**: Explain each section/charge in simple language
+4. **Serious or Not**: Rate the seriousness and explain why
+5. **Immediate Steps**: What should the person do RIGHT NOW
+6. **Rights**: What rights does the accused have given this document
+7. **Free Help**: Recommend NALSA (1516) or Kunji Helpline (1800-313-4963) as appropriate
+Use bullet points. Be clear, warm, and empathetic. Avoid legal jargon — explain everything simply.`
+    : "";
+
+  const systemText = SYSTEM_PROMPT + "\n\n" + (langInstructions[language] || langInstructions.hinglish) + docInstruction;
 
   // Format messages for Gemini REST API
   const formattedContents = messages
@@ -172,14 +187,28 @@ export default async (req) => {
     );
   }
 
-  // Call Gemini REST API with streaming (SSE)
-  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse&key=${apiKey}`;
+  // Attach document to the last user message (multimodal)
+  if (attachment && attachment.data && attachment.mimeType) {
+    const lastMsg = formattedContents[formattedContents.length - 1];
+    if (lastMsg.role === "user") {
+      lastMsg.parts.push({
+        inline_data: {
+          mime_type: attachment.mimeType,
+          data: attachment.data,
+        },
+      });
+    }
+  }
+
+  // Use gemini-2.5-flash for multimodal (vision), flash-lite for text-only
+  const model = attachment ? "gemini-2.5-flash-lite" : "gemini-2.5-flash-lite";
+  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`;
 
   const geminiBody = {
     system_instruction: { parts: [{ text: systemText }] },
     contents: formattedContents,
     generationConfig: {
-      maxOutputTokens: 2048,
+      maxOutputTokens: attachment ? 3000 : 2048,
       temperature: 0.7,
     },
   };

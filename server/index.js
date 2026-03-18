@@ -8,7 +8,7 @@ const app = express();
 const client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // raised for base64 document uploads
 
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVENLABS_MODEL_ID = process.env.ELEVENLABS_MODEL_ID || 'eleven_multilingual_v2';
@@ -165,7 +165,7 @@ app.post('/api/tts', async (req, res) => {
 });
 
 app.post('/api/chat', async (req, res) => {
-  const { messages, language } = req.body;
+  const { messages, language, attachment } = req.body;
 
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'Messages required' });
@@ -181,7 +181,21 @@ app.post('/api/chat', async (req, res) => {
     english: 'IMPORTANT: Respond ONLY in simple, clear English.',
     hinglish: 'IMPORTANT: Respond in Hinglish — natural mix of Hindi (Roman script) and English.',
   };
-  const systemWithLang = SYSTEM_PROMPT + '\n\n' + (langInstructions[language] || langInstructions.hinglish);
+
+  const docInstruction = attachment
+    ? `\n\nDOCUMENT ANALYSIS MODE: The user has shared a legal document (image or PDF).
+Please analyze it thoroughly and respond with:
+1. **Document Type**: What kind of document is this? (FIR / Bail Order / Chargesheet / Court Notice / etc.)
+2. **Key Details**: Date, case number, accused name, sections/charges mentioned (if visible)
+3. **What This Means**: Explain each section/charge in simple language
+4. **Serious or Not**: Rate the seriousness and explain why
+5. **Immediate Steps**: What should the person do RIGHT NOW
+6. **Rights**: What rights does the accused have given this document
+7. **Free Help**: Recommend NALSA (1516) or Kunji Helpline (1800-313-4963) as appropriate
+Use bullet points. Be clear, warm, and empathetic. Avoid legal jargon — explain everything simply.`
+    : '';
+
+  const systemWithLang = SYSTEM_PROMPT + '\n\n' + (langInstructions[language] || langInstructions.hinglish) + docInstruction;
 
   const formattedContents = messages
     .filter((m) => m && typeof m.content === 'string' && m.content.trim())
@@ -200,7 +214,16 @@ app.post('/api/chat', async (req, res) => {
     return res.end();
   }
 
-  // Use Gemini REST API directly (no SDK required — avoids version/model name issues)
+  // Attach document to last user message (multimodal)
+  if (attachment && attachment.data && attachment.mimeType) {
+    const lastMsg = formattedContents[formattedContents.length - 1];
+    if (lastMsg.role === 'user') {
+      lastMsg.parts.push({
+        inline_data: { mime_type: attachment.mimeType, data: attachment.data },
+      });
+    }
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
   const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse&key=${apiKey}`;
 
@@ -211,7 +234,7 @@ app.post('/api/chat', async (req, res) => {
       body: JSON.stringify({
         system_instruction: { parts: [{ text: systemWithLang }] },
         contents: formattedContents,
-        generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
+        generationConfig: { maxOutputTokens: attachment ? 3000 : 2048, temperature: 0.7 },
       }),
     });
 
