@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useApp, t } from '../context/AppContext';
+import { useApp, t, Language } from '../context/AppContext';
+import LangSwitcher from '../components/LangSwitcher';
 
 /* ── Tell TypeScript about the ElevenLabs custom element ── */
 declare global {
@@ -40,7 +41,7 @@ export default function VoiceGuide() {
   }, []);
 
   return (
-    <div className="flex flex-col h-dvh" style={{ background: 'var(--c-header)' }}>
+    <div className="flex flex-col h-dvh xl:h-full" style={{ background: 'var(--c-bg)' }}>
 
       {/* ── Header ── */}
       <div
@@ -75,6 +76,7 @@ export default function VoiceGuide() {
             })}
           </p>
         </div>
+        <LangSwitcher dark />
         <div
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
           style={{ background: 'rgba(22,163,74,0.15)', color: '#4ADE80', border: '1px solid rgba(22,163,74,0.25)' }}
@@ -84,66 +86,29 @@ export default function VoiceGuide() {
         </div>
       </div>
 
-      {/* ── Main content ── */}
-      <div className="flex-1 flex flex-col items-center justify-between px-5 pb-8 pt-6 overflow-y-auto">
-
-        {/* ── Orb + branding ── */}
-        <div className="flex flex-col items-center text-center gap-4 mb-6">
-          {/* Animated orb */}
-          <div className="voice-ai-orb">
-            🎙️
-          </div>
-
-          {/* Waveform decoration */}
-          <div className="voice-wave mt-2">
-            {[18, 28, 36, 24, 36, 28, 18].map((h, i) => (
-              <div
-                key={i}
-                className="voice-bar"
-                style={{ height: `${h}px`, animationDelay: `${i * 0.1}s` }}
-              />
-            ))}
-          </div>
-
-          <div className="mt-2">
-            <p className="text-white font-extrabold text-xl leading-tight">
-              {t(language, {
-                hindi: 'बोलिए, सुन रहा हूँ',
-                english: 'Speak, I\'m listening',
-                hinglish: 'Boliye, main sun raha hoon',
-              })}
+      {/* ── Main content: clean, centered widget ── */}
+      <div className="flex-1 content-shell flex flex-col items-center justify-center pb-24 pt-6">
+        <div className="w-full max-w-xl">
+          <div className="text-center mb-4">
+            <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--c-label)' }}>
+              {t(language, { hindi: 'वॉइस असिस्टेंट', english: 'Voice Assistant', hinglish: 'Voice Assistant' })}
             </p>
-            <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <h2 className="text-xl font-extrabold" style={{ color: 'var(--c-heading)' }}>
               {t(language, {
-                hindi: 'अपना कानूनी सवाल बोलें — तुरंत जवाब मिलेगा',
-                english: 'Ask your legal question — instant reply',
-                hinglish: 'Apna legal sawaal bolein — turant jawab milega',
+                hindi: 'सीधे बोलें, तुरंत जवाब पाएं',
+                english: 'Speak directly, get instant answers',
+                hinglish: 'Seedha bolo, turant jawab pao',
               })}
-            </p>
+            </h2>
           </div>
 
-          {/* FutureLabs badge */}
-          <div
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold"
-            style={{
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.12)',
-              color: 'rgba(255,255,255,0.60)',
-            }}
-          >
-            ⚡ Powered by FutureLabs Voice AI
-          </div>
-        </div>
-
-        {/* ── ElevenLabs ConvAI Widget ── */}
-        <div className="w-full flex flex-col items-center gap-4">
           {ready ? (
             <div
-              className="w-full rounded-3xl overflow-hidden flex items-center justify-center"
+              className="w-full rounded-3xl overflow-hidden flex items-center justify-center p-3"
               style={{
-                minHeight: '200px',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.10)',
+                minHeight: '340px',
+                background: 'var(--c-surface)',
+                border: '1px solid var(--c-border)',
               }}
             >
               <elevenlabs-convai agent-id={AGENT_ID} />
@@ -152,9 +117,9 @@ export default function VoiceGuide() {
             <div
               className="w-full rounded-3xl flex flex-col items-center justify-center gap-3"
               style={{
-                minHeight: '200px',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.10)',
+                minHeight: '340px',
+                background: 'var(--c-surface)',
+                border: '1px solid var(--c-border)',
               }}
             >
               <div className="flex gap-2">
@@ -162,76 +127,51 @@ export default function VoiceGuide() {
                 <div className="typing-dot" />
                 <div className="typing-dot" />
               </div>
-              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.40)' }}>
-                Voice AI loading…
+              <p className="text-sm" style={{ color: 'var(--c-muted)' }}>
+                Voice AI loading...
               </p>
             </div>
           )}
 
-          {/* How to use */}
-          <div
-            className="w-full rounded-2xl p-4"
-            style={{
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.08)',
-            }}
-          >
-            <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              {t(language, { hindi: 'कैसे इस्तेमाल करें', english: 'How to use', hinglish: 'Kaise use karein' })}
-            </p>
-            <div className="space-y-2">
-              {[
-                {
-                  step: '1',
-                  hindi: 'ऊपर वॉइस बटन दबाएं',
-                  english: 'Tap the voice button above',
-                  hinglish: 'Upar voice button dabaein',
-                },
-                {
-                  step: '2',
-                  hindi: 'अपना कानूनी सवाल बोलें',
-                  english: 'Speak your legal question',
-                  hinglish: 'Apna legal sawaal bolein',
-                },
-                {
-                  step: '3',
-                  hindi: 'AI से आवाज़ में जवाब सुनें',
-                  english: 'Hear the AI reply in voice',
-                  hinglish: 'AI se awaaz mein jawab sunein',
-                },
-              ].map((item) => (
-                <div key={item.step} className="flex items-center gap-3">
-                  <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold flex-shrink-0"
-                    style={{ background: 'var(--c-primary)', color: 'white' }}
-                  >
-                    {item.step}
-                  </div>
-                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.60)' }}>
-                    {t(language, { hindi: item.hindi, english: item.english, hinglish: item.hinglish })}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Fallback: go to text chat */}
           <button
             onClick={() => navigate('/chat')}
-            className="w-full py-3 rounded-2xl text-sm font-bold transition-all active:scale-95"
+            className="w-full mt-4 py-3 rounded-2xl text-sm font-bold transition-all active:scale-95"
             style={{
-              background: 'rgba(200,88,40,0.15)',
-              color: '#FBBF8A',
+              background: 'var(--c-primary-l)',
+              color: 'var(--c-primary)',
               border: '1px solid rgba(200,88,40,0.25)',
             }}
           >
             {t(language, {
-              hindi: 'या टाइप करके पूछें →',
-              english: 'Or type your question →',
-              hinglish: 'Ya type karke puchein →',
+              hindi: 'टाइप करके पूछें',
+              english: 'Switch to Text Chat',
+              hinglish: 'Text chat pe jao',
             })}
           </button>
         </div>
+      </div>
+
+      {/* ── Bottom Nav ── */}
+      <div className="bottom-nav">
+        {[
+          { icon: '🏠', label: { hindi: 'होम', english: 'Home', hinglish: 'Home' }, path: '/home' },
+          { icon: '⚖️', label: { hindi: 'मदद', english: 'Chat', hinglish: 'Chat' }, path: '/chat' },
+          { icon: '📖', label: { hindi: 'गाइड', english: 'Guide', hinglish: 'Guide' }, path: '/manual' },
+          { icon: '🎙️', label: { hindi: 'वॉइस', english: 'Voice', hinglish: 'Voice' }, path: '/voice-guide' },
+          { icon: '📞', label: { hindi: 'हेल्पलाइन', english: 'Helpline', hinglish: 'Helpline' }, path: '/helpline' },
+        ].map((item) => (
+          <button
+            key={item.path}
+            onClick={() => navigate(item.path)}
+            className="flex-1 flex flex-col items-center py-3 gap-0.5 text-xs font-semibold transition-colors"
+            style={{
+              color: item.path === '/voice-guide' ? 'var(--c-primary)' : 'rgba(255,255,255,0.40)',
+            }}
+          >
+            <span className="text-xl">{item.icon}</span>
+            <span>{item.label[language as Language]}</span>
+          </button>
+        ))}
       </div>
     </div>
   );
