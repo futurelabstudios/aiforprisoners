@@ -1,0 +1,24 @@
+[build]
+  command   = "cd client && npm install && npm run build"
+  publish   = "client/dist"
+
+[functions]
+  directory     = "netlify/functions"
+  node_bundler  = "esbuild"
+
+# API routes → Netlify Functions
+[[redirects]]
+  from   = "/api/chat"
+  to     = "/.netlify/functions/chat"
+  status = 200
+
+[[redirects]]
+  from   = "/api/tts"
+  to     = "/.netlify/functions/tts"
+  status = 200
+
+# SPA fallback — all other routes → React app
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
