@@ -176,50 +176,80 @@ app.post('/api/chat', async (req, res) => {
   res.setHeader('Connection', 'keep-alive');
   res.setHeader('X-Accel-Buffering', 'no');
 
-  const languageInstruction = {
-    hindi: 'LANGUAGE: Respond in simple Hindi (Devanagari script) only.',
-    english: 'LANGUAGE: Respond in simple English only.',
-    hinglish: 'LANGUAGE: Respond in Hinglish — mix Hindi (Roman script) and English naturally, like common North Indians speak.'
+  const langInstructions = {
+    hindi: 'IMPORTANT: Respond ONLY in simple Hindi using Devanagari script.',
+    english: 'IMPORTANT: Respond ONLY in simple, clear English.',
+    hinglish: 'IMPORTANT: Respond in Hinglish — natural mix of Hindi (Roman script) and English.',
   };
+  const systemWithLang = SYSTEM_PROMPT + '\n\n' + (langInstructions[language] || langInstructions.hinglish);
 
-  const systemWithLang = SYSTEM_PROMPT + '\n\n' + (languageInstruction[language] || languageInstruction.hinglish);
+  const formattedContents = messages
+    .filter((m) => m && typeof m.content === 'string' && m.content.trim())
+    .map((m) => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content.trim() }],
+    }));
+
+  while (formattedContents.length && formattedContents[0].role !== 'user') {
+    formattedContents.shift();
+  }
+
+  if (!formattedContents.length) {
+    res.write(`data: ${JSON.stringify({ text: 'Please ask a question.' })}\n\n`);
+    res.write('data: [DONE]\n\n');
+    return res.end();
+  }
+
+  // Use Gemini REST API directly (no SDK required — avoids version/model name issues)
+  const apiKey = process.env.GEMINI_API_KEY;
+  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse&key=${apiKey}`;
 
   try {
-    const formattedMessages = messages
-      .filter((m) => m && typeof m.content === 'string' && m.content.trim())
-      .map((m) => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.content }],
-      }));
-
-    while (formattedMessages.length && formattedMessages[0].role !== 'user') {
-      formattedMessages.shift();
-    }
-
-    if (!formattedMessages.length) {
-      return res.status(400).json({ error: 'At least one user message is required' });
-    }
-
-    const stream = await client.models.generateContentStream({
-      model: 'gemini-2.5-flash-lite',
-      contents: formattedMessages,
-      config: {
-        systemInstruction: systemWithLang,
-        maxOutputTokens: 2048,
-        temperature: 0.7,
-      },
+    const geminiResp = await fetch(geminiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: systemWithLang }] },
+        contents: formattedContents,
+        generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
+      }),
     });
 
-    for await (const chunk of stream) {
-      if (chunk.text) {
-        res.write(`data: ${JSON.stringify({ text: chunk.text })}\n\n`);
+    if (!geminiResp.ok) {
+      const errText = await geminiResp.text();
+      console.error('Gemini API error:', geminiResp.status, errText);
+      throw new Error(`Gemini returned ${geminiResp.status}`);
+    }
+
+    // Forward the SSE stream, extracting text from Gemini chunks
+    const reader = geminiResp.body.getReader();
+    const dec = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += dec.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() ?? '';
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const raw = line.slice(6).trim();
+        if (!raw || raw === '[DONE]') continue;
+        try {
+          const parsed = JSON.parse(raw);
+          const text = parsed?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+          if (text) res.write(`data: ${JSON.stringify({ text })}\n\n`);
+        } catch { /* ignore malformed chunk */ }
       }
     }
 
     res.write('data: [DONE]\n\n');
     res.end();
   } catch (error) {
-    console.error('Gemini API error:', error);
+    console.error('Chat error:', error);
     const errorMsg = language === 'hindi'
       ? 'माफ़ करें, कुछ गड़बड़ी हो गई। कृपया दोबारा कोशिश करें।'
       : language === 'english'
