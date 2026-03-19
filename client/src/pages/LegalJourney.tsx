@@ -29,7 +29,7 @@ type DocType = "fir" | "chargesheet" | "bail";
 
 interface StageDef {
   id: StageId;
-  Icon: React.ComponentType<{ size?: number }>;
+  Icon: React.ComponentType<{ size?: string | number }>;
   title: LocalText;
   meaning: LocalText;
   actions: LocalText[];
@@ -62,11 +62,16 @@ const STAGES: StageDef[] = [
   {
     id: "fir",
     Icon: FileText,
-    title: { hindi: "FIR रजिस्ट्रेशन", english: "FIR Registration", hinglish: "FIR Registration" },
+    title: {
+      hindi: "FIR रजिस्ट्रेशन",
+      english: "FIR Registration",
+      hinglish: "FIR Registration",
+    },
     meaning: {
       hindi: "इस चरण में घटना की पहली पुलिस रिपोर्ट दर्ज होती है।",
       english: "This stage registers the first police report of the incident.",
-      hinglish: "Is stage mein incident ki pehli police report register hoti hai.",
+      hinglish:
+        "Is stage mein incident ki pehli police report register hoti hai.",
     },
     actions: [
       {
@@ -87,29 +92,65 @@ const STAGES: StageDef[] = [
     ],
     documents: [
       { hindi: "ID प्रूफ", english: "ID proof", hinglish: "ID proof" },
-      { hindi: "घटना विवरण", english: "Incident details", hinglish: "Incident details" },
-      { hindi: "साक्ष्य (यदि हो)", english: "Evidence (if any)", hinglish: "Evidence (if any)" },
+      {
+        hindi: "घटना विवरण",
+        english: "Incident details",
+        hinglish: "Incident details",
+      },
+      {
+        hindi: "साक्ष्य (यदि हो)",
+        english: "Evidence (if any)",
+        hinglish: "Evidence (if any)",
+      },
     ],
     requiredFields: [
       {
         key: "firNo",
-        label: { hindi: "FIR नंबर", english: "FIR Number", hinglish: "FIR Number" },
-        placeholder: { hindi: "उदाहरण: 123/2026", english: "Example: 123/2026", hinglish: "Example: 123/2026" },
+        label: {
+          hindi: "FIR नंबर",
+          english: "FIR Number",
+          hinglish: "FIR Number",
+        },
+        placeholder: {
+          hindi: "उदाहरण: 123/2026",
+          english: "Example: 123/2026",
+          hinglish: "Example: 123/2026",
+        },
       },
       {
         key: "policeStation",
-        label: { hindi: "थाना", english: "Police Station", hinglish: "Police Station" },
-        placeholder: { hindi: "सटीक थाना नाम", english: "Exact station name", hinglish: "Exact station name" },
+        label: {
+          hindi: "थाना",
+          english: "Police Station",
+          hinglish: "Police Station",
+        },
+        placeholder: {
+          hindi: "सटीक थाना नाम",
+          english: "Exact station name",
+          hinglish: "Exact station name",
+        },
       },
       {
         key: "district",
         label: { hindi: "जिला", english: "District", hinglish: "District" },
-        placeholder: { hindi: "उदाहरण: South Delhi", english: "Example: South Delhi", hinglish: "Example: South Delhi" },
+        placeholder: {
+          hindi: "उदाहरण: South Delhi",
+          english: "Example: South Delhi",
+          hinglish: "Example: South Delhi",
+        },
       },
       {
         key: "firDate",
-        label: { hindi: "FIR तारीख", english: "FIR Date", hinglish: "FIR Date" },
-        placeholder: { hindi: "DD/MM/YYYY", english: "DD/MM/YYYY", hinglish: "DD/MM/YYYY" },
+        label: {
+          hindi: "FIR तारीख",
+          english: "FIR Date",
+          hinglish: "FIR Date",
+        },
+        placeholder: {
+          hindi: "DD/MM/YYYY",
+          english: "DD/MM/YYYY",
+          hinglish: "DD/MM/YYYY",
+        },
       },
     ],
     aiPrompt: {
@@ -118,43 +159,101 @@ const STAGES: StageDef[] = [
       hinglish: "FIR registration stage ke liye step-by-step guide do.",
     },
     checkpoints: [
-      { id: "fir-filed", label: { hindi: "FIR दर्ज", english: "FIR filed", hinglish: "FIR filed" } },
-      { id: "fir-copy", label: { hindi: "FIR कॉपी मिली", english: "FIR copy received", hinglish: "FIR copy received" } },
+      {
+        id: "fir-filed",
+        label: {
+          hindi: "FIR दर्ज",
+          english: "FIR filed",
+          hinglish: "FIR filed",
+        },
+      },
+      {
+        id: "fir-copy",
+        label: {
+          hindi: "FIR कॉपी मिली",
+          english: "FIR copy received",
+          hinglish: "FIR copy received",
+        },
+      },
     ],
   },
   {
     id: "investigation",
     Icon: Search,
-    title: { hindi: "पुलिस जांच", english: "Police Investigation", hinglish: "Police Investigation" },
+    title: {
+      hindi: "पुलिस जांच",
+      english: "Police Investigation",
+      hinglish: "Police Investigation",
+    },
     meaning: {
       hindi: "पुलिस साक्ष्य इकट्ठा करती है और बयान दर्ज करती है।",
       english: "Police collects evidence and records statements.",
       hinglish: "Police evidence collect karti hai aur statements leti hai.",
     },
     actions: [
-      { hindi: "केस अपडेट नोट करें।", english: "Track case updates.", hinglish: "Case updates track karo." },
-      { hindi: "जरूरत पर वकील से बात करें।", english: "Consult lawyer when needed.", hinglish: "Need par lawyer se baat karo." },
-      { hindi: "दस्तावेज़ एक जगह रखें।", english: "Keep documents organized.", hinglish: "Documents organized rakho." },
+      {
+        hindi: "केस अपडेट नोट करें।",
+        english: "Track case updates.",
+        hinglish: "Case updates track karo.",
+      },
+      {
+        hindi: "जरूरत पर वकील से बात करें।",
+        english: "Consult lawyer when needed.",
+        hinglish: "Need par lawyer se baat karo.",
+      },
+      {
+        hindi: "दस्तावेज़ एक जगह रखें।",
+        english: "Keep documents organized.",
+        hinglish: "Documents organized rakho.",
+      },
     ],
     documents: [
       { hindi: "FIR कॉपी", english: "FIR copy", hinglish: "FIR copy" },
-      { hindi: "समन/नोटिस", english: "Notices/Summons", hinglish: "Notices/Summons" },
+      {
+        hindi: "समन/नोटिस",
+        english: "Notices/Summons",
+        hinglish: "Notices/Summons",
+      },
     ],
     requiredFields: [
       {
         key: "arrestDate",
-        label: { hindi: "गिरफ्तारी तारीख", english: "Date of Arrest", hinglish: "Date of Arrest" },
-        placeholder: { hindi: "DD/MM/YYYY", english: "DD/MM/YYYY", hinglish: "DD/MM/YYYY" },
+        label: {
+          hindi: "गिरफ्तारी तारीख",
+          english: "Date of Arrest",
+          hinglish: "Date of Arrest",
+        },
+        placeholder: {
+          hindi: "DD/MM/YYYY",
+          english: "DD/MM/YYYY",
+          hinglish: "DD/MM/YYYY",
+        },
       },
       {
         key: "ioName",
-        label: { hindi: "IO नाम", english: "Investigating Officer", hinglish: "Investigating Officer" },
-        placeholder: { hindi: "अधिकारी का नाम", english: "Officer name", hinglish: "Officer name" },
+        label: {
+          hindi: "IO नाम",
+          english: "Investigating Officer",
+          hinglish: "Investigating Officer",
+        },
+        placeholder: {
+          hindi: "अधिकारी का नाम",
+          english: "Officer name",
+          hinglish: "Officer name",
+        },
       },
       {
         key: "statusNote",
-        label: { hindi: "जांच स्थिति", english: "Investigation Status", hinglish: "Investigation Status" },
-        placeholder: { hindi: "ताज़ा अपडेट लिखें", english: "Write latest update", hinglish: "Write latest update" },
+        label: {
+          hindi: "जांच स्थिति",
+          english: "Investigation Status",
+          hinglish: "Investigation Status",
+        },
+        placeholder: {
+          hindi: "ताज़ा अपडेट लिखें",
+          english: "Write latest update",
+          hinglish: "Write latest update",
+        },
       },
     ],
     aiPrompt: {
@@ -163,42 +262,93 @@ const STAGES: StageDef[] = [
       hinglish: "Police investigation stage mein kya precautions rakhun?",
     },
     checkpoints: [
-      { id: "statement-done", label: { hindi: "बयान प्रक्रिया पूरी", english: "Statement process done", hinglish: "Statement done" } },
+      {
+        id: "statement-done",
+        label: {
+          hindi: "बयान प्रक्रिया पूरी",
+          english: "Statement process done",
+          hinglish: "Statement done",
+        },
+      },
     ],
   },
   {
     id: "chargesheet",
     Icon: Shield,
-    title: { hindi: "चार्जशीट", english: "Charge Sheet", hinglish: "Charge Sheet" },
+    title: {
+      hindi: "चार्जशीट",
+      english: "Charge Sheet",
+      hinglish: "Charge Sheet",
+    },
     meaning: {
       hindi: "पुलिस अदालत में आरोपों की रिपोर्ट जमा करती है।",
       english: "Police submits formal charges report to court.",
       hinglish: "Police court mein formal charges report file karti hai.",
     },
     actions: [
-      { hindi: "चार्जशीट कॉपी की समीक्षा करें।", english: "Review chargesheet copy.", hinglish: "Chargesheet copy review karo." },
-      { hindi: "धाराएं समझें।", english: "Understand sections applied.", hinglish: "Applied sections samjho." },
-      { hindi: "अगली सुनवाई की तैयारी करें।", english: "Prepare for next hearing.", hinglish: "Next hearing prepare karo." },
+      {
+        hindi: "चार्जशीट कॉपी की समीक्षा करें।",
+        english: "Review chargesheet copy.",
+        hinglish: "Chargesheet copy review karo.",
+      },
+      {
+        hindi: "धाराएं समझें।",
+        english: "Understand sections applied.",
+        hinglish: "Applied sections samjho.",
+      },
+      {
+        hindi: "अगली सुनवाई की तैयारी करें।",
+        english: "Prepare for next hearing.",
+        hinglish: "Next hearing prepare karo.",
+      },
     ],
     documents: [
-      { hindi: "चार्जशीट कॉपी", english: "Chargesheet copy", hinglish: "Chargesheet copy" },
+      {
+        hindi: "चार्जशीट कॉपी",
+        english: "Chargesheet copy",
+        hinglish: "Chargesheet copy",
+      },
       { hindi: "केस नंबर", english: "Case number", hinglish: "Case number" },
     ],
     requiredFields: [
       {
         key: "chargesheetDate",
-        label: { hindi: "चार्जशीट तारीख", english: "Chargesheet Date", hinglish: "Chargesheet Date" },
-        placeholder: { hindi: "DD/MM/YYYY", english: "DD/MM/YYYY", hinglish: "DD/MM/YYYY" },
+        label: {
+          hindi: "चार्जशीट तारीख",
+          english: "Chargesheet Date",
+          hinglish: "Chargesheet Date",
+        },
+        placeholder: {
+          hindi: "DD/MM/YYYY",
+          english: "DD/MM/YYYY",
+          hinglish: "DD/MM/YYYY",
+        },
       },
       {
         key: "courtName",
-        label: { hindi: "कोर्ट नाम", english: "Court Name", hinglish: "Court Name" },
-        placeholder: { hindi: "MM / Sessions", english: "MM / Sessions", hinglish: "MM / Sessions" },
+        label: {
+          hindi: "कोर्ट नाम",
+          english: "Court Name",
+          hinglish: "Court Name",
+        },
+        placeholder: {
+          hindi: "MM / Sessions",
+          english: "MM / Sessions",
+          hinglish: "MM / Sessions",
+        },
       },
       {
         key: "caseNo",
-        label: { hindi: "केस नंबर", english: "Case Number", hinglish: "Case Number" },
-        placeholder: { hindi: "यदि उपलब्ध हो", english: "If available", hinglish: "If available" },
+        label: {
+          hindi: "केस नंबर",
+          english: "Case Number",
+          hinglish: "Case Number",
+        },
+        placeholder: {
+          hindi: "यदि उपलब्ध हो",
+          english: "If available",
+          hinglish: "If available",
+        },
       },
     ],
     aiPrompt: {
@@ -207,42 +357,89 @@ const STAGES: StageDef[] = [
       hinglish: "Chargesheet ke baad next steps batao.",
     },
     checkpoints: [
-      { id: "chargesheet-received", label: { hindi: "चार्जशीट कॉपी मिली", english: "Chargesheet received", hinglish: "Chargesheet received" } },
+      {
+        id: "chargesheet-received",
+        label: {
+          hindi: "चार्जशीट कॉपी मिली",
+          english: "Chargesheet received",
+          hinglish: "Chargesheet received",
+        },
+      },
     ],
   },
   {
     id: "bail",
     Icon: Gavel,
-    title: { hindi: "जमानत आवेदन", english: "Bail Application", hinglish: "Bail Application" },
+    title: {
+      hindi: "जमानत आवेदन",
+      english: "Bail Application",
+      hinglish: "Bail Application",
+    },
     meaning: {
       hindi: "अदालत से रिहाई के लिए जमानत आवेदन किया जाता है।",
       english: "Bail application is filed in court for release.",
       hinglish: "Court mein release ke liye bail apply hoti hai.",
     },
     actions: [
-      { hindi: "जमानत ग्राउंड्स तैयार करें।", english: "Prepare bail grounds.", hinglish: "Bail grounds prepare karo." },
-      { hindi: "वकील/लीगल एड से आवेदन करें।", english: "File via lawyer/legal aid.", hinglish: "Lawyer/legal aid se file karo." },
-      { hindi: "ऑर्डर कॉपी सुरक्षित रखें।", english: "Keep bail order copy safe.", hinglish: "Bail order copy safe rakho." },
+      {
+        hindi: "जमानत ग्राउंड्स तैयार करें।",
+        english: "Prepare bail grounds.",
+        hinglish: "Bail grounds prepare karo.",
+      },
+      {
+        hindi: "वकील/लीगल एड से आवेदन करें।",
+        english: "File via lawyer/legal aid.",
+        hinglish: "Lawyer/legal aid se file karo.",
+      },
+      {
+        hindi: "ऑर्डर कॉपी सुरक्षित रखें।",
+        english: "Keep bail order copy safe.",
+        hinglish: "Bail order copy safe rakho.",
+      },
     ],
     documents: [
-      { hindi: "FIR/चार्जशीट", english: "FIR/Chargesheet", hinglish: "FIR/Chargesheet" },
+      {
+        hindi: "FIR/चार्जशीट",
+        english: "FIR/Chargesheet",
+        hinglish: "FIR/Chargesheet",
+      },
       { hindi: "पहचान पत्र", english: "ID proof", hinglish: "ID proof" },
     ],
     requiredFields: [
       {
         key: "sections",
         label: { hindi: "धाराएं", english: "Sections", hinglish: "Sections" },
-        placeholder: { hindi: "IPC/BNSS sections", english: "IPC/BNSS sections", hinglish: "IPC/BNSS sections" },
+        placeholder: {
+          hindi: "IPC/BNSS sections",
+          english: "IPC/BNSS sections",
+          hinglish: "IPC/BNSS sections",
+        },
       },
       {
         key: "custodyDays",
-        label: { hindi: "कस्टडी अवधि", english: "Custody Duration", hinglish: "Custody Duration" },
-        placeholder: { hindi: "दिनों में", english: "In days", hinglish: "In days" },
+        label: {
+          hindi: "कस्टडी अवधि",
+          english: "Custody Duration",
+          hinglish: "Custody Duration",
+        },
+        placeholder: {
+          hindi: "दिनों में",
+          english: "In days",
+          hinglish: "In days",
+        },
       },
       {
         key: "bailGrounds",
-        label: { hindi: "जमानत आधार", english: "Bail Grounds", hinglish: "Bail Grounds" },
-        placeholder: { hindi: "स्वास्थ्य/परिवार/देरी", english: "Health/family/delay", hinglish: "Health/family/delay" },
+        label: {
+          hindi: "जमानत आधार",
+          english: "Bail Grounds",
+          hinglish: "Bail Grounds",
+        },
+        placeholder: {
+          hindi: "स्वास्थ्य/परिवार/देरी",
+          english: "Health/family/delay",
+          hinglish: "Health/family/delay",
+        },
       },
     ],
     aiPrompt: {
@@ -251,43 +448,101 @@ const STAGES: StageDef[] = [
       hinglish: "Mere case mein bail apply ka sahi tareeka batao.",
     },
     checkpoints: [
-      { id: "bail-filed", label: { hindi: "जमानत आवेदन दायर", english: "Bail filed", hinglish: "Bail filed" } },
-      { id: "bail-order", label: { hindi: "जमानत आदेश मिला", english: "Bail order received", hinglish: "Bail order received" } },
+      {
+        id: "bail-filed",
+        label: {
+          hindi: "जमानत आवेदन दायर",
+          english: "Bail filed",
+          hinglish: "Bail filed",
+        },
+      },
+      {
+        id: "bail-order",
+        label: {
+          hindi: "जमानत आदेश मिला",
+          english: "Bail order received",
+          hinglish: "Bail order received",
+        },
+      },
     ],
   },
   {
     id: "trial",
     Icon: Landmark,
-    title: { hindi: "कोर्ट ट्रायल", english: "Court Trial", hinglish: "Court Trial" },
+    title: {
+      hindi: "कोर्ट ट्रायल",
+      english: "Court Trial",
+      hinglish: "Court Trial",
+    },
     meaning: {
       hindi: "गवाह, साक्ष्य और बहस के आधार पर सुनवाई चलती है।",
       english: "Hearings proceed with witnesses, evidence, and arguments.",
       hinglish: "Witness, evidence aur arguments ke saath hearing chalti hai.",
     },
     actions: [
-      { hindi: "हर तारीख नोट करें।", english: "Track every hearing date.", hinglish: "Har hearing date note karo." },
-      { hindi: "वकील के साथ रणनीति तय करें।", english: "Plan strategy with lawyer.", hinglish: "Lawyer ke saath strategy banao." },
-      { hindi: "दस्तावेज़ अपडेट रखें।", english: "Keep documents updated.", hinglish: "Documents updated rakho." },
+      {
+        hindi: "हर तारीख नोट करें।",
+        english: "Track every hearing date.",
+        hinglish: "Har hearing date note karo.",
+      },
+      {
+        hindi: "वकील के साथ रणनीति तय करें।",
+        english: "Plan strategy with lawyer.",
+        hinglish: "Lawyer ke saath strategy banao.",
+      },
+      {
+        hindi: "दस्तावेज़ अपडेट रखें।",
+        english: "Keep documents updated.",
+        hinglish: "Documents updated rakho.",
+      },
     ],
     documents: [
       { hindi: "केस फाइल", english: "Case file", hinglish: "Case file" },
-      { hindi: "सुनवाई आदेश", english: "Hearing orders", hinglish: "Hearing orders" },
+      {
+        hindi: "सुनवाई आदेश",
+        english: "Hearing orders",
+        hinglish: "Hearing orders",
+      },
     ],
     requiredFields: [
       {
         key: "nextDate",
-        label: { hindi: "अगली तारीख", english: "Next Hearing Date", hinglish: "Next Hearing Date" },
-        placeholder: { hindi: "DD/MM/YYYY", english: "DD/MM/YYYY", hinglish: "DD/MM/YYYY" },
+        label: {
+          hindi: "अगली तारीख",
+          english: "Next Hearing Date",
+          hinglish: "Next Hearing Date",
+        },
+        placeholder: {
+          hindi: "DD/MM/YYYY",
+          english: "DD/MM/YYYY",
+          hinglish: "DD/MM/YYYY",
+        },
       },
       {
         key: "witnessStage",
-        label: { hindi: "गवाह चरण", english: "Witness Stage", hinglish: "Witness Stage" },
-        placeholder: { hindi: "PW1/PW2 etc.", english: "PW1/PW2 etc.", hinglish: "PW1/PW2 etc." },
+        label: {
+          hindi: "गवाह चरण",
+          english: "Witness Stage",
+          hinglish: "Witness Stage",
+        },
+        placeholder: {
+          hindi: "PW1/PW2 etc.",
+          english: "PW1/PW2 etc.",
+          hinglish: "PW1/PW2 etc.",
+        },
       },
       {
         key: "orderSummary",
-        label: { hindi: "ऑर्डर सारांश", english: "Order Summary", hinglish: "Order Summary" },
-        placeholder: { hindi: "पिछली सुनवाई का सार", english: "Last hearing summary", hinglish: "Last hearing summary" },
+        label: {
+          hindi: "ऑर्डर सारांश",
+          english: "Order Summary",
+          hinglish: "Order Summary",
+        },
+        placeholder: {
+          hindi: "पिछली सुनवाई का सार",
+          english: "Last hearing summary",
+          hinglish: "Last hearing summary",
+        },
       },
     ],
     aiPrompt: {
@@ -296,42 +551,93 @@ const STAGES: StageDef[] = [
       hinglish: "Court trial stage mein best next actions batao.",
     },
     checkpoints: [
-      { id: "trial-started", label: { hindi: "ट्रायल शुरू", english: "Trial started", hinglish: "Trial started" } },
+      {
+        id: "trial-started",
+        label: {
+          hindi: "ट्रायल शुरू",
+          english: "Trial started",
+          hinglish: "Trial started",
+        },
+      },
     ],
   },
   {
     id: "judgment",
     Icon: Flag,
-    title: { hindi: "निर्णय / पोस्ट-ट्रायल", english: "Judgment / Post-Trial", hinglish: "Judgment / Post-Trial" },
+    title: {
+      hindi: "निर्णय / पोस्ट-ट्रायल",
+      english: "Judgment / Post-Trial",
+      hinglish: "Judgment / Post-Trial",
+    },
     meaning: {
       hindi: "अदालत का निर्णय आता है, फिर आगे की कार्रवाई तय होती है।",
       english: "Court delivers judgment and next legal steps are decided.",
       hinglish: "Court judgment ke baad next legal steps decide hote hain.",
     },
     actions: [
-      { hindi: "निर्णय कॉपी प्राप्त करें।", english: "Collect judgment copy.", hinglish: "Judgment copy lo." },
-      { hindi: "अपील विकल्प समझें।", english: "Understand appeal options.", hinglish: "Appeal options samjho." },
-      { hindi: "रिहाई/रीइंटीग्रेशन सहायता लें।", english: "Take post-trial/release support.", hinglish: "Post-trial/release support lo." },
+      {
+        hindi: "निर्णय कॉपी प्राप्त करें।",
+        english: "Collect judgment copy.",
+        hinglish: "Judgment copy lo.",
+      },
+      {
+        hindi: "अपील विकल्प समझें।",
+        english: "Understand appeal options.",
+        hinglish: "Appeal options samjho.",
+      },
+      {
+        hindi: "रिहाई/रीइंटीग्रेशन सहायता लें।",
+        english: "Take post-trial/release support.",
+        hinglish: "Post-trial/release support lo.",
+      },
     ],
     documents: [
-      { hindi: "निर्णय कॉपी", english: "Judgment copy", hinglish: "Judgment copy" },
-      { hindi: "रिहाई कागज़ात", english: "Release documents", hinglish: "Release documents" },
+      {
+        hindi: "निर्णय कॉपी",
+        english: "Judgment copy",
+        hinglish: "Judgment copy",
+      },
+      {
+        hindi: "रिहाई कागज़ात",
+        english: "Release documents",
+        hinglish: "Release documents",
+      },
     ],
     requiredFields: [
       {
         key: "judgmentDate",
-        label: { hindi: "निर्णय तारीख", english: "Judgment Date", hinglish: "Judgment Date" },
-        placeholder: { hindi: "DD/MM/YYYY", english: "DD/MM/YYYY", hinglish: "DD/MM/YYYY" },
+        label: {
+          hindi: "निर्णय तारीख",
+          english: "Judgment Date",
+          hinglish: "Judgment Date",
+        },
+        placeholder: {
+          hindi: "DD/MM/YYYY",
+          english: "DD/MM/YYYY",
+          hinglish: "DD/MM/YYYY",
+        },
       },
       {
         key: "outcome",
         label: { hindi: "परिणाम", english: "Outcome", hinglish: "Outcome" },
-        placeholder: { hindi: "Convicted/Acquitted etc.", english: "Convicted/Acquitted etc.", hinglish: "Convicted/Acquitted etc." },
+        placeholder: {
+          hindi: "Convicted/Acquitted etc.",
+          english: "Convicted/Acquitted etc.",
+          hinglish: "Convicted/Acquitted etc.",
+        },
       },
       {
         key: "appealPlan",
-        label: { hindi: "अपील योजना", english: "Appeal Plan", hinglish: "Appeal Plan" },
-        placeholder: { hindi: "अगला कदम लिखें", english: "Write next action", hinglish: "Write next action" },
+        label: {
+          hindi: "अपील योजना",
+          english: "Appeal Plan",
+          hinglish: "Appeal Plan",
+        },
+        placeholder: {
+          hindi: "अगला कदम लिखें",
+          english: "Write next action",
+          hinglish: "Write next action",
+        },
       },
     ],
     aiPrompt: {
@@ -340,7 +646,14 @@ const STAGES: StageDef[] = [
       hinglish: "Judgment ke baad practical next steps batao.",
     },
     checkpoints: [
-      { id: "judgment-copy", label: { hindi: "निर्णय कॉपी मिली", english: "Judgment copy received", hinglish: "Judgment copy received" } },
+      {
+        id: "judgment-copy",
+        label: {
+          hindi: "निर्णय कॉपी मिली",
+          english: "Judgment copy received",
+          hinglish: "Judgment copy received",
+        },
+      },
     ],
   },
 ];
@@ -348,7 +661,11 @@ const STAGES: StageDef[] = [
 const DOC_SCHEMAS: DocSchema[] = [
   {
     id: "fir",
-    title: { hindi: "FIR (नमूना)", english: "FIR (Sample)", hinglish: "FIR (Sample)" },
+    title: {
+      hindi: "FIR (नमूना)",
+      english: "FIR (Sample)",
+      hinglish: "FIR (Sample)",
+    },
     whatIsIt: {
       hindi: "यह घटना की पहली आधिकारिक पुलिस रिपोर्ट होती है।",
       english: "This is the first official police report of an incident.",
@@ -362,10 +679,22 @@ const DOC_SCHEMAS: DocSchema[] = [
     fields: [
       {
         key: "firNo",
-        label: { hindi: "FIR नंबर", english: "FIR Number", hinglish: "FIR Number" },
+        label: {
+          hindi: "FIR नंबर",
+          english: "FIR Number",
+          hinglish: "FIR Number",
+        },
         required: true,
-        placeholder: { hindi: "उदाहरण: 123/2026", english: "Example: 123/2026", hinglish: "Example: 123/2026" },
-        example: { hindi: "123/2026", english: "123/2026", hinglish: "123/2026" },
+        placeholder: {
+          hindi: "उदाहरण: 123/2026",
+          english: "Example: 123/2026",
+          hinglish: "Example: 123/2026",
+        },
+        example: {
+          hindi: "123/2026",
+          english: "123/2026",
+          hinglish: "123/2026",
+        },
         instruction: {
           hindi: "FIR कॉपी पर जैसा नंबर है, वैसा ही लिखें।",
           english: "Enter the FIR number exactly as written on the FIR copy.",
@@ -379,10 +708,22 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
       {
         key: "policeStation",
-        label: { hindi: "थाना", english: "Police Station", hinglish: "Police Station" },
+        label: {
+          hindi: "थाना",
+          english: "Police Station",
+          hinglish: "Police Station",
+        },
         required: true,
-        placeholder: { hindi: "उदाहरण: Hauz Khas", english: "Example: Hauz Khas", hinglish: "Example: Hauz Khas" },
-        example: { hindi: "Hauz Khas", english: "Hauz Khas", hinglish: "Hauz Khas" },
+        placeholder: {
+          hindi: "उदाहरण: Hauz Khas",
+          english: "Example: Hauz Khas",
+          hinglish: "Example: Hauz Khas",
+        },
+        example: {
+          hindi: "Hauz Khas",
+          english: "Hauz Khas",
+          hinglish: "Hauz Khas",
+        },
         instruction: {
           hindi: "थाना नाम सही spelling के साथ भरें।",
           english: "Enter station name with correct spelling.",
@@ -398,8 +739,16 @@ const DOC_SCHEMAS: DocSchema[] = [
         key: "district",
         label: { hindi: "जिला", english: "District", hinglish: "District" },
         required: true,
-        placeholder: { hindi: "उदाहरण: South Delhi", english: "Example: South Delhi", hinglish: "Example: South Delhi" },
-        example: { hindi: "South Delhi", english: "South Delhi", hinglish: "South Delhi" },
+        placeholder: {
+          hindi: "उदाहरण: South Delhi",
+          english: "Example: South Delhi",
+          hinglish: "Example: South Delhi",
+        },
+        example: {
+          hindi: "South Delhi",
+          english: "South Delhi",
+          hinglish: "South Delhi",
+        },
         instruction: {
           hindi: "पुलिस रिकॉर्ड में उपयोग होने वाला जिला नाम लिखें।",
           english: "Use official district name used in police records.",
@@ -413,10 +762,22 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
       {
         key: "firDate",
-        label: { hindi: "FIR तारीख", english: "FIR Date", hinglish: "FIR Date" },
+        label: {
+          hindi: "FIR तारीख",
+          english: "FIR Date",
+          hinglish: "FIR Date",
+        },
         required: true,
-        placeholder: { hindi: "DD/MM/YYYY", english: "DD/MM/YYYY", hinglish: "DD/MM/YYYY" },
-        example: { hindi: "14/03/2026", english: "14/03/2026", hinglish: "14/03/2026" },
+        placeholder: {
+          hindi: "DD/MM/YYYY",
+          english: "DD/MM/YYYY",
+          hinglish: "DD/MM/YYYY",
+        },
+        example: {
+          hindi: "14/03/2026",
+          english: "14/03/2026",
+          hinglish: "14/03/2026",
+        },
         instruction: {
           hindi: "तारीख DD/MM/YYYY फॉर्मेट में लिखें।",
           english: "Use DD/MM/YYYY format.",
@@ -430,10 +791,22 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
       {
         key: "complainantName",
-        label: { hindi: "शिकायतकर्ता नाम", english: "Complainant Name", hinglish: "Complainant Name" },
+        label: {
+          hindi: "शिकायतकर्ता नाम",
+          english: "Complainant Name",
+          hinglish: "Complainant Name",
+        },
         required: false,
-        placeholder: { hindi: "पूरा नाम", english: "Full name", hinglish: "Full name" },
-        example: { hindi: "Rakesh Kumar", english: "Rakesh Kumar", hinglish: "Rakesh Kumar" },
+        placeholder: {
+          hindi: "पूरा नाम",
+          english: "Full name",
+          hinglish: "Full name",
+        },
+        example: {
+          hindi: "Rakesh Kumar",
+          english: "Rakesh Kumar",
+          hinglish: "Rakesh Kumar",
+        },
         instruction: {
           hindi: "पूरा नाम लिखें, initials से बचें।",
           english: "Write full name; avoid initials only.",
@@ -447,32 +820,78 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
     ],
     mockSample: [
-      { label: { hindi: "FIR नं.", english: "FIR No.", hinglish: "FIR No." }, value: { hindi: "123/2026", english: "123/2026", hinglish: "123/2026" } },
-      { label: { hindi: "थाना", english: "Police Station", hinglish: "Police Station" }, value: { hindi: "Hauz Khas", english: "Hauz Khas", hinglish: "Hauz Khas" } },
-      { label: { hindi: "जिला", english: "District", hinglish: "District" }, value: { hindi: "South Delhi", english: "South Delhi", hinglish: "South Delhi" } },
-      { label: { hindi: "तारीख", english: "Date", hinglish: "Date" }, value: { hindi: "14/03/2026", english: "14/03/2026", hinglish: "14/03/2026" } },
+      {
+        label: { hindi: "FIR नं.", english: "FIR No.", hinglish: "FIR No." },
+        value: { hindi: "123/2026", english: "123/2026", hinglish: "123/2026" },
+      },
+      {
+        label: {
+          hindi: "थाना",
+          english: "Police Station",
+          hinglish: "Police Station",
+        },
+        value: {
+          hindi: "Hauz Khas",
+          english: "Hauz Khas",
+          hinglish: "Hauz Khas",
+        },
+      },
+      {
+        label: { hindi: "जिला", english: "District", hinglish: "District" },
+        value: {
+          hindi: "South Delhi",
+          english: "South Delhi",
+          hinglish: "South Delhi",
+        },
+      },
+      {
+        label: { hindi: "तारीख", english: "Date", hinglish: "Date" },
+        value: {
+          hindi: "14/03/2026",
+          english: "14/03/2026",
+          hinglish: "14/03/2026",
+        },
+      },
     ],
   },
   {
     id: "chargesheet",
-    title: { hindi: "चार्जशीट (नमूना)", english: "Charge Sheet (Sample)", hinglish: "Charge Sheet (Sample)" },
+    title: {
+      hindi: "चार्जशीट (नमूना)",
+      english: "Charge Sheet (Sample)",
+      hinglish: "Charge Sheet (Sample)",
+    },
     whatIsIt: {
       hindi: "यह पुलिस द्वारा अदालत में जमा आरोपों की विस्तृत रिपोर्ट होती है।",
       english: "Detailed police report submitted to court with charges.",
-      hinglish: "Police ki detailed report hoti hai jo court mein file hoti hai.",
+      hinglish:
+        "Police ki detailed report hoti hai jo court mein file hoti hai.",
     },
     whenUsed: {
       hindi: "जांच पूरी होने के बाद अदालत प्रक्रिया शुरू करने में।",
       english: "Used after investigation to begin court proceedings.",
-      hinglish: "Investigation ke baad court process start karne mein use hoti hai.",
+      hinglish:
+        "Investigation ke baad court process start karne mein use hoti hai.",
     },
     fields: [
       {
         key: "chargesheetDate",
-        label: { hindi: "फाइलिंग तारीख", english: "Filing Date", hinglish: "Filing Date" },
+        label: {
+          hindi: "फाइलिंग तारीख",
+          english: "Filing Date",
+          hinglish: "Filing Date",
+        },
         required: true,
-        placeholder: { hindi: "DD/MM/YYYY", english: "DD/MM/YYYY", hinglish: "DD/MM/YYYY" },
-        example: { hindi: "28/04/2026", english: "28/04/2026", hinglish: "28/04/2026" },
+        placeholder: {
+          hindi: "DD/MM/YYYY",
+          english: "DD/MM/YYYY",
+          hinglish: "DD/MM/YYYY",
+        },
+        example: {
+          hindi: "28/04/2026",
+          english: "28/04/2026",
+          hinglish: "28/04/2026",
+        },
         instruction: {
           hindi: "कोर्ट रिकॉर्ड की सही तारीख डालें।",
           english: "Use the exact filing date from court records.",
@@ -486,10 +905,22 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
       {
         key: "courtName",
-        label: { hindi: "कोर्ट नाम", english: "Court Name", hinglish: "Court Name" },
+        label: {
+          hindi: "कोर्ट नाम",
+          english: "Court Name",
+          hinglish: "Court Name",
+        },
         required: true,
-        placeholder: { hindi: "MM / Sessions", english: "MM / Sessions", hinglish: "MM / Sessions" },
-        example: { hindi: "Sessions Court, Saket", english: "Sessions Court, Saket", hinglish: "Sessions Court, Saket" },
+        placeholder: {
+          hindi: "MM / Sessions",
+          english: "MM / Sessions",
+          hinglish: "MM / Sessions",
+        },
+        example: {
+          hindi: "Sessions Court, Saket",
+          english: "Sessions Court, Saket",
+          hinglish: "Sessions Court, Saket",
+        },
         instruction: {
           hindi: "पूरा कोर्ट नाम लिखें।",
           english: "Enter full court name.",
@@ -503,10 +934,22 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
       {
         key: "caseNo",
-        label: { hindi: "केस नंबर", english: "Case Number", hinglish: "Case Number" },
+        label: {
+          hindi: "केस नंबर",
+          english: "Case Number",
+          hinglish: "Case Number",
+        },
         required: true,
-        placeholder: { hindi: "यदि उपलब्ध हो", english: "If assigned", hinglish: "If assigned" },
-        example: { hindi: "SC/441/2026", english: "SC/441/2026", hinglish: "SC/441/2026" },
+        placeholder: {
+          hindi: "यदि उपलब्ध हो",
+          english: "If assigned",
+          hinglish: "If assigned",
+        },
+        example: {
+          hindi: "SC/441/2026",
+          english: "SC/441/2026",
+          hinglish: "SC/441/2026",
+        },
         instruction: {
           hindi: "केस नंबर में prefixes/suffixes वैसे ही रखें।",
           english: "Keep prefixes/suffixes exactly as in court file.",
@@ -520,7 +963,11 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
       {
         key: "chargesheetFiled",
-        label: { hindi: "चार्जशीट फाइल हुई?", english: "Chargesheet Filed?", hinglish: "Chargesheet Filed?" },
+        label: {
+          hindi: "चार्जशीट फाइल हुई?",
+          english: "Chargesheet Filed?",
+          hinglish: "Chargesheet Filed?",
+        },
         required: false,
         placeholder: { hindi: "Yes/No", english: "Yes/No", hinglish: "Yes/No" },
         example: { hindi: "Yes", english: "Yes", hinglish: "Yes" },
@@ -537,15 +984,47 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
     ],
     mockSample: [
-      { label: { hindi: "फाइलिंग तारीख", english: "Filing Date", hinglish: "Filing Date" }, value: { hindi: "28/04/2026", english: "28/04/2026", hinglish: "28/04/2026" } },
-      { label: { hindi: "कोर्ट", english: "Court", hinglish: "Court" }, value: { hindi: "Sessions Court, Saket", english: "Sessions Court, Saket", hinglish: "Sessions Court, Saket" } },
-      { label: { hindi: "केस नं.", english: "Case No.", hinglish: "Case No." }, value: { hindi: "SC/441/2026", english: "SC/441/2026", hinglish: "SC/441/2026" } },
-      { label: { hindi: "स्थिति", english: "Status", hinglish: "Status" }, value: { hindi: "Filed", english: "Filed", hinglish: "Filed" } },
+      {
+        label: {
+          hindi: "फाइलिंग तारीख",
+          english: "Filing Date",
+          hinglish: "Filing Date",
+        },
+        value: {
+          hindi: "28/04/2026",
+          english: "28/04/2026",
+          hinglish: "28/04/2026",
+        },
+      },
+      {
+        label: { hindi: "कोर्ट", english: "Court", hinglish: "Court" },
+        value: {
+          hindi: "Sessions Court, Saket",
+          english: "Sessions Court, Saket",
+          hinglish: "Sessions Court, Saket",
+        },
+      },
+      {
+        label: { hindi: "केस नं.", english: "Case No.", hinglish: "Case No." },
+        value: {
+          hindi: "SC/441/2026",
+          english: "SC/441/2026",
+          hinglish: "SC/441/2026",
+        },
+      },
+      {
+        label: { hindi: "स्थिति", english: "Status", hinglish: "Status" },
+        value: { hindi: "Filed", english: "Filed", hinglish: "Filed" },
+      },
     ],
   },
   {
     id: "bail",
-    title: { hindi: "जमानत आवेदन (नमूना)", english: "Bail Application (Sample)", hinglish: "Bail Application (Sample)" },
+    title: {
+      hindi: "जमानत आवेदन (नमूना)",
+      english: "Bail Application (Sample)",
+      hinglish: "Bail Application (Sample)",
+    },
     whatIsIt: {
       hindi: "अदालत से रिहाई के लिए दाखिल प्रार्थना-पत्र।",
       english: "A petition filed before court requesting release on bail.",
@@ -561,8 +1040,16 @@ const DOC_SCHEMAS: DocSchema[] = [
         key: "sections",
         label: { hindi: "धाराएं", english: "Sections", hinglish: "Sections" },
         required: true,
-        placeholder: { hindi: "उदाहरण: 379 IPC, 34 IPC", english: "Example: 379 IPC, 34 IPC", hinglish: "Example: 379 IPC, 34 IPC" },
-        example: { hindi: "379 IPC, 34 IPC", english: "379 IPC, 34 IPC", hinglish: "379 IPC, 34 IPC" },
+        placeholder: {
+          hindi: "उदाहरण: 379 IPC, 34 IPC",
+          english: "Example: 379 IPC, 34 IPC",
+          hinglish: "Example: 379 IPC, 34 IPC",
+        },
+        example: {
+          hindi: "379 IPC, 34 IPC",
+          english: "379 IPC, 34 IPC",
+          hinglish: "379 IPC, 34 IPC",
+        },
         instruction: {
           hindi: "FIR/चार्जशीट में लिखी धाराएं ही भरें।",
           english: "Enter sections exactly as in FIR/chargesheet.",
@@ -576,9 +1063,17 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
       {
         key: "custodyDays",
-        label: { hindi: "कस्टडी अवधि", english: "Custody Duration (Days)", hinglish: "Custody Duration (Days)" },
+        label: {
+          hindi: "कस्टडी अवधि",
+          english: "Custody Duration (Days)",
+          hinglish: "Custody Duration (Days)",
+        },
         required: true,
-        placeholder: { hindi: "उदाहरण: 23", english: "Example: 23", hinglish: "Example: 23" },
+        placeholder: {
+          hindi: "उदाहरण: 23",
+          english: "Example: 23",
+          hinglish: "Example: 23",
+        },
         example: { hindi: "23", english: "23", hinglish: "23" },
         instruction: {
           hindi: "कुल कस्टडी दिन संख्या लिखें।",
@@ -593,10 +1088,22 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
       {
         key: "bailGrounds",
-        label: { hindi: "जमानत के आधार", english: "Grounds for Bail", hinglish: "Grounds for Bail" },
+        label: {
+          hindi: "जमानत के आधार",
+          english: "Grounds for Bail",
+          hinglish: "Grounds for Bail",
+        },
         required: true,
-        placeholder: { hindi: "स्वास्थ्य/परिवार/स्थायी पता", english: "Health/family/permanent address", hinglish: "Health/family/permanent address" },
-        example: { hindi: "स्थायी पता और परिवार की जिम्मेदारी", english: "Permanent address and family responsibility", hinglish: "Permanent address and family responsibility" },
+        placeholder: {
+          hindi: "स्वास्थ्य/परिवार/स्थायी पता",
+          english: "Health/family/permanent address",
+          hinglish: "Health/family/permanent address",
+        },
+        example: {
+          hindi: "स्थायी पता और परिवार की जिम्मेदारी",
+          english: "Permanent address and family responsibility",
+          hinglish: "Permanent address and family responsibility",
+        },
         instruction: {
           hindi: "2-3 तथ्यात्मक grounds स्पष्ट लिखें।",
           english: "Write 2-3 factual grounds clearly.",
@@ -610,10 +1117,22 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
       {
         key: "priorBailAttempt",
-        label: { hindi: "पहले जमानत प्रयास", english: "Prior Bail Attempt", hinglish: "Prior Bail Attempt" },
+        label: {
+          hindi: "पहले जमानत प्रयास",
+          english: "Prior Bail Attempt",
+          hinglish: "Prior Bail Attempt",
+        },
         required: false,
-        placeholder: { hindi: "Court + date + outcome", english: "Court + date + outcome", hinglish: "Court + date + outcome" },
-        example: { hindi: "MM Court, 20/04/2026, Rejected", english: "MM Court, 20/04/2026, Rejected", hinglish: "MM Court, 20/04/2026, Rejected" },
+        placeholder: {
+          hindi: "Court + date + outcome",
+          english: "Court + date + outcome",
+          hinglish: "Court + date + outcome",
+        },
+        example: {
+          hindi: "MM Court, 20/04/2026, Rejected",
+          english: "MM Court, 20/04/2026, Rejected",
+          hinglish: "MM Court, 20/04/2026, Rejected",
+        },
         instruction: {
           hindi: "यदि लागू हो तभी भरें।",
           english: "Fill only if applicable.",
@@ -627,10 +1146,42 @@ const DOC_SCHEMAS: DocSchema[] = [
       },
     ],
     mockSample: [
-      { label: { hindi: "धाराएं", english: "Sections", hinglish: "Sections" }, value: { hindi: "379 IPC, 34 IPC", english: "379 IPC, 34 IPC", hinglish: "379 IPC, 34 IPC" } },
-      { label: { hindi: "कस्टडी दिन", english: "Custody Days", hinglish: "Custody Days" }, value: { hindi: "23", english: "23", hinglish: "23" } },
-      { label: { hindi: "जमानत आधार", english: "Grounds", hinglish: "Grounds" }, value: { hindi: "Permanent address, family dependence", english: "Permanent address, family dependence", hinglish: "Permanent address, family dependence" } },
-      { label: { hindi: "पूर्व प्रयास", english: "Prior Attempt", hinglish: "Prior Attempt" }, value: { hindi: "MM Court, Rejected", english: "MM Court, Rejected", hinglish: "MM Court, Rejected" } },
+      {
+        label: { hindi: "धाराएं", english: "Sections", hinglish: "Sections" },
+        value: {
+          hindi: "379 IPC, 34 IPC",
+          english: "379 IPC, 34 IPC",
+          hinglish: "379 IPC, 34 IPC",
+        },
+      },
+      {
+        label: {
+          hindi: "कस्टडी दिन",
+          english: "Custody Days",
+          hinglish: "Custody Days",
+        },
+        value: { hindi: "23", english: "23", hinglish: "23" },
+      },
+      {
+        label: { hindi: "जमानत आधार", english: "Grounds", hinglish: "Grounds" },
+        value: {
+          hindi: "Permanent address, family dependence",
+          english: "Permanent address, family dependence",
+          hinglish: "Permanent address, family dependence",
+        },
+      },
+      {
+        label: {
+          hindi: "पूर्व प्रयास",
+          english: "Prior Attempt",
+          hinglish: "Prior Attempt",
+        },
+        value: {
+          hindi: "MM Court, Rejected",
+          english: "MM Court, Rejected",
+          hinglish: "MM Court, Rejected",
+        },
+      },
     ],
   },
 ];
@@ -674,7 +1225,9 @@ export default function LegalJourney() {
 
   const stageIndex = STAGES.findIndex((s) => s.id === journey.currentStageId);
   const currentStage = STAGES[stageIndex] ?? STAGES[0];
-  const completedStageCount = STAGES.filter((_, idx) => idx < stageIndex).length;
+  const completedStageCount = STAGES.filter(
+    (_, idx) => idx < stageIndex,
+  ).length;
   const currentStageDoneCount = currentStage.checkpoints.filter((c) =>
     journey.completed.includes(c.id),
   ).length;
@@ -748,7 +1301,10 @@ export default function LegalJourney() {
       });
     }
     if (!value.trim()) return "";
-    if (field.key.toLowerCase().includes("date") && !/^\d{2}\/\d{2}\/\d{4}$/.test(value.trim())) {
+    if (
+      field.key.toLowerCase().includes("date") &&
+      !/^\d{2}\/\d{2}\/\d{4}$/.test(value.trim())
+    ) {
       return t(language, {
         hindi: "तारीख DD/MM/YYYY फॉर्मेट में भरें।",
         english: "Use DD/MM/YYYY format.",
@@ -780,11 +1336,18 @@ export default function LegalJourney() {
   };
 
   const activeDocFieldScopedKey = `doc:${activeDoc.id}:${activeDocField.key}`;
-  const activeDocFieldValue = journey.fieldValues[activeDocFieldScopedKey] ?? "";
-  const activeDocFieldError = validateField(activeDocField, activeDocFieldValue);
+  const activeDocFieldValue =
+    journey.fieldValues[activeDocFieldScopedKey] ?? "";
+  const activeDocFieldError = validateField(
+    activeDocField,
+    activeDocFieldValue,
+  );
 
   return (
-    <div className="h-dvh overflow-y-auto" style={{ background: "var(--c-bg)" }}>
+    <div
+      className="h-dvh overflow-y-auto"
+      style={{ background: "var(--c-bg)" }}
+    >
       <div className="theme-header px-4 pt-10 pb-4">
         <div className="flex items-center gap-3">
           <button
@@ -825,7 +1388,10 @@ export default function LegalJourney() {
               hinglish: "Journey Progress",
             })}
           </p>
-          <div className="flex items-center justify-between text-xs mb-2" style={{ color: "var(--c-muted)" }}>
+          <div
+            className="flex items-center justify-between text-xs mb-2"
+            style={{ color: "var(--c-muted)" }}
+          >
             <span>
               {t(language, {
                 hindi: `पूर्ण स्टेज: ${completedStageCount}/${STAGES.length}`,
@@ -843,12 +1409,15 @@ export default function LegalJourney() {
           </div>
           <div
             className="w-full h-2 rounded-full overflow-hidden"
-            style={{ background: "var(--c-surface-2)", border: "1px solid var(--c-border)" }}
+            style={{
+              background: "var(--c-surface-2)",
+              border: "1px solid var(--c-border)",
+            }}
           >
             <div
               className="h-full"
               style={{
-                width: `${((completedStageCount + (currentStageDoneCount / Math.max(1, currentStage.checkpoints.length))) / STAGES.length) * 100}%`,
+                width: `${((completedStageCount + currentStageDoneCount / Math.max(1, currentStage.checkpoints.length)) / STAGES.length) * 100}%`,
                 background: "var(--c-primary)",
               }}
             />
@@ -873,9 +1442,16 @@ export default function LegalJourney() {
                 }}
                 className="rounded-lg px-2 py-1.5 text-xs font-bold border"
                 style={{
-                  borderColor: docType === doc.id ? "rgba(207,120,89,0.35)" : "var(--c-border)",
-                  background: docType === doc.id ? "var(--c-primary-l)" : "var(--c-surface)",
-                  color: docType === doc.id ? "var(--c-primary)" : "var(--c-text)",
+                  borderColor:
+                    docType === doc.id
+                      ? "rgba(207,120,89,0.35)"
+                      : "var(--c-border)",
+                  background:
+                    docType === doc.id
+                      ? "var(--c-primary-l)"
+                      : "var(--c-surface)",
+                  color:
+                    docType === doc.id ? "var(--c-primary)" : "var(--c-text)",
                 }}
               >
                 {doc.title[language]}
@@ -885,26 +1461,55 @@ export default function LegalJourney() {
 
           <div
             className="rounded-xl border p-3 mb-3"
-            style={{ borderColor: "var(--c-border)", background: "var(--c-surface)" }}
+            style={{
+              borderColor: "var(--c-border)",
+              background: "var(--c-surface)",
+            }}
           >
-            <p className="text-xs font-extrabold mb-1" style={{ color: "var(--c-heading)" }}>
+            <p
+              className="text-xs font-extrabold mb-1"
+              style={{ color: "var(--c-heading)" }}
+            >
               {activeDoc.title[language]}
             </p>
             <p className="text-xs mb-1" style={{ color: "var(--c-text)" }}>
-              {t(language, { hindi: "क्या है:", english: "What it is:", hinglish: "Kya hai:" })}{" "}
+              {t(language, {
+                hindi: "क्या है:",
+                english: "What it is:",
+                hinglish: "Kya hai:",
+              })}{" "}
               {activeDoc.whatIsIt[language]}
             </p>
             <p className="text-xs mb-2" style={{ color: "var(--c-text)" }}>
-              {t(language, { hindi: "कब उपयोग करें:", english: "When used:", hinglish: "Kab use hota hai:" })}{" "}
+              {t(language, {
+                hindi: "कब उपयोग करें:",
+                english: "When used:",
+                hinglish: "Kab use hota hai:",
+              })}{" "}
               {activeDoc.whenUsed[language]}
             </p>
-            <div className="rounded-lg p-2.5" style={{ background: "var(--c-bg)", border: "1px dashed var(--c-border)" }}>
+            <div
+              className="rounded-lg p-2.5"
+              style={{
+                background: "var(--c-bg)",
+                border: "1px dashed var(--c-border)",
+              }}
+            >
               {activeDoc.mockSample.map((row, i) => (
-                <div key={i} className="flex items-start justify-between gap-3 py-1">
-                  <span className="text-[11px] font-semibold" style={{ color: "var(--c-muted)" }}>
+                <div
+                  key={i}
+                  className="flex items-start justify-between gap-3 py-1"
+                >
+                  <span
+                    className="text-[11px] font-semibold"
+                    style={{ color: "var(--c-muted)" }}
+                  >
                     {row.label[language]}
                   </span>
-                  <span className="text-[11px] text-right" style={{ color: "var(--c-heading)" }}>
+                  <span
+                    className="text-[11px] text-right"
+                    style={{ color: "var(--c-heading)" }}
+                  >
                     {row.value[language]}
                   </span>
                 </div>
@@ -912,7 +1517,10 @@ export default function LegalJourney() {
             </div>
           </div>
 
-          <p className="text-xs font-bold mb-1" style={{ color: "var(--c-label)" }}>
+          <p
+            className="text-xs font-bold mb-1"
+            style={{ color: "var(--c-label)" }}
+          >
             {t(language, {
               hindi: "फील्ड गाइड (Required/Optional)",
               english: "Field Guide (Required/Optional)",
@@ -924,38 +1532,67 @@ export default function LegalJourney() {
               <div
                 key={f.key}
                 className="rounded-lg border p-2"
-                style={{ borderColor: "var(--c-border)", background: "var(--c-surface)" }}
+                style={{
+                  borderColor: "var(--c-border)",
+                  background: "var(--c-surface)",
+                }}
               >
                 <div className="flex items-center justify-between gap-2 mb-1">
-                  <p className="text-xs font-bold" style={{ color: "var(--c-heading)" }}>
+                  <p
+                    className="text-xs font-bold"
+                    style={{ color: "var(--c-heading)" }}
+                  >
                     {f.label[language]}
                   </p>
                   <span
                     className="px-2 py-0.5 rounded-full text-[10px] font-bold"
                     style={{
-                      background: f.required ? "rgba(239,68,68,0.12)" : "rgba(59,130,246,0.12)",
+                      background: f.required
+                        ? "rgba(239,68,68,0.12)"
+                        : "rgba(59,130,246,0.12)",
                       color: f.required ? "var(--c-danger)" : "#2563EB",
                     }}
                   >
                     {f.required
-                      ? t(language, { hindi: "Required", english: "Required", hinglish: "Required" })
-                      : t(language, { hindi: "Optional", english: "Optional", hinglish: "Optional" })}
+                      ? t(language, {
+                          hindi: "Required",
+                          english: "Required",
+                          hinglish: "Required",
+                        })
+                      : t(language, {
+                          hindi: "Optional",
+                          english: "Optional",
+                          hinglish: "Optional",
+                        })}
                   </span>
                 </div>
                 <p className="text-[11px]" style={{ color: "var(--c-text)" }}>
                   {f.instruction[language]}
                 </p>
                 <p className="text-[11px]" style={{ color: "var(--c-muted)" }}>
-                  {t(language, { hindi: "उदाहरण:", english: "Example:", hinglish: "Example:" })} {f.example[language]}
+                  {t(language, {
+                    hindi: "उदाहरण:",
+                    english: "Example:",
+                    hinglish: "Example:",
+                  })}{" "}
+                  {f.example[language]}
                 </p>
                 <p className="text-[11px]" style={{ color: "var(--c-danger)" }}>
-                  {t(language, { hindi: "गलती से बचें:", english: "Avoid mistake:", hinglish: "Galti avoid karo:" })} {f.commonMistake[language]}
+                  {t(language, {
+                    hindi: "गलती से बचें:",
+                    english: "Avoid mistake:",
+                    hinglish: "Galti avoid karo:",
+                  })}{" "}
+                  {f.commonMistake[language]}
                 </p>
               </div>
             ))}
           </div>
 
-          <p className="text-xs font-bold mb-1" style={{ color: "var(--c-label)" }}>
+          <p
+            className="text-xs font-bold mb-1"
+            style={{ color: "var(--c-label)" }}
+          >
             {t(language, {
               hindi: "Guided Entry (Step-by-step)",
               english: "Guided Entry (Step-by-step)",
@@ -964,10 +1601,16 @@ export default function LegalJourney() {
           </p>
           <div
             className="rounded-xl border p-3"
-            style={{ borderColor: "var(--c-border)", background: "var(--c-surface)" }}
+            style={{
+              borderColor: "var(--c-border)",
+              background: "var(--c-surface)",
+            }}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold" style={{ color: "var(--c-muted)" }}>
+              <span
+                className="text-xs font-semibold"
+                style={{ color: "var(--c-muted)" }}
+              >
                 {t(language, {
                   hindi: `स्टेप ${docStep + 1}/${activeDoc.fields.length}`,
                   english: `Step ${docStep + 1}/${activeDoc.fields.length}`,
@@ -975,33 +1618,52 @@ export default function LegalJourney() {
                 })}
               </span>
               <button
-                onClick={() => setFieldValue(activeDocFieldScopedKey, activeDocField.example[language])}
+                onClick={() =>
+                  setFieldValue(
+                    activeDocFieldScopedKey,
+                    activeDocField.example[language],
+                  )
+                }
                 className="text-[11px] font-bold"
                 style={{ color: "var(--c-primary)" }}
               >
-                {t(language, { hindi: "Auto-suggest", english: "Auto-suggest", hinglish: "Auto-suggest" })}
+                {t(language, {
+                  hindi: "Auto-suggest",
+                  english: "Auto-suggest",
+                  hinglish: "Auto-suggest",
+                })}
               </button>
             </div>
 
-            <label className="text-xs font-bold mb-1 block" style={{ color: "var(--c-heading)" }}>
+            <label
+              className="text-xs font-bold mb-1 block"
+              style={{ color: "var(--c-heading)" }}
+            >
               {activeDocField.label[language]}
             </label>
             <input
               value={activeDocFieldValue}
-              onChange={(e) => setFieldValue(activeDocFieldScopedKey, e.target.value)}
+              onChange={(e) =>
+                setFieldValue(activeDocFieldScopedKey, e.target.value)
+              }
               placeholder={activeDocField.placeholder[language]}
               className="w-full rounded-xl px-3 py-2 text-sm border outline-none"
               style={{
                 background: "var(--c-bg)",
                 color: "var(--c-text)",
-                borderColor: activeDocFieldError ? "var(--c-danger)" : "var(--c-border)",
+                borderColor: activeDocFieldError
+                  ? "var(--c-danger)"
+                  : "var(--c-border)",
               }}
             />
             <p className="text-[11px] mt-1" style={{ color: "var(--c-muted)" }}>
               {activeDocField.instruction[language]}
             </p>
             {!!activeDocFieldError && (
-              <p className="text-[11px] font-semibold mt-1" style={{ color: "var(--c-danger)" }}>
+              <p
+                className="text-[11px] font-semibold mt-1"
+                style={{ color: "var(--c-danger)" }}
+              >
                 {activeDocFieldError}
               </p>
             )}
@@ -1020,20 +1682,40 @@ export default function LegalJourney() {
                   })
                 }
                 className="rounded-lg px-2.5 py-1.5 text-[11px] font-bold border"
-                style={{ borderColor: "var(--c-border)", color: "var(--c-text)", background: "var(--c-bg)" }}
+                style={{
+                  borderColor: "var(--c-border)",
+                  color: "var(--c-text)",
+                  background: "var(--c-bg)",
+                }}
               >
-                {t(language, { hindi: "Voice/Text Help", english: "Voice/Text Help", hinglish: "Voice/Text Help" })}
+                {t(language, {
+                  hindi: "Voice/Text Help",
+                  english: "Voice/Text Help",
+                  hinglish: "Voice/Text Help",
+                })}
               </button>
               <div className="flex gap-1.5">
                 <button
                   onClick={() => setDocStep((s) => Math.max(0, s - 1))}
                   className="rounded-lg px-2.5 py-1.5 text-[11px] font-bold border"
-                  style={{ borderColor: "var(--c-border)", color: "var(--c-text)", background: "var(--c-bg)" }}
+                  style={{
+                    borderColor: "var(--c-border)",
+                    color: "var(--c-text)",
+                    background: "var(--c-bg)",
+                  }}
                 >
-                  {t(language, { hindi: "Back", english: "Back", hinglish: "Back" })}
+                  {t(language, {
+                    hindi: "Back",
+                    english: "Back",
+                    hinglish: "Back",
+                  })}
                 </button>
                 <button
-                  onClick={() => setDocStep((s) => Math.min(activeDoc.fields.length - 1, s + 1))}
+                  onClick={() =>
+                    setDocStep((s) =>
+                      Math.min(activeDoc.fields.length - 1, s + 1),
+                    )
+                  }
                   disabled={!!activeDocFieldError}
                   className="rounded-lg px-2.5 py-1.5 text-[11px] font-bold"
                   style={{
@@ -1043,7 +1725,11 @@ export default function LegalJourney() {
                     opacity: activeDocFieldError ? 0.5 : 1,
                   }}
                 >
-                  {t(language, { hindi: "Next", english: "Next", hinglish: "Next" })}
+                  {t(language, {
+                    hindi: "Next",
+                    english: "Next",
+                    hinglish: "Next",
+                  })}
                 </button>
               </div>
             </div>
@@ -1060,9 +1746,12 @@ export default function LegalJourney() {
           </p>
           <p className="text-sm" style={{ color: "var(--c-text)" }}>
             {t(language, {
-              hindi: "हर स्टेज में 3 चीज़ें करें: (1) अगले कदम पूरे करें (2) ज़रूरी फील्ड भरें (3) AI से targeted सवाल पूछें।",
-              english: "For each stage do 3 things: (1) complete next actions (2) fill required fields (3) ask targeted questions to AI.",
-              hinglish: "Har stage mein 3 kaam karo: (1) next actions complete karo (2) required fields bharo (3) AI se targeted sawaal pucho.",
+              hindi:
+                "हर स्टेज में 3 चीज़ें करें: (1) अगले कदम पूरे करें (2) ज़रूरी फील्ड भरें (3) AI से targeted सवाल पूछें।",
+              english:
+                "For each stage do 3 things: (1) complete next actions (2) fill required fields (3) ask targeted questions to AI.",
+              hinglish:
+                "Har stage mein 3 kaam karo: (1) next actions complete karo (2) required fields bharo (3) AI se targeted sawaal pucho.",
             })}
           </p>
         </div>
@@ -1091,7 +1780,11 @@ export default function LegalJourney() {
                 borderColor: "var(--c-border)",
               }}
             />
-            <button onClick={autoPlaceStage} className="see-more-btn" aria-label="Auto place stage">
+            <button
+              onClick={autoPlaceStage}
+              className="see-more-btn"
+              aria-label="Auto place stage"
+            >
               <Search size={13} />
             </button>
           </div>
@@ -1115,27 +1808,61 @@ export default function LegalJourney() {
                   onClick={() => setCurrentStage(s.id)}
                   className="w-full rounded-xl px-3 py-2 border flex items-center gap-3 text-left"
                   style={{
-                    background: isCurrent ? "var(--c-primary-l)" : "var(--c-surface)",
-                    borderColor: isCurrent ? "rgba(207,120,89,0.35)" : "var(--c-border)",
+                    background: isCurrent
+                      ? "var(--c-primary-l)"
+                      : "var(--c-surface)",
+                    borderColor: isCurrent
+                      ? "rgba(207,120,89,0.35)"
+                      : "var(--c-border)",
                   }}
                 >
                   <div
                     className="w-7 h-7 rounded-full flex items-center justify-center"
-                    style={{ color: isDone ? "var(--c-success)" : isCurrent ? "var(--c-primary)" : "var(--c-muted)" }}
+                    style={{
+                      color: isDone
+                        ? "var(--c-success)"
+                        : isCurrent
+                          ? "var(--c-primary)"
+                          : "var(--c-muted)",
+                    }}
                   >
                     {isDone ? <CheckCircle2 size={16} /> : <Circle size={14} />}
                   </div>
                   <s.Icon size={15} />
                   <div className="flex-1">
-                    <span className="text-sm font-semibold" style={{ color: "var(--c-heading)" }}>
+                    <span
+                      className="text-sm font-semibold"
+                      style={{ color: "var(--c-heading)" }}
+                    >
                       {s.title[language]}
                     </span>
-                    <div className="text-[11px] mt-0.5" style={{ color: isDone ? "var(--c-success)" : isCurrent ? "var(--c-primary)" : "var(--c-muted)" }}>
+                    <div
+                      className="text-[11px] mt-0.5"
+                      style={{
+                        color: isDone
+                          ? "var(--c-success)"
+                          : isCurrent
+                            ? "var(--c-primary)"
+                            : "var(--c-muted)",
+                      }}
+                    >
                       {isDone
-                        ? t(language, { hindi: "Completed", english: "Completed", hinglish: "Completed" })
+                        ? t(language, {
+                            hindi: "Completed",
+                            english: "Completed",
+                            hinglish: "Completed",
+                          })
                         : isCurrent
-                          ? t(language, { hindi: "Current Stage", english: "Current Stage", hinglish: "Current Stage" })
-                          : t(language, { hindi: "Upcoming", english: "Upcoming", hinglish: "Upcoming" })}
+                          ? t(language, {
+                              hindi: "Current Stage",
+                              english: "Current Stage",
+                              hinglish: "Current Stage",
+                            })
+                          : t(language, {
+                              hindi: "Upcoming",
+                              english: "Upcoming",
+                              hinglish: "Upcoming",
+                            })}
                     </div>
                   </div>
                 </button>
@@ -1152,10 +1879,16 @@ export default function LegalJourney() {
               hinglish: "Current Stage",
             })}
           </p>
-          <h2 className="font-extrabold text-base mb-1" style={{ color: "var(--c-heading)" }}>
+          <h2
+            className="font-extrabold text-base mb-1"
+            style={{ color: "var(--c-heading)" }}
+          >
             {currentStage.title[language]}
           </h2>
-          <p className="text-xs font-semibold mb-2" style={{ color: "var(--c-primary)" }}>
+          <p
+            className="text-xs font-semibold mb-2"
+            style={{ color: "var(--c-primary)" }}
+          >
             {t(language, {
               hindi: `Step ${stageIndex + 1} of ${STAGES.length}`,
               english: `Step ${stageIndex + 1} of ${STAGES.length}`,
@@ -1166,41 +1899,73 @@ export default function LegalJourney() {
             {currentStage.meaning[language]}
           </p>
 
-          <p className="text-xs font-bold mb-1" style={{ color: "var(--c-label)" }}>
-            {t(language, { hindi: "अब क्या करें", english: "What to do next", hinglish: "Ab kya karein" })}
+          <p
+            className="text-xs font-bold mb-1"
+            style={{ color: "var(--c-label)" }}
+          >
+            {t(language, {
+              hindi: "अब क्या करें",
+              english: "What to do next",
+              hinglish: "Ab kya karein",
+            })}
           </p>
           <div className="space-y-1.5 mb-3">
             {currentStage.actions.map((a, i) => (
-              <div key={i} className="text-sm" style={{ color: "var(--c-text)" }}>
+              <div
+                key={i}
+                className="text-sm"
+                style={{ color: "var(--c-text)" }}
+              >
                 • {a[language]}
               </div>
             ))}
           </div>
 
-          <p className="text-xs font-bold mb-1" style={{ color: "var(--c-label)" }}>
-            {t(language, { hindi: "ज़रूरी दस्तावेज़", english: "Required Documents", hinglish: "Required Documents" })}
+          <p
+            className="text-xs font-bold mb-1"
+            style={{ color: "var(--c-label)" }}
+          >
+            {t(language, {
+              hindi: "ज़रूरी दस्तावेज़",
+              english: "Required Documents",
+              hinglish: "Required Documents",
+            })}
           </p>
           <div className="flex flex-wrap gap-1.5 mb-3">
             {currentStage.documents.map((d, i) => (
               <span
                 key={i}
                 className="px-2 py-1 rounded-full text-[11px] font-semibold"
-                style={{ background: "var(--c-surface-2)", color: "var(--c-muted)", border: "1px solid var(--c-border)" }}
+                style={{
+                  background: "var(--c-surface-2)",
+                  color: "var(--c-muted)",
+                  border: "1px solid var(--c-border)",
+                }}
               >
                 {d[language]}
               </span>
             ))}
           </div>
 
-          <p className="text-xs font-bold mb-1" style={{ color: "var(--c-label)" }}>
-            {t(language, { hindi: "Required Fields", english: "Required Fields", hinglish: "Required Fields" })}
+          <p
+            className="text-xs font-bold mb-1"
+            style={{ color: "var(--c-label)" }}
+          >
+            {t(language, {
+              hindi: "Required Fields",
+              english: "Required Fields",
+              hinglish: "Required Fields",
+            })}
           </p>
           <div className="space-y-2 mb-3">
             {currentStage.requiredFields.map((f) => {
               const scopedKey = `${currentStage.id}:${f.key}`;
               return (
                 <div key={scopedKey}>
-                  <label className="text-[11px] font-semibold mb-1 block" style={{ color: "var(--c-muted)" }}>
+                  <label
+                    className="text-[11px] font-semibold mb-1 block"
+                    style={{ color: "var(--c-muted)" }}
+                  >
                     {f.label[language]}
                   </label>
                   <input
@@ -1227,9 +1992,19 @@ export default function LegalJourney() {
                   key={c.id}
                   onClick={() => toggleCheckpoint(c.id)}
                   className="w-full rounded-xl px-3 py-2 border flex items-center gap-2 text-left"
-                  style={{ background: "var(--c-surface)", borderColor: "var(--c-border)" }}
+                  style={{
+                    background: "var(--c-surface)",
+                    borderColor: "var(--c-border)",
+                  }}
                 >
-                  {checked ? <CheckCircle2 size={15} style={{ color: "var(--c-success)" }} /> : <Circle size={14} style={{ color: "var(--c-muted)" }} />}
+                  {checked ? (
+                    <CheckCircle2
+                      size={15}
+                      style={{ color: "var(--c-success)" }}
+                    />
+                  ) : (
+                    <Circle size={14} style={{ color: "var(--c-muted)" }} />
+                  )}
                   <span className="text-sm" style={{ color: "var(--c-text)" }}>
                     {c.label[language]}
                   </span>
@@ -1243,17 +2018,33 @@ export default function LegalJourney() {
                 <button
                   onClick={() => setCurrentStage(STAGES[stageIndex - 1].id)}
                   className="rounded-xl px-3 py-2 text-xs font-bold border"
-                  style={{ borderColor: "var(--c-border)", color: "var(--c-text)", background: "var(--c-surface)" }}
+                  style={{
+                    borderColor: "var(--c-border)",
+                    color: "var(--c-text)",
+                    background: "var(--c-surface)",
+                  }}
                 >
-                  {t(language, { hindi: "पिछला स्टेज", english: "Previous", hinglish: "Previous" })}
+                  {t(language, {
+                    hindi: "पिछला स्टेज",
+                    english: "Previous",
+                    hinglish: "Previous",
+                  })}
                 </button>
               )}
               <button
                 onClick={() => setCurrentStage(nextStage.id)}
                 className="rounded-xl px-3 py-2 text-xs font-bold"
-                style={{ background: "var(--c-primary-l)", color: "var(--c-primary)", border: "1px solid rgba(207,120,89,0.25)" }}
+                style={{
+                  background: "var(--c-primary-l)",
+                  color: "var(--c-primary)",
+                  border: "1px solid rgba(207,120,89,0.25)",
+                }}
               >
-                {t(language, { hindi: "अगला स्टेज", english: "Next Stage", hinglish: "Next Stage" })}
+                {t(language, {
+                  hindi: "अगला स्टेज",
+                  english: "Next Stage",
+                  hinglish: "Next Stage",
+                })}
               </button>
             </div>
           )}
@@ -1261,7 +2052,11 @@ export default function LegalJourney() {
 
         <div className="card-sm">
           <p className="section-label mb-2">
-            {t(language, { hindi: "अगला कदम", english: "Next Step", hinglish: "Next Step" })}
+            {t(language, {
+              hindi: "अगला कदम",
+              english: "Next Step",
+              hinglish: "Next Step",
+            })}
           </p>
           <p className="text-sm mb-3" style={{ color: "var(--c-text)" }}>
             {nextStage
@@ -1272,26 +2067,41 @@ export default function LegalJourney() {
                 })
               : t(language, {
                   hindi: "आप अंतिम स्टेज पर हैं। पोस्ट-ट्रायल सहायता देखें।",
-                  english: "You are at the final stage. Use post-trial support.",
+                  english:
+                    "You are at the final stage. Use post-trial support.",
                   hinglish: "Aap final stage par ho. Post-trial support dekho.",
                 })}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <button
               onClick={() =>
-                navigate("/chat", { state: { question: currentStage.aiPrompt[language] } })
+                navigate("/chat", {
+                  state: { question: currentStage.aiPrompt[language] },
+                })
               }
               className="btn-primary py-2.5 text-sm"
             >
-              {t(language, { hindi: "AI से पूछें", english: "Ask AI", hinglish: "Ask AI" })}
+              {t(language, {
+                hindi: "AI से पूछें",
+                english: "Ask AI",
+                hinglish: "Ask AI",
+              })}
             </button>
             <button
               onClick={() => navigate("/helpline")}
               className="rounded-xl py-2.5 text-sm font-bold border"
-              style={{ borderColor: "var(--c-border)", color: "var(--c-text)", background: "var(--c-surface)" }}
+              style={{
+                borderColor: "var(--c-border)",
+                color: "var(--c-text)",
+                background: "var(--c-surface)",
+              }}
             >
               <Phone size={14} className="inline mr-1" />
-              {t(language, { hindi: "हेल्पलाइन", english: "Helplines", hinglish: "Helplines" })}
+              {t(language, {
+                hindi: "हेल्पलाइन",
+                english: "Helplines",
+                hinglish: "Helplines",
+              })}
             </button>
             <button
               onClick={() =>
@@ -1306,7 +2116,11 @@ export default function LegalJourney() {
                 })
               }
               className="rounded-xl py-2.5 text-sm font-bold border"
-              style={{ borderColor: "var(--c-border)", color: "var(--c-text)", background: "var(--c-surface)" }}
+              style={{
+                borderColor: "var(--c-border)",
+                color: "var(--c-text)",
+                background: "var(--c-surface)",
+              }}
             >
               <Mic size={14} className="inline mr-1" />
               FIR Assist
@@ -1317,4 +2131,3 @@ export default function LegalJourney() {
     </div>
   );
 }
-
