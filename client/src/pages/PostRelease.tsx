@@ -1,6 +1,25 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp, t } from '../context/AppContext';
+import {
+  Scale,
+  HardHat,
+  House,
+  Mic,
+  BookOpen,
+  Phone,
+  ArrowLeft,
+  UtensilsCrossed,
+  Briefcase,
+  FileText,
+  HeartPulse,
+  Brain,
+  GraduationCap,
+  Landmark,
+  KeyRound,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 
 interface Resource {
   name: string;
@@ -11,18 +30,16 @@ interface Resource {
 
 interface Category {
   id: string;
-  emoji: string;
+  icon: string;
   label: { hindi: string; english: string; hinglish: string };
-  color: string;
   resources: Resource[];
 }
 
 const categories: Category[] = [
   {
     id: 'shelter',
-    emoji: '🏠',
+    icon: 'shelter',
     label: { hindi: 'आश्रय', english: 'Shelter', hinglish: 'Shelter / Ghar' },
-    color: 'bg-blue-50 border-blue-300',
     resources: [
       {
         name: 'Delhi Shelter Board (Rain Basera)',
@@ -44,9 +61,8 @@ const categories: Category[] = [
   },
   {
     id: 'food',
-    emoji: '🍽️',
+    icon: 'food',
     label: { hindi: 'खाना', english: 'Food', hinglish: 'Khana / Food' },
-    color: 'bg-orange-50 border-orange-300',
     resources: [
       {
         name: 'Gurudwara Langar',
@@ -73,9 +89,8 @@ const categories: Category[] = [
   },
   {
     id: 'jobs',
-    emoji: '💼',
+    icon: 'jobs',
     label: { hindi: 'नौकरी', english: 'Jobs / Skills', hinglish: 'Naukri / Job' },
-    color: 'bg-green-50 border-green-300',
     resources: [
       {
         name: 'ETASHA Society',
@@ -112,9 +127,8 @@ const categories: Category[] = [
   },
   {
     id: 'documents',
-    emoji: '📄',
+    icon: 'documents',
     label: { hindi: 'दस्तावेज़', english: 'Documents', hinglish: 'Documents / Kaagzaat' },
-    color: 'bg-yellow-50 border-yellow-300',
     resources: [
       {
         name: 'Aadhaar Card — UIDAI',
@@ -148,9 +162,8 @@ const categories: Category[] = [
   },
   {
     id: 'health',
-    emoji: '🏥',
+    icon: 'health',
     label: { hindi: 'स्वास्थ्य', english: 'Health', hinglish: 'Sehat / Health' },
-    color: 'bg-red-50 border-red-300',
     resources: [
       {
         name: 'Mohalla Clinic (Delhi)',
@@ -179,9 +192,8 @@ const categories: Category[] = [
   },
   {
     id: 'mental',
-    emoji: '🧠',
+    icon: 'mental',
     label: { hindi: 'मन की मदद', english: 'Mental Health', hinglish: 'Mental Health' },
-    color: 'bg-purple-50 border-purple-300',
     resources: [
       {
         name: 'iCall (TISS) — Free Counselling',
@@ -214,9 +226,8 @@ const categories: Category[] = [
   },
   {
     id: 'legal',
-    emoji: '⚖️',
+    icon: 'legal',
     label: { hindi: 'कानूनी सहायता', english: 'Legal Aid', hinglish: 'Legal Aid / Madad' },
-    color: 'bg-indigo-50 border-indigo-300',
     resources: [
       {
         name: 'NALSA — Free Legal Aid',
@@ -249,9 +260,8 @@ const categories: Category[] = [
   },
   {
     id: 'education',
-    emoji: '🎓',
+    icon: 'education',
     label: { hindi: 'शिक्षा', english: 'Education', hinglish: 'Padhai / Education' },
-    color: 'bg-teal-50 border-teal-300',
     resources: [
       {
         name: 'NIOS (National Institute of Open Schooling)',
@@ -278,21 +288,59 @@ export default function PostRelease() {
   const { language } = useApp();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const [showAllResources, setShowAllResources] = useState(false);
 
   const cat = categories[activeTab];
+  const categoryIcon = (key: string) => {
+    const map: Record<string, any> = {
+      shelter: House,
+      food: UtensilsCrossed,
+      jobs: Briefcase,
+      documents: FileText,
+      health: HeartPulse,
+      mental: Brain,
+      legal: Scale,
+      education: GraduationCap,
+    };
+    return map[key] ?? Landmark;
+  };
+  const categoryAccent = (key: string) => {
+    const map: Record<string, string> = {
+      shelter: "#60A5FA",
+      food: "#F59E0B",
+      jobs: "#34D399",
+      documents: "#FBBF24",
+      health: "#F87171",
+      mental: "#A78BFA",
+      legal: "#818CF8",
+      education: "#2DD4BF",
+    };
+    return map[key] ?? "var(--c-primary)";
+  };
+  const visibleCategories = showAllCategories ? categories : categories.slice(0, 4);
+  const visibleResources = showAllResources ? cat.resources : cat.resources.slice(0, 4);
 
   return (
-    <div className="flex flex-col h-dvh bg-[#F7F6F3]">
+    <div className="h-dvh overflow-y-auto" style={{ background: "var(--c-bg)" }}>
       {/* Header */}
       <div className="theme-header px-4 pt-10 pb-4">
         <div className="flex items-center gap-3 mb-2">
-          <button onClick={() => navigate('/home')} className="text-2xl">←</button>
-          <div className="text-3xl">🏠</div>
+          <button
+            onClick={() => navigate('/home')}
+            className="text-2xl"
+            style={{ color: "rgba(255,255,255,0.78)" }}
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <div className="text-3xl" style={{ color: "#FAF7F4" }}>
+            <House size={26} />
+          </div>
           <div>
-            <h1 className="font-extrabold text-lg">
+            <h1 className="font-extrabold text-lg text-white">
               {t(language, { hindi: 'जेल के बाद सहायता', english: 'After Release Support', hinglish: 'Jail Ke Baad Madad' })}
             </h1>
-            <p className="text-white/50 text-xs">
+            <p className="text-xs" style={{ color: "rgba(255,255,255,0.58)" }}>
               {t(language, { hindi: 'मुफ्त संसाधन और सहायता', english: 'Free resources & support', hinglish: 'Free resources aur support' })}
             </p>
           </div>
@@ -302,34 +350,55 @@ export default function PostRelease() {
 
       {/* Emergency strip */}
       <a href="tel:18003134963" className="emergency-banner">
-        📞 Kunji Helpline (Free): 1800-313-4963 | Daily 8am–11pm
+        <Phone size={14} className="inline mr-1" /> Kunji Helpline (Free): 1800-313-4963 | Daily 8am–11pm
       </a>
 
       <div className="content-shell pt-4">
-        <div className="glass-panel p-3">
-          <p className="text-xs font-bold text-[#6B7280] uppercase tracking-wide mb-2">
-            {t(language, {
-              hindi: 'सभी विकल्प (आसान पहुंच)',
-              english: 'All Support Areas',
-              hinglish: 'Saare Support Areas',
-            })}
-          </p>
+        <div className="glass-panel p-3 section-block">
+          <div className="section-header-row">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide mb-1" style={{ color: "var(--c-label)" }}>
+                {t(language, {
+                  hindi: 'सभी विकल्प (आसान पहुंच)',
+                  english: 'All Support Areas',
+                  hinglish: 'Saare Support Areas',
+                })}
+              </p>
+              <p className="section-helper">
+                {t(language, {
+                  hindi: 'पहले एक क्षेत्र चुनें, फिर नीचे संसाधन देखें',
+                  english: 'Pick one area first, then view resources below.',
+                  hinglish: 'Pehle ek area chunein, phir neeche resources dekhein.',
+                })}
+              </p>
+            </div>
+            {categories.length > 4 && (
+              <button
+                onClick={() => setShowAllCategories((v) => !v)}
+                className="see-more-btn inline-flex items-center gap-1"
+                aria-label={showAllCategories ? "Show less" : "See more"}
+              >
+                {showAllCategories ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+              </button>
+            )}
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {categories.map((c, i) => (
+            {visibleCategories.map((c) => {
+              const Icon = categoryIcon(c.icon);
+              return (
               <button
                 key={c.id}
-                onClick={() => setActiveTab(i)}
-                className={`rounded-xl p-3 text-left border transition-all active:scale-95
-                           ${i === activeTab
-                    ? 'text-white border-transparent shadow-lg'
-                    : 'text-[#111827] hover:bg-[#F7F6F3]'}
-                  style={i === activeTab
-                    ? {background:'#C85828',borderColor:'transparent'}
-                    : {background:'var(--c-surface)',borderColor:'var(--c-border)'}}`}
+                onClick={() => setActiveTab(categories.findIndex((x) => x.id === c.id))}
+                className={`rounded-xl p-3 text-left border transition-all active:scale-95 ${c.id === cat.id ? 'text-white shadow-lg' : ''}`}
+                style={
+                  c.id === cat.id
+                    ? { background: '#C85828', borderColor: 'transparent' }
+                    : { background: 'var(--c-surface)', borderColor: 'var(--c-border)', color: 'var(--c-text)' }
+                }
               >
-                <div className="text-xl">{c.emoji}</div>
+                <div className="text-xl"><Icon size={18} /></div>
                 <div className="font-bold text-xs mt-1">{c.label[language]}</div>
-                <div className={`text-[11px] mt-1 ${i === activeTab ? 'text-orange-100' : 'text-gray-500'}`}>
+                <div className="text-[11px] mt-1" style={{ color: c.id === cat.id ? "rgba(255,255,255,0.78)" : "var(--c-muted)" }}>
                   {c.resources.length} {t(language, {
                     hindi: 'विकल्प',
                     english: 'options',
@@ -337,31 +406,46 @@ export default function PostRelease() {
                   })}
                 </div>
               </button>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
 
       {/* Resources */}
-      <div className="flex-1 overflow-y-auto content-shell py-4 space-y-3 pb-24">
-        <h2 className="font-bold text-xl text-gray-800 flex items-center justify-between gap-2">
+      <div className="content-shell py-4 space-y-4 pb-28">
+        <h2 className="font-bold text-xl flex items-center justify-between gap-2" style={{ color: "var(--c-heading)" }}>
           <span className="flex items-center gap-2">
-            <span>{cat.emoji}</span>
+            {(() => {
+              const Icon = categoryIcon(cat.icon);
+              return <Icon size={18} />;
+            })()}
             <span>{cat.label[language]}</span>
           </span>
-          <span className="text-xs font-bold text-[#6B7280] bg-[#F7F6F3] px-2 py-1 rounded-full border border-[#E5E7EB]">
+          <span className="text-xs font-bold px-2 py-1 rounded-full border" style={{ color: "var(--c-label)", background: "var(--c-surface-2)", borderColor: "var(--c-border)" }}>
             {cat.resources.length} {t(language, { hindi: 'सहायता', english: 'supports', hinglish: 'supports' })}
           </span>
         </h2>
+        <p className="section-helper">
+          {t(language, {
+            hindi: 'पहले ऊपर दिए गए विकल्प चुनें, फिर नीचे से जरूरत के अनुसार कॉल करें।',
+            english: 'Use these support options based on your current need.',
+            hinglish: 'Apni zarurat ke hisaab se neeche wale options use karein.',
+          })}
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {cat.resources.map((res, i) => (
-            <div key={i} className={`premium-card border-l-4 ${cat.color}`}>
-              <h3 className="font-bold text-base text-gray-900 mb-1 leading-tight">{res.name}</h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-2">{res.desc}</p>
+          {visibleResources.map((res, i) => (
+            <div
+              key={i}
+              className="premium-card border-l-4"
+              style={{ borderLeftColor: categoryAccent(cat.icon) }}
+            >
+              <h3 className="font-bold text-base mb-1 leading-tight" style={{ color: "var(--c-heading)" }}>{res.name}</h3>
+              <p className="text-sm leading-relaxed mb-2" style={{ color: "var(--c-text)" }}>{res.desc}</p>
 
               {res.note && (
-                <p className="text-xs text-gray-500 italic mb-2">💡 {res.note}</p>
+                <p className="text-xs italic mb-2" style={{ color: "var(--c-muted)" }}>{res.note}</p>
               )}
 
               {res.phone && (
@@ -372,19 +456,28 @@ export default function PostRelease() {
                              active:scale-95 transition-all shadow-sm"
                   style={{background:'#C85828'}}
                 >
-                  📞 {t(language, { hindi: 'कॉल करें', english: 'Call Now', hinglish: 'Call Karo' })}: {res.phone}
+                  <Phone size={14} /> {t(language, { hindi: 'कॉल करें', english: 'Call Now', hinglish: 'Call Karo' })}: {res.phone}
                 </a>
               )}
             </div>
           ))}
         </div>
+        {cat.resources.length > 4 && (
+          <button
+            onClick={() => setShowAllResources((v) => !v)}
+            className="see-more-btn inline-flex items-center gap-1"
+            aria-label={showAllResources ? "Show less" : "See more options"}
+          >
+            {showAllResources ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+          </button>
+        )}
 
         {/* Kunji Footer */}
         <div className="text-white rounded-2xl p-5 mt-4 shadow-xl" style={{background:'linear-gradient(135deg,#6B2010,#C85828)'}}>
           <div className="text-center">
-            <div className="text-3xl mb-2">🔑</div>
+            <div className="text-3xl mb-2 flex justify-center"><KeyRound size={26} /></div>
             <h3 className="font-bold text-lg mb-1">Kunji Helpline</h3>
-            <p className="text-gray-300 text-sm mb-3">
+            <p className="text-sm mb-3" style={{ color: "rgba(255,255,255,0.78)" }}>
               {t(language, {
                 hindi: 'किसी भी मदद के लिए कुंजी से बात करें',
                 english: 'Talk to Kunji for any help',
@@ -395,9 +488,11 @@ export default function PostRelease() {
               href="tel:18003134963"
               className="btn-primary inline-block w-auto px-8 text-center"
             >
-              📞 1800-313-4963
+              <Phone size={14} className="inline mr-1" />1800-313-4963
             </a>
-            <p className="text-gray-400 text-xs mt-2">Daily 8am–11pm • FREE • Project Second Chance</p>
+            <p className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.58)" }}>
+              Daily 8am–11pm • FREE • Project Second Chance
+            </p>
           </div>
         </div>
       </div>
@@ -405,20 +500,21 @@ export default function PostRelease() {
       {/* Bottom Nav */}
       <div className="bottom-nav">
         {[
-          { icon: '🏠', path: '/home', label: { hindi: 'होम', english: 'Home', hinglish: 'Home' } },
-          { icon: '⚖️', path: '/chat', label: { hindi: 'मदद', english: 'Chat', hinglish: 'Chat' } },
-          { icon: '🏗️', path: '/post-release', label: { hindi: 'बाद में', english: 'After', hinglish: 'Baad Mein' } },
-          { icon: '🎙️', path: '/voice-guide', label: { hindi: 'वॉइस', english: 'Voice', hinglish: 'Voice' } },
-          { icon: '📞', path: '/helpline', label: { hindi: 'हेल्पलाइन', english: 'Helpline', hinglish: 'Helpline' } },
+          { Icon: Scale, path: '/chat', label: { hindi: 'मदद', english: 'Chat', hinglish: 'Chat' } },
+          { Icon: HardHat, path: '/post-release', label: { hindi: 'बाद में', english: 'After', hinglish: 'Baad Mein' } },
+          { Icon: House, path: '/home', label: { hindi: 'होम', english: 'Home', hinglish: 'Home' } },
+          { Icon: Mic, path: '/voice-guide', label: { hindi: 'वॉइस', english: 'Voice', hinglish: 'Voice' } },
+          { Icon: Phone, path: '/helpline', label: { hindi: 'हेल्पलाइन', english: 'Helpline', hinglish: 'Helpline' } },
         ].map((item) => (
           <button
             key={item.path}
             onClick={() => navigate(item.path)}
-            className={`flex-1 flex flex-col items-center py-3 gap-1 text-xs font-semibold
+            aria-label={item.label[language]}
+            className={`bottom-nav-item ${item.path === '/home' ? 'bottom-nav-home' : ''}
                        ${item.path === '/post-release' ? 'nav-item-active' : 'nav-item-inactive'}`}
           >
-            <span className="text-xl">{item.icon}</span>
-            <span>{item.label[language]}</span>
+            <span className="nav-icon"><item.Icon size={18} /></span>
+            <span className="nav-label">{item.label[language]}</span>
           </button>
         ))}
       </div>

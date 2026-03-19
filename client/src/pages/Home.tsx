@@ -1,119 +1,294 @@
-import { useNavigate } from 'react-router-dom';
-import { useApp, t } from '../context/AppContext';
-import { Language } from '../context/AppContext';
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useApp, t } from "../context/AppContext";
+import { Language, UserRole } from "../context/AppContext";
+import {
+  Scale,
+  House,
+  Phone,
+  Mic,
+  HardHat,
+  FileText,
+  Siren,
+  Lock,
+  BookOpen,
+  Search,
+  FileBadge2,
+  ChevronDown,
+  ChevronUp,
+  ListChecks,
+} from "lucide-react";
 
 /* ── Urgency quick-actions (on-the-spot crisis help) ── */
 const SOS_ACTIONS = [
   {
-    icon: '🚨',
-    bg: 'linear-gradient(145deg, #5C1208, #7D1F12)',
-    shadow: 'rgba(92,18,8,0.35)',
-    path: '/chat',
+    Icon: Siren,
+    bg: "linear-gradient(145deg, #5C1208, #7D1F12)",
+    shadow: "rgba(92,18,8,0.35)",
+    path: "/chat",
     question: {
-      hindi: 'मुझे अभी गिरफ्तार किया जा रहा है। मुझे क्या करना चाहिए और मेरे क्या अधिकार हैं?',
-      english: 'I am being arrested right now. What are my rights and what should I do?',
-      hinglish: 'Mujhe abhi arrest kiya ja raha hai. Mujhe kya karna chahiye aur mere kya rights hain?',
+      hindi:
+        "मुझे अभी गिरफ्तार किया जा रहा है। मुझे क्या करना चाहिए और मेरे क्या अधिकार हैं?",
+      english:
+        "I am being arrested right now. What are my rights and what should I do?",
+      hinglish:
+        "Mujhe abhi arrest kiya ja raha hai. Mujhe kya karna chahiye aur mere kya rights hain?",
     },
-    titles: { hindi: 'अभी गिरफ्तार हो रहा हूँ', english: 'Being Arrested Now', hinglish: 'Abhi Arrest Ho Raha Hoon' },
-    subs: { hindi: 'तुरंत अपने अधिकार जानें', english: 'Know your rights instantly', hinglish: 'Turant rights jaanein' },
+    titles: {
+      hindi: "अभी गिरफ्तार हो रहा हूँ",
+      english: "Being Arrested Now",
+      hinglish: "Abhi Arrest Ho Raha Hoon",
+    },
+    subs: {
+      hindi: "तुरंत अपने अधिकार जानें",
+      english: "Know your rights instantly",
+      hinglish: "Turant rights jaanein",
+    },
   },
   {
-    icon: '🔒',
-    bg: 'linear-gradient(145deg, #6B2A0A, #8C3C12)',
-    shadow: 'rgba(107,42,10,0.35)',
-    path: '/chat',
+    Icon: Lock,
+    bg: "linear-gradient(145deg, #6B2A0A, #8C3C12)",
+    shadow: "rgba(107,42,10,0.35)",
+    path: "/chat",
     question: {
-      hindi: 'मुझे जमानत कैसे मिलेगी? अभी क्या करना होगा?',
-      english: 'How can I get bail? What needs to be done right now?',
-      hinglish: 'Mujhe bail kaise milegi? Abhi kya karna hoga?',
+      hindi: "मुझे जमानत कैसे मिलेगी? अभी क्या करना होगा?",
+      english: "How can I get bail? What needs to be done right now?",
+      hinglish: "Mujhe bail kaise milegi? Abhi kya karna hoga?",
     },
-    titles: { hindi: 'जमानत चाहिए आज', english: 'Need Bail Today', hinglish: 'Bail Chahiye Aaj' },
-    subs: { hindi: 'जमानत की पूरी जानकारी', english: 'Full bail guidance', hinglish: 'Bail ki poori jaankari' },
+    titles: {
+      hindi: "जमानत चाहिए आज",
+      english: "Need Bail Today",
+      hinglish: "Bail Chahiye Aaj",
+    },
+    subs: {
+      hindi: "जमानत की पूरी जानकारी",
+      english: "Full bail guidance",
+      hinglish: "Bail ki poori jaankari",
+    },
   },
 ];
 
 /* ── Core service tiles ── */
 const SERVICES = [
   {
-    icon: '⚖️',
-    iconBg: 'var(--c-primary-l)',
-    iconColor: 'var(--c-primary)',
-    path: '/chat',
+    Icon: Scale,
+    iconBg: "var(--c-primary-l)",
+    iconColor: "var(--c-primary)",
+    path: "/chat",
     question: null,
-    titles: { hindi: 'कानूनी मदद', english: 'Legal Help', hinglish: 'Kanoon Ki Madad' },
-    subs: { hindi: 'FIR, जमानत, धारा, अदालत', english: 'FIR, Bail, Sections, Court', hinglish: 'FIR, Bail, Sections, Court' },
-  },
-  {
-    icon: '🏠',
-    iconBg: '#F0FDF4',
-    iconColor: '#16A34A',
-    path: '/post-release',
-    question: null,
-    titles: { hindi: 'जेल के बाद', english: 'After Release', hinglish: 'Jail Ke Baad' },
-    subs: { hindi: 'नौकरी, आश्रय, दस्तावेज़', english: 'Jobs, shelter, documents', hinglish: 'Naukri, shelter, docs' },
-  },
-  {
-    icon: '📞',
-    iconBg: '#FEF2F2',
-    iconColor: '#DC2626',
-    path: '/helpline',
-    question: null,
-    titles: { hindi: 'हेल्पलाइन', english: 'Helplines', hinglish: 'Helpline' },
-    subs: { hindi: 'आपातकालीन नंबर', english: 'Emergency numbers', hinglish: 'Emergency numbers' },
-  },
-  {
-    icon: '📋',
-    iconBg: '#EFF6FF',
-    iconColor: '#2563EB',
-    path: '/chat',
-    question: {
-      hindi: 'FIR की कॉपी कैसे मिलेगी? FIR में जो धाराएं हैं वो क्या मतलब है?',
-      english: 'How to get a copy of FIR? What do the sections in FIR mean?',
-      hinglish: 'FIR ki copy kaise milegi? FIR mein jo sections hain unka kya matlab hai?',
+    titles: {
+      hindi: "कानूनी मदद",
+      english: "Legal Help",
+      hinglish: "Kanoon Ki Madad",
     },
-    titles: { hindi: 'FIR समझें', english: 'Understand FIR', hinglish: 'FIR Samjho' },
-    subs: { hindi: 'कॉपी, धाराएं, चुनौती', english: 'Copy, sections, challenge', hinglish: 'Copy, sections, challenge' },
+    subs: {
+      hindi: "FIR, जमानत, धारा, अदालत",
+      english: "FIR, Bail, Sections, Court",
+      hinglish: "FIR, Bail, Sections, Court",
+    },
+  },
+  {
+    Icon: House,
+    iconBg: "#F0FDF4",
+    iconColor: "#16A34A",
+    path: "/post-release",
+    question: null,
+    titles: {
+      hindi: "जेल के बाद",
+      english: "After Release",
+      hinglish: "Jail Ke Baad",
+    },
+    subs: {
+      hindi: "नौकरी, आश्रय, दस्तावेज़",
+      english: "Jobs, shelter, documents",
+      hinglish: "Naukri, shelter, docs",
+    },
+  },
+  {
+    Icon: Phone,
+    iconBg: "#FEF2F2",
+    iconColor: "#DC2626",
+    path: "/helpline",
+    question: null,
+    titles: { hindi: "हेल्पलाइन", english: "Helplines", hinglish: "Helpline" },
+    subs: {
+      hindi: "आपातकालीन नंबर",
+      english: "Emergency numbers",
+      hinglish: "Emergency numbers",
+    },
+  },
+  {
+    Icon: FileText,
+    iconBg: "#EFF6FF",
+    iconColor: "#2563EB",
+    path: "/chat",
+    question: {
+      hindi: "FIR की कॉपी कैसे मिलेगी? FIR में जो धाराएं हैं वो क्या मतलब है?",
+      english: "How to get a copy of FIR? What do the sections in FIR mean?",
+      hinglish:
+        "FIR ki copy kaise milegi? FIR mein jo sections hain unka kya matlab hai?",
+    },
+    titles: {
+      hindi: "FIR समझें",
+      english: "Understand FIR",
+      hinglish: "FIR Samjho",
+    },
+    subs: {
+      hindi: "कॉपी, धाराएं, चुनौती",
+      english: "Copy, sections, challenge",
+      hinglish: "Copy, sections, challenge",
+    },
   },
 ];
 
 /* ── Rights of the day tips ── */
 const RIGHTS_TIPS = [
   {
-    hindi: '📋 FIR की एक प्रति पाना आपका अधिकार है — यह मुफ्त में मिलती है।',
-    english: '📋 You have the right to receive a copy of the FIR — it is free of cost.',
-    hinglish: '📋 FIR ki copy paana aapka haq hai — yeh bilkul free milti hai.',
+    hindi: "FIR की एक प्रति पाना आपका अधिकार है — यह मुफ्त में मिलती है।",
+    english:
+      "You have the right to receive a copy of the FIR — it is free of cost.",
+    hinglish: "FIR ki copy paana aapka haq hai — yeh bilkul free milti hai.",
   },
   {
-    hindi: '⚖️ यदि पुलिस ने 60 दिन में चार्जशीट नहीं दाखिल की, तो आप डिफ़ॉल्ट जमानत के हकदार हैं।',
-    english: '⚖️ If police don\'t file chargesheet within 60 days, you are entitled to Default Bail.',
-    hinglish: '⚖️ Agar police ne 60 din mein chargesheet file nahi ki, to aapko Default Bail milne ka haq hai.',
+    hindi:
+      "यदि पुलिस ने 60 दिन में चार्जशीट नहीं दाखिल की, तो आप डिफ़ॉल्ट जमानत के हकदार हैं।",
+    english:
+      "If police don't file chargesheet within 60 days, you are entitled to Default Bail.",
+    hinglish:
+      "Agar police ne 60 din mein chargesheet file nahi ki, to aapko Default Bail milne ka haq hai.",
   },
   {
-    hindi: '🆓 गरीबी के कारण आप मुफ्त सरकारी वकील पाने के हकदार हैं — NALSA: 1516',
-    english: '🆓 You are entitled to a free government lawyer if you cannot afford one — NALSA: 1516',
-    hinglish: '🆓 Agar aap vakeel afford nahi kar sakte to free sarkari vakeel milega — NALSA: 1516',
+    hindi:
+      "गरीबी के कारण आप मुफ्त सरकारी वकील पाने के हकदार हैं — NALSA: 1516",
+    english:
+      "You are entitled to a free government lawyer if you cannot afford one — NALSA: 1516",
+    hinglish:
+      "Agar aap vakeel afford nahi kar sakte to free sarkari vakeel milega — NALSA: 1516",
   },
   {
-    hindi: '🚫 पुलिस को दिया गया कबूलनामा अदालत में मान्य नहीं होता (धारा 25 साक्ष्य अधिनियम)',
-    english: '🚫 A confession to police is NOT admissible in court (Section 25 Evidence Act)',
-    hinglish: '🚫 Police ko diya gaya confession court mein valid nahi hota (Section 25 Evidence Act)',
+    hindi:
+      "पुलिस को दिया गया कबूलनामा अदालत में मान्य नहीं होता (धारा 25 साक्ष्य अधिनियम)",
+    english:
+      "A confession to police is NOT admissible in court (Section 25 Evidence Act)",
+    hinglish:
+      "Police ko diya gaya confession court mein valid nahi hota (Section 25 Evidence Act)",
   },
 ];
 
 const quickQs = [
-  { hindi: '🔒 जमानत मिलेगी?', english: '🔒 Can I get bail?', hinglish: '🔒 Bail milegi kya?' },
-  { hindi: '📋 FIR में क्या है?', english: '📋 What is in my FIR?', hinglish: '📋 FIR mein kya hai?' },
-  { hindi: '⚠️ धाराएं कितनी गंभीर?', english: '⚠️ How serious are sections?', hinglish: '⚠️ Sections kitne serious?' },
+  {
+    hindi: "जमानत मिलेगी?",
+    english: "Can I get bail?",
+    hinglish: "Bail milegi kya?",
+  },
+  {
+    hindi: "FIR में क्या है?",
+    english: "What is in my FIR?",
+    hinglish: "FIR mein kya hai?",
+  },
+  {
+    hindi: "धाराएं कितनी गंभीर?",
+    english: "How serious are sections?",
+    hinglish: "Sections kitne serious?",
+  },
+];
+
+const LEARN_PATHWAYS = [
+  {
+    Icon: BookOpen,
+    color: "#7C3AED",
+    bg: "#F5F3FF",
+    q: {
+      hindi: "भारत में जमानत के नियम क्या हैं? सरल भाषा में समझाएं।",
+      english: "What are the bail rules in India? Explain in simple language.",
+      hinglish: "India mein bail ke rules kya hain? Simple bhasha mein samjhaiye.",
+    },
+    label: {
+      hindi: "जमानत के नियम",
+      english: "Bail Rules Explained",
+      hinglish: "Bail ke Rules",
+    },
+  },
+  {
+    Icon: Search,
+    color: "#059669",
+    bg: "#ECFDF5",
+    q: {
+      hindi: "एक कमजोर आपराधिक मामले के मुख्य संकेत क्या होते हैं?",
+      english: "What are signs of a weak criminal case against someone?",
+      hinglish: "Ek weak criminal case ke kya signs hote hain?",
+    },
+    label: {
+      hindi: "कमजोर केस की पहचान",
+      english: "Spot a Weak Case",
+      hinglish: "Weak Case Ki Pehchaan",
+    },
+  },
+  {
+    Icon: FileBadge2,
+    color: "#D97706",
+    bg: "#FFFBEB",
+    q: {
+      hindi: "जेल से रिहाई के बाद Aadhaar, PAN, bank account कैसे बनाएं?",
+      english:
+        "After release from jail, how to get Aadhaar, PAN, and bank account?",
+      hinglish: "Jail se release ke baad Aadhaar, PAN, bank account kaise banayein?",
+    },
+    label: {
+      hindi: "रिहाई के बाद दस्तावेज़",
+      english: "Documents After Release",
+      hinglish: "Release ke Baad Documents",
+    },
+  },
 ];
 
 const today = new Date();
 const tipIndex = today.getDate() % RIGHTS_TIPS.length;
 
 export default function Home() {
-  const { language } = useApp();
+  const { language, role, setRole } = useApp();
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const [showAllServices, setShowAllServices] = useState(false);
+  const [showAllLearn, setShowAllLearn] = useState(false);
 
-  const handleService = (path: string, question: Record<Language, string> | null) => {
+  const currentExperience = role === "family" ? "citizen" : "institutional";
+  const effectiveRole: UserRole =
+    currentExperience === "institutional" ? "official" : "family";
+
+  const moduleAllowedByRole: Record<UserRole, string[]> = {
+    official: ["legal-help", "helpline", "fir"],
+    judiciary: ["legal-help", "fir"],
+    family: ["legal-help", "helpline", "fir", "post-release"],
+    legalSupport: ["legal-help", "helpline", "fir", "post-release"],
+  };
+
+  const servicesWithModule = SERVICES.map((svc) => ({
+    ...svc,
+    module:
+      svc.path === "/post-release"
+        ? "post-release"
+        : svc.path === "/helpline"
+          ? "helpline"
+          : svc.titles.english === "Understand FIR"
+            ? "fir"
+            : "legal-help",
+  }));
+
+  const roleServices = servicesWithModule.filter((svc) =>
+    moduleAllowedByRole[effectiveRole].includes(svc.module),
+  );
+  const visibleServices = showAllServices ? roleServices : roleServices.slice(0, 2);
+
+  const visibleLearnPathways = showAllLearn
+    ? LEARN_PATHWAYS
+    : LEARN_PATHWAYS.slice(0, 2);
+
+  const handleService = (
+    path: string,
+    question: Record<Language, string> | null,
+  ) => {
     if (question) {
       navigate(path, { state: { question: question[language as Language] } });
     } else {
@@ -122,66 +297,178 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col" style={{ background: 'var(--c-bg)' }}>
-
+    <div
+      className="min-h-dvh flex flex-col"
+      style={{ background: "var(--c-bg)" }}
+    >
       {/* ── Top Nav Bar ── */}
       <div className="theme-header px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #B8521E, #8C3C12)' }}
+            style={{ background: "linear-gradient(135deg, #B8521E, #8C3C12)" }}
           >
-            ⚖️
+            <Scale size={18} color="#fff" />
           </div>
           <div>
-            <div className="text-white font-extrabold text-base leading-tight">न्याय सेतु</div>
-            <div className="text-xs font-medium" style={{ color: 'var(--c-primary)' }}>Nyay Setu</div>
+            <div className="text-white font-extrabold text-base leading-tight">
+              न्याय सेतु
+            </div>
+            <div
+              className="text-xs font-medium"
+              style={{ color: "var(--c-primary)" }}
+            >
+              Nyay Setu
+            </div>
           </div>
         </div>
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
           className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all"
-          style={{ background: 'rgba(255,255,255,0.10)', color: 'rgba(255,255,255,0.85)' }}
+          style={{
+            background: "rgba(255,255,255,0.10)",
+            color: "rgba(255,255,255,0.85)",
+          }}
         >
-          🌐 {language === 'hindi' ? 'हिंदी' : language === 'english' ? 'EN' : 'HG'}
+          🌐{" "}
+          {language === "hindi"
+            ? "हिंदी"
+            : language === "english"
+              ? "EN"
+              : "HG"}
         </button>
       </div>
 
       {/* ── Hero greeting ── */}
       <div
         className="px-5 pt-5 pb-6 text-center"
-        style={{ background: 'var(--c-header)' }}
+        style={{ background: "var(--c-header)" }}
       >
         <p className="text-white/50 text-xs font-semibold uppercase tracking-widest mb-1">
-          {t(language, { hindi: 'आपका स्वागत है', english: 'Welcome', hinglish: 'Aapka Swagat Hai' })}
+          {t(language, {
+            hindi: "आपका स्वागत है",
+            english: "Welcome",
+            hinglish: "Aapka Swagat Hai",
+          })}
         </p>
         <h1 className="text-white text-2xl font-extrabold leading-tight mb-1">
-          {t(language, { hindi: 'नमस्ते 🙏', english: 'Hello! 🙏', hinglish: 'Namaste 🙏' })}
-        </h1>
-        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.50)' }}>
           {t(language, {
-            hindi: 'आज हम आपकी कैसे मदद करें?',
-            english: 'How can we help you today?',
-            hinglish: 'Aaj hum aapki kaise madad karein?',
+            hindi: "नमस्ते 🙏",
+            english: "Hello! 🙏",
+            hinglish: "Namaste 🙏",
+          })}
+        </h1>
+        <p className="text-sm" style={{ color: "rgba(255,255,255,0.50)" }}>
+          {t(language, {
+            hindi: "आज हम आपकी कैसे मदद करें?",
+            english: "How can we help you today?",
+            hinglish: "Aaj hum aapki kaise madad karein?",
           })}
         </p>
       </div>
 
       {/* Wave break */}
-      <div style={{ background: 'var(--c-header)', lineHeight: 0 }}>
-        <svg viewBox="0 0 390 18" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+      <div style={{ background: "var(--c-header)", lineHeight: 0 }}>
+        <svg
+          viewBox="0 0 390 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full"
+        >
           <path d="M0 0 Q195 18 390 0 L390 18 L0 18 Z" fill="var(--c-bg)" />
         </svg>
       </div>
 
       {/* ── Scrollable content ── */}
-      <div className="flex-1 content-shell pt-4 pb-28 space-y-5">
+      <div className="flex-1 content-shell pt-4 pb-28 space-y-6">
+        <section className="section-block">
+          <div className="section-header-row">
+            <div>
+              <span className="section-label">
+                {t(language, {
+                  hindi: "अनुभव चुनें",
+                  english: "Select Experience",
+                  hinglish: "Experience Select Karo",
+                })}
+              </span>
+              <p className="section-helper">
+                {t(language, {
+                  hindi: "यूज़र रोल के आधार पर मॉड्यूल दिखाए जाएंगे",
+                  english: "Modules adapt based on selected user role",
+                  hinglish: "Selected role ke hisaab se modules dikhenge",
+                })}
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => setRole("official")}
+              className="rounded-xl px-3 py-2 text-xs font-bold border"
+              style={{
+                borderColor:
+                  currentExperience === "institutional"
+                    ? "rgba(207,120,89,0.35)"
+                    : "var(--c-border)",
+                background:
+                  currentExperience === "institutional"
+                    ? "var(--c-primary-l)"
+                    : "var(--c-surface)",
+                color:
+                  currentExperience === "institutional"
+                    ? "var(--c-primary)"
+                    : "var(--c-text)",
+              }}
+            >
+              {t(language, {
+                hindi: "Institutional",
+                english: "Institutional",
+                hinglish: "Institutional",
+              })}
+            </button>
+            <button
+              onClick={() => setRole("family")}
+              className="rounded-xl px-3 py-2 text-xs font-bold border"
+              style={{
+                borderColor:
+                  currentExperience === "citizen"
+                    ? "rgba(207,120,89,0.35)"
+                    : "var(--c-border)",
+                background:
+                  currentExperience === "citizen"
+                    ? "var(--c-primary-l)"
+                    : "var(--c-surface)",
+                color:
+                  currentExperience === "citizen"
+                    ? "var(--c-primary)"
+                    : "var(--c-text)",
+              }}
+            >
+              {t(language, {
+                hindi: "Citizen",
+                english: "Citizen",
+                hinglish: "Citizen",
+              })}
+            </button>
+          </div>
+        </section>
 
         {/* ── SOS: Urgency section ── */}
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="section-label">⚡ Turant Madad</span>
-            <span className="text-xs font-bold px-2 py-0.5 rounded-full text-white" style={{ background: 'var(--c-danger)' }}>
+        <section className="section-block">
+          <div className="section-header-row">
+            <div>
+              <span className="section-label">Turant Madad</span>
+              <p className="section-helper">
+                {t(language, {
+                  hindi: "अभी जरूरत हो तो पहले यह चुनें।",
+                  english: "Need help now? Start here first.",
+                  hinglish: "Abhi help chahiye? Yahin se shuru karein.",
+                })}
+              </p>
+            </div>
+            <span
+              className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
+              style={{ background: "var(--c-danger)" }}
+            >
               Urgent
             </span>
           </div>
@@ -189,11 +476,20 @@ export default function Home() {
             {SOS_ACTIONS.map((action, i) => (
               <button
                 key={i}
-                onClick={() => navigate(action.path, { state: { question: action.question[language as Language] } })}
-                className="sos-tile flex-col items-start"
-                style={{ background: action.bg, boxShadow: `0 6px 20px ${action.shadow}` }}
+                onClick={() =>
+                  navigate(action.path, {
+                    state: { question: action.question[language as Language] },
+                  })
+                }
+                className="sos-tile flex-col items-center text-center sm:items-start sm:text-left"
+                style={{
+                  background: action.bg,
+                  boxShadow: `0 6px 20px ${action.shadow}`,
+                }}
               >
-                <div className="text-3xl mb-2">{action.icon}</div>
+                <div className="mb-2">
+                  <action.Icon size={26} color="#fff" />
+                </div>
                 <div className="font-extrabold text-sm leading-tight">
                   {action.titles[language as Language]}
                 </div>
@@ -203,27 +499,87 @@ export default function Home() {
               </button>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* ── Helpline strip ── */}
         <a
           href="tel:18003134963"
           className="emergency-banner rounded-2xl"
-          style={{ borderRadius: '16px', border: '1px solid #FDE68A' }}
+          style={{ borderRadius: "16px", border: "1px solid #FDE68A" }}
         >
-          <span>📞</span>
+          <Phone size={14} />
           <span className="font-extrabold">Kunji: 1800-313-4963</span>
-          <span style={{ color: '#92400E', fontWeight: 500 }}>Free • 8am–11pm</span>
+          <span style={{ color: "#92400E", fontWeight: 500 }}>
+            Free • 8am–11pm
+          </span>
           <span className="ml-auto text-amber-600 font-bold">Call →</span>
         </a>
 
+        {/* ── Legal Journey CTA ── */}
+        <button
+          onClick={() => navigate("/legal-journey")}
+          className="w-full rounded-2xl p-4 text-left flex items-center gap-3 active:scale-[0.98] transition-all border"
+          style={{
+            background: "var(--c-surface)",
+            borderColor: "var(--c-border)",
+          }}
+        >
+          <div
+            className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: "var(--c-primary-l)", color: "var(--c-primary)" }}
+          >
+            <ListChecks size={19} />
+          </div>
+          <div className="flex-1">
+            <p className="font-extrabold text-sm" style={{ color: "var(--c-heading)" }}>
+              {t(language, {
+                hindi: "कानूनी यात्रा ट्रैक करें",
+                english: "Track Legal Journey",
+                hinglish: "Legal Journey Track Karo",
+              })}
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--c-muted)" }}>
+              {t(language, {
+                hindi: "FIR से Judgment तक step-by-step मार्गदर्शन",
+                english: "Step-by-step guidance from FIR to Judgment",
+                hinglish: "FIR se Judgment tak step-by-step guidance",
+              })}
+            </p>
+          </div>
+          <span style={{ color: "var(--c-primary)", fontWeight: 700 }}>→</span>
+        </button>
+
         {/* ── Services grid ── */}
-        <div>
-          <p className="section-label mb-3">
-            {t(language, { hindi: '🧭 सेवाएं', english: '🧭 Services', hinglish: '🧭 Services' })}
-          </p>
+        <section className="section-block">
+          <div className="section-header-row">
+            <div>
+              <p className="section-label">
+                {t(language, {
+                  hindi: "कानूनी मदद",
+                  english: "Legal Support",
+                  hinglish: "Legal Support",
+                })}
+              </p>
+              <p className="section-helper">
+                {t(language, {
+                  hindi: "FIR, जमानत और कोर्ट से जुड़ी मदद",
+                  english: "Help with FIR, bail, and court process.",
+                  hinglish: "FIR, bail aur court process ki madad.",
+                })}
+              </p>
+            </div>
+            {roleServices.length > 2 && (
+              <button
+                onClick={() => setShowAllServices((v) => !v)}
+                className="see-more-btn inline-flex items-center gap-1"
+                aria-label={showAllServices ? "Show less" : "See more"}
+              >
+                {showAllServices ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+              </button>
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-3">
-            {SERVICES.map((svc, i) => (
+            {visibleServices.map((svc, i) => (
               <button
                 key={i}
                 onClick={() => handleService(svc.path, svc.question)}
@@ -233,89 +589,144 @@ export default function Home() {
                   className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
                   style={{ background: svc.iconBg, color: svc.iconColor }}
                 >
-                  {svc.icon}
+                  <svc.Icon size={20} />
                 </div>
                 <div>
                   <div
                     className="font-extrabold text-sm leading-tight transition-colors group-hover:text-[#B8521E]"
-                    style={{ color: 'var(--c-heading)' }}
+                    style={{ color: "var(--c-heading)" }}
                   >
                     {svc.titles[language as Language]}
                   </div>
-                  <div className="text-xs mt-0.5 leading-tight" style={{ color: 'var(--c-muted)' }}>
+                  <div
+                    className="text-xs mt-0.5 leading-tight"
+                    style={{ color: "var(--c-muted)" }}
+                  >
                     {svc.subs[language as Language]}
                   </div>
                 </div>
               </button>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* ── FutureLabs Voice AI CTA ── */}
+        {/* ── Chat + Voice CTA ── */}
         <button
-          onClick={() => navigate('/voice-guide')}
+          onClick={() => navigate("/chat")}
           className="w-full rounded-2xl p-4 text-left flex items-center gap-4 active:scale-[0.98] transition-all"
           style={{
-            background: 'linear-gradient(145deg, #0D0603, #180A04)',
-            boxShadow: '0 6px 28px rgba(13,6,3,0.28)',
+            background: "linear-gradient(145deg, #0D0603, #180A04)",
+            boxShadow: "0 6px 28px rgba(13,6,3,0.28)",
           }}
         >
           <div
             className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #B8521E, #D4703A)' }}
+            style={{ background: "linear-gradient(135deg, #B8521E, #D4703A)" }}
           >
-            <span className="text-2xl">🎙️</span>
+            <Mic size={22} color="#fff" />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-0.5">
               <span className="text-white font-extrabold text-base">
-                {t(language, { hindi: 'आवाज़ में बात करें', english: 'Talk to AI', hinglish: 'Awaaz Mein Baat Karein' })}
+                {t(language, {
+                  hindi: "चैट + आवाज़ एक साथ",
+                  english: "Chat + Voice Together",
+                  hinglish: "Chat + Voice Saath Mein",
+                })}
               </span>
               <span
                 className="text-xs font-bold px-2 py-0.5 rounded-full"
-                style={{ background: 'rgba(184,82,30,0.22)', color: '#F0A878' }}
+                style={{ background: "rgba(184,82,30,0.22)", color: "#F0A878" }}
               >
                 LIVE
               </span>
             </div>
-            <div className="text-sm" style={{ color: 'rgba(255,255,255,0.50)' }}>
+            <div
+              className="text-sm"
+              style={{ color: "rgba(255,255,255,0.50)" }}
+            >
               {t(language, {
-                hindi: 'FutureLabs Voice AI से बात करें',
-                english: 'Real-time voice by FutureLabs',
-                hinglish: 'FutureLabs Voice AI se baat karein',
+                hindi: "एक ही स्क्रीन पर लिखकर या बोलकर पूछें",
+                english: "Ask by typing or speaking in one screen",
+                hinglish: "Ek hi screen par type ya voice se pucho",
               })}
             </div>
           </div>
-          <div style={{ color: 'var(--c-primary)', fontSize: '1.25rem', fontWeight: 700 }}>→</div>
+          <div
+            style={{
+              color: "var(--c-primary)",
+              fontSize: "1.25rem",
+              fontWeight: 700,
+            }}
+          >
+            →
+          </div>
         </button>
 
         {/* ── Aaj Ka Adhikar (Right of the Day) ── */}
         <div className="rights-tip">
           <div className="flex items-center gap-2 mb-2">
-            <span className="chip">📖 Aaj Ka Adhikar</span>
+            <span className="chip">Aaj Ka Adhikar</span>
           </div>
-          <p className="text-sm leading-relaxed font-medium" style={{ color: 'var(--c-heading)' }}>
+          <p
+            className="text-sm leading-relaxed font-medium"
+            style={{ color: "var(--c-heading)" }}
+          >
             {RIGHTS_TIPS[tipIndex][language as Language]}
           </p>
           <button
-            onClick={() => navigate('/chat', { state: { question: RIGHTS_TIPS[tipIndex][language as Language] } })}
+            onClick={() =>
+              navigate("/chat", {
+                state: {
+                  question: RIGHTS_TIPS[tipIndex][language as Language],
+                },
+              })
+            }
             className="mt-3 text-xs font-bold"
-            style={{ color: 'var(--c-primary)' }}
+            style={{ color: "var(--c-primary)" }}
           >
-            {t(language, { hindi: 'और जानें →', english: 'Learn more →', hinglish: 'Aur jaanein →' })}
+            {t(language, {
+              hindi: "और जानें →",
+              english: "Learn more →",
+              hinglish: "Aur jaanein →",
+            })}
           </button>
         </div>
 
         {/* ── Quick questions ── */}
-        <div className="card">
-          <p className="section-label mb-3">
-            {t(language, { hindi: '⚡ जल्दी पूछें', english: '⚡ Quick Questions', hinglish: '⚡ Jaldi Puchein' })}
+        <section className="card section-block">
+          <div>
+            <p className="section-label mb-1">
+              {t(language, {
+                hindi: "जल्दी सवाल",
+                english: "Quick Questions",
+                hinglish: "Quick Questions",
+              })}
+            </p>
+            <p className="section-helper">
+              {t(language, {
+                hindi: "एक बटन दबाकर तुरंत जवाब पाएं",
+                english: "Tap one question to get quick guidance.",
+                hinglish: "Ek question tap karo aur turant jawab pao.",
+              })}
+            </p>
+          </div>
+          <p className="section-label mb-0">
+            {t(language, {
+              hindi: "जल्दी पूछें",
+              english: "Quick Questions",
+              hinglish: "Jaldi Puchein",
+            })}
           </p>
           <div className="space-y-2">
             {quickQs.map((q, i) => (
               <button
                 key={i}
-                onClick={() => navigate('/chat', { state: { question: q[language as Language] } })}
+                onClick={() =>
+                  navigate("/chat", {
+                    state: { question: q[language as Language] },
+                  })
+                }
                 className="quick-btn w-full"
               >
                 {q[language as Language]}
@@ -323,102 +734,146 @@ export default function Home() {
             ))}
           </div>
           <button
-            onClick={() => navigate('/chat')}
+            onClick={() => navigate("/chat")}
             className="btn-primary mt-3 w-full py-3 text-sm"
           >
-            {t(language, { hindi: 'AI से पूछें →', english: 'Ask AI →', hinglish: 'AI Se Puchein →' })}
+            {t(language, {
+              hindi: "AI से पूछें →",
+              english: "Ask AI →",
+              hinglish: "AI Se Puchein →",
+            })}
           </button>
-        </div>
+        </section>
 
         {/* ── Capability building: Learn section ── */}
-        <div>
-          <p className="section-label mb-3">
-            {t(language, { hindi: '🎓 अपने अधिकार जानें', english: '🎓 Build Your Knowledge', hinglish: '🎓 Apne Adhikar Jaanein' })}
-          </p>
+        <section className="section-block">
+          <div className="section-header-row">
+            <div>
+              <p className="section-label">
+                {t(language, {
+                  hindi: "रिहाई के बाद",
+                  english: "After Release Help",
+                  hinglish: "After Release Help",
+                })}
+              </p>
+              <p className="section-helper">
+                {t(language, {
+                  hindi: "दस्तावेज़, नौकरी और आगे की तैयारी",
+                  english: "Documents, jobs, and next-step support.",
+                  hinglish: "Documents, job aur next-step support.",
+                })}
+              </p>
+            </div>
+            {LEARN_PATHWAYS.length > 2 && (
+              <button
+                onClick={() => setShowAllLearn((v) => !v)}
+                className="see-more-btn inline-flex items-center gap-1"
+                aria-label={showAllLearn ? "Show less" : "See more"}
+              >
+                {showAllLearn ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+              </button>
+            )}
+          </div>
           <div className="grid grid-cols-1 gap-2">
-            {[
-              {
-                icon: '📚', color: '#7C3AED', bg: '#F5F3FF',
-                q: {
-                  hindi: 'भारत में जमानत के नियम क्या हैं? सरल भाषा में समझाएं।',
-                  english: 'What are the bail rules in India? Explain in simple language.',
-                  hinglish: 'India mein bail ke rules kya hain? Simple bhasha mein samjhaiye.',
-                },
-                label: { hindi: 'जमानत के नियम', english: 'Bail Rules Explained', hinglish: 'Bail ke Rules' },
-              },
-              {
-                icon: '🔍', color: '#059669', bg: '#ECFDF5',
-                q: {
-                  hindi: 'एक कमजोर आपराधिक मामले के मुख्य संकेत क्या होते हैं?',
-                  english: 'What are signs of a weak criminal case against someone?',
-                  hinglish: 'Ek weak criminal case ke kya signs hote hain?',
-                },
-                label: { hindi: 'कमजोर केस की पहचान', english: 'Spot a Weak Case', hinglish: 'Weak Case Ki Pehchaan' },
-              },
-              {
-                icon: '🧾', color: '#D97706', bg: '#FFFBEB',
-                q: {
-                  hindi: 'जेल से रिहाई के बाद Aadhaar, PAN, bank account कैसे बनाएं?',
-                  english: 'After release from jail, how to get Aadhaar, PAN, and bank account?',
-                  hinglish: 'Jail se release ke baad Aadhaar, PAN, bank account kaise banayein?',
-                },
-                label: { hindi: 'रिहाई के बाद दस्तावेज़', english: 'Documents After Release', hinglish: 'Release ke Baad Documents' },
-              },
-            ].map((item, i) => (
+            {visibleLearnPathways.map((item, i) => (
               <button
                 key={i}
-                onClick={() => navigate('/chat', { state: { question: item.q[language as Language] } })}
+                onClick={() =>
+                  navigate("/chat", {
+                    state: { question: item.q[language as Language] },
+                  })
+                }
                 className="card-sm flex items-center gap-3 w-full text-left active:scale-[0.98] transition-all group"
               >
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
                   style={{ background: item.bg, color: item.color }}
                 >
-                  {item.icon}
+                  <item.Icon size={18} />
                 </div>
-                <span className="font-semibold text-sm flex-1 group-hover:text-[#B8521E] transition-colors"
-                  style={{ color: 'var(--c-heading)' }}>
+                <span
+                  className="font-semibold text-sm flex-1 group-hover:text-[#B8521E] transition-colors"
+                  style={{ color: "var(--c-heading)" }}
+                >
                   {item.label[language as Language]}
                 </span>
-                <span className="text-sm" style={{ color: 'var(--c-muted)' }}>→</span>
+                <span className="text-sm" style={{ color: "var(--c-muted)" }}>
+                  →
+                </span>
               </button>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* ── Disclaimer ── */}
         <div
           className="rounded-2xl p-4"
-          style={{ background: 'var(--c-warning-l)', border: '1px solid #FDE68A' }}
+          style={{
+            background: "var(--c-warning-l)",
+            border: "1px solid #FDE68A",
+          }}
         >
-          <p className="text-xs leading-relaxed" style={{ color: '#92400E' }}>
+          <p className="text-xs leading-relaxed" style={{ color: "#92400E" }}>
             {t(language, {
-              hindi: '⚠️ यह सामान्य जानकारी है। अपने मामले के लिए कृपया वकील से सलाह लें।',
-              english: '⚠️ General information only. Please consult a lawyer for your specific case.',
-              hinglish: '⚠️ Yeh general jaankari hai. Apne case ke liye vakeel se zaroor milein.',
+              hindi:
+                "यह सामान्य जानकारी है। अपने मामले के लिए कृपया वकील से सलाह लें।",
+              english:
+                "General information only. Please consult a lawyer for your specific case.",
+              hinglish:
+                "Yeh general jaankari hai. Apne case ke liye vakeel se zaroor milein.",
             })}
           </p>
         </div>
-
       </div>
 
       {/* ── Bottom nav ── */}
       <div className="bottom-nav">
         {[
-          { icon: '🏠', label: { hindi: 'होम', english: 'Home', hinglish: 'Home' }, path: '/home' },
-          { icon: '⚖️', label: { hindi: 'मदद', english: 'Chat', hinglish: 'Chat' }, path: '/chat' },
-          { icon: '🏗️', label: { hindi: 'बाद में', english: 'After', hinglish: 'Baad Mein' }, path: '/post-release' },
-          { icon: '🎙️', label: { hindi: 'वॉइस', english: 'Voice', hinglish: 'Voice' }, path: '/voice-guide' },
-          { icon: '📞', label: { hindi: 'हेल्पलाइन', english: 'Helpline', hinglish: 'Helpline' }, path: '/helpline' },
+          {
+            Icon: Scale,
+            label: { hindi: "मदद", english: "Chat", hinglish: "Chat" },
+            path: "/chat",
+          },
+          {
+            Icon: HardHat,
+            label: {
+              hindi: "बाद में",
+              english: "After",
+              hinglish: "Baad Mein",
+            },
+            path: "/post-release",
+          },
+          {
+            Icon: House,
+            label: { hindi: "होम", english: "Home", hinglish: "Home" },
+            path: "/home",
+          },
+          {
+            Icon: Mic,
+            label: { hindi: "वॉइस", english: "Voice", hinglish: "Voice" },
+            path: "/voice-guide",
+          },
+          {
+            Icon: Phone,
+            label: {
+              hindi: "हेल्पलाइन",
+              english: "Helpline",
+              hinglish: "Helpline",
+            },
+            path: "/helpline",
+          },
         ].map((item) => (
           <button
             key={item.path}
             onClick={() => navigate(item.path)}
-            className={`flex-1 flex flex-col items-center py-3 gap-0.5 text-xs font-semibold transition-colors
-                       ${item.path === '/home' ? 'nav-item-active' : 'nav-item-inactive'}`}
+            aria-label={item.label[language as Language]}
+            className={`bottom-nav-item ${item.path === "/home" ? "bottom-nav-home" : ""}
+                       ${item.path === currentPath ? "nav-item-active" : "nav-item-inactive"}`}
           >
-            <span className="text-xl">{item.icon}</span>
-            <span>{item.label[language as Language]}</span>
+            <span className="nav-icon">
+              <item.Icon size={18} />
+            </span>
+            <span className="nav-label">{item.label[language as Language]}</span>
           </button>
         ))}
       </div>

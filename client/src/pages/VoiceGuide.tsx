@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp, t, Language } from '../context/AppContext';
-import LangSwitcher from '../components/LangSwitcher';
+import { ArrowLeft, Mic, Scale, BookOpen, House, Phone } from 'lucide-react';
+
 
 /* ── Tell TypeScript about the ElevenLabs custom element ── */
 declare global {
@@ -52,13 +53,13 @@ export default function VoiceGuide() {
           onClick={() => navigate('/home')}
           className="text-xl p-1 -ml-1 text-white/70 hover:text-white transition-colors"
         >
-          ←
+          <ArrowLeft size={18} />
         </button>
         <div
           className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
           style={{ background: 'var(--c-primary)' }}
         >
-          🎙️
+          <Mic size={20} color="#fff" />
         </div>
         <div className="flex-1">
           <h1 className="text-white font-extrabold text-base leading-tight">
@@ -76,7 +77,7 @@ export default function VoiceGuide() {
             })}
           </p>
         </div>
-        <LangSwitcher dark />
+      
         <div
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
           style={{ background: 'rgba(22,163,74,0.15)', color: '#4ADE80', border: '1px solid rgba(22,163,74,0.25)' }}
@@ -154,22 +155,21 @@ export default function VoiceGuide() {
       {/* ── Bottom Nav ── */}
       <div className="bottom-nav">
         {[
-          { icon: '🏠', label: { hindi: 'होम', english: 'Home', hinglish: 'Home' }, path: '/home' },
-          { icon: '⚖️', label: { hindi: 'मदद', english: 'Chat', hinglish: 'Chat' }, path: '/chat' },
-          { icon: '📖', label: { hindi: 'गाइड', english: 'Guide', hinglish: 'Guide' }, path: '/manual' },
-          { icon: '🎙️', label: { hindi: 'वॉइस', english: 'Voice', hinglish: 'Voice' }, path: '/voice-guide' },
-          { icon: '📞', label: { hindi: 'हेल्पलाइन', english: 'Helpline', hinglish: 'Helpline' }, path: '/helpline' },
+          { Icon: Scale, label: { hindi: 'मदद', english: 'Chat', hinglish: 'Chat' }, path: '/chat' },
+          { Icon: BookOpen, label: { hindi: 'गाइड', english: 'Guide', hinglish: 'Guide' }, path: '/manual' },
+          { Icon: House, label: { hindi: 'होम', english: 'Home', hinglish: 'Home' }, path: '/home' },
+          { Icon: Mic, label: { hindi: 'वॉइस', english: 'Voice', hinglish: 'Voice' }, path: '/voice-guide' },
+          { Icon: Phone, label: { hindi: 'हेल्पलाइन', english: 'Helpline', hinglish: 'Helpline' }, path: '/helpline' },
         ].map((item) => (
           <button
             key={item.path}
             onClick={() => navigate(item.path)}
-            className="flex-1 flex flex-col items-center py-3 gap-0.5 text-xs font-semibold transition-colors"
-            style={{
-              color: item.path === '/voice-guide' ? 'var(--c-primary)' : 'rgba(255,255,255,0.40)',
-            }}
+            aria-label={item.label[language as Language]}
+            className={`bottom-nav-item ${item.path === '/home' ? 'bottom-nav-home' : ''}
+                       ${item.path === '/voice-guide' ? 'nav-item-active' : 'nav-item-inactive'}`}
           >
-            <span className="text-xl">{item.icon}</span>
-            <span>{item.label[language as Language]}</span>
+            <span className="nav-icon"><item.Icon size={18} /></span>
+            <span className="nav-label">{item.label[language as Language]}</span>
           </button>
         ))}
       </div>

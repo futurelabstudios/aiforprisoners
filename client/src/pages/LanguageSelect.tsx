@@ -1,26 +1,27 @@
 import { useNavigate } from 'react-router-dom';
 import { useApp, Language } from '../context/AppContext';
+import { Scale, MessageCircle, Languages, ArrowRight, Phone } from 'lucide-react';
 
 const languages = [
   {
     id: 'hindi' as Language,
     label: 'हिंदी',
     sub: 'सिर्फ हिंदी में',
-    flag: '🇮🇳',
+    Icon: Languages,
     desc: 'Sirf Hindi',
   },
   {
     id: 'hinglish' as Language,
     label: 'Hinglish',
     sub: 'Hindi + English mix',
-    flag: '💬',
+    Icon: MessageCircle,
     desc: 'Hindi aur English',
   },
   {
     id: 'english' as Language,
     label: 'English',
     sub: 'Simple English only',
-    flag: '🔤',
+    Icon: Languages,
     desc: 'Only English',
   },
 ];
@@ -53,7 +54,7 @@ export default function LanguageSelect() {
               boxShadow: '0 8px 32px rgba(184,82,30,0.45), 0 0 0 1px rgba(255,255,255,0.07)',
             }}
           >
-            ⚖️
+            <Scale size={42} color="#fff" />
           </div>
           <h1 className="text-white text-4xl font-extrabold tracking-tight leading-none mb-1">
             न्याय सेतु
@@ -123,7 +124,7 @@ export default function LanguageSelect() {
                   boxShadow: '0 2px 8px rgba(200,88,40,0.12)',
                 }}
               >
-                {lang.flag}
+                <lang.Icon size={22} color="var(--c-primary)" />
               </div>
               <div className="flex-1">
                 <div
@@ -141,7 +142,7 @@ export default function LanguageSelect() {
                            opacity-0 group-hover:opacity-100 transition-all"
                 style={{ background: 'var(--c-primary)', color: 'white' }}
               >
-                →
+                <ArrowRight size={14} />
               </div>
             </button>
           ))}
@@ -164,7 +165,10 @@ export default function LanguageSelect() {
         }}
       >
         <p className="text-xs font-semibold mb-1" style={{ color: 'var(--c-muted)' }}>
-          📞 Kunji Helpline — Free — Daily 8am to 11pm
+          <span className="inline-flex items-center gap-1">
+            <Phone size={12} />
+            Kunji Helpline — Free — Daily 8am to 11pm
+          </span>
         </p>
         <a
           href="tel:18003134963"

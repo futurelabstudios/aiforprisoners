@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useApp, t } from '../context/AppContext';
 import { speakWithElevenLabs, stopTTS } from '../utils/tts';
+import { Volume2, VolumeX, Mic, PhoneCall } from 'lucide-react';
 
 const pageNarration = {
   '/home': {
@@ -64,7 +65,7 @@ export default function AccessibilityDock() {
         onClick={readScreen}
         className={`a11y-fab ${isSpeaking ? 'bg-emerald-600' : 'bg-[#C85828]'}`}
       >
-        {isSpeaking ? '🔊' : '🗣️'} {t(language, {
+        {isSpeaking ? <VolumeX size={16} /> : <Volume2 size={16} />} {t(language, {
           hindi: 'स्क्रीन सुनें',
           english: 'Read Screen',
           hinglish: 'Screen Suno',
@@ -74,7 +75,7 @@ export default function AccessibilityDock() {
         onClick={() => navigate('/voice-guide')}
         className="a11y-fab bg-[#C85828]"
       >
-        🎙️ {t(language, {
+        <Mic size={16} /> {t(language, {
           hindi: 'वॉइस गाइड',
           english: 'Voice Guide',
           hinglish: 'Voice Guide',
@@ -87,7 +88,7 @@ export default function AccessibilityDock() {
         }}
         className="a11y-fab bg-red-600"
       >
-        📞 {t(language, {
+        <PhoneCall size={16} /> {t(language, {
           hindi: 'तुरंत मदद',
           english: 'Quick Help',
           hinglish: 'Turant Help',

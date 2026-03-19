@@ -1,7 +1,22 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp, t, Language } from '../context/AppContext';
-import LangSwitcher from '../components/LangSwitcher';
+import {
+  Scale,
+  BookOpen,
+  House,
+  Mic,
+  Phone,
+  FolderKanban,
+  Siren,
+  LockOpen,
+  FileText,
+  Landmark,
+  Brain,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
+
 
 interface CardContent {
   heading: { hindi: string; english: string; hinglish: string };
@@ -17,7 +32,7 @@ interface Topic {
 
 const TOPICS: Topic[] = [
   {
-    id: 'doc-fields', emoji: '🗂️', color: '#0EA5E9', bg: 'rgba(14,165,233,0.12)',
+    id: 'doc-fields', emoji: 'doc-fields', color: '#0EA5E9', bg: 'rgba(14,165,233,0.12)',
     title: { hindi: 'डॉक्यूमेंट फील्ड गाइड', english: 'Document Field Guide', hinglish: 'Document Field Guide' },
     cards: [
       {
@@ -43,7 +58,7 @@ const TOPICS: Topic[] = [
     ],
   },
   {
-    id: 'arrest', emoji: '🚨', color: '#DC2626', bg: 'rgba(248,113,113,0.12)',
+    id: 'arrest', emoji: 'arrest', color: '#DC2626', bg: 'rgba(248,113,113,0.12)',
     title: { hindi: 'गिरफ्तारी के अधिकार', english: 'Rights When Arrested', hinglish: 'Arrest Hone Par Haq' },
     cards: [
       {
@@ -68,7 +83,7 @@ const TOPICS: Topic[] = [
     ],
   },
   {
-    id: 'bail', emoji: '🔓', color: '#B8521E', bg: 'rgba(207,120,89,0.14)',
+    id: 'bail', emoji: 'bail', color: '#B8521E', bg: 'rgba(207,120,89,0.14)',
     title: { hindi: 'जमानत (Bail)', english: 'Bail', hinglish: 'Bail / Zamaanat' },
     cards: [
       {
@@ -101,7 +116,7 @@ const TOPICS: Topic[] = [
     ],
   },
   {
-    id: 'fir', emoji: '📋', color: '#1D4ED8', bg: 'rgba(96,165,250,0.12)',
+    id: 'fir', emoji: 'fir', color: '#1D4ED8', bg: 'rgba(96,165,250,0.12)',
     title: { hindi: 'FIR — प्रथम सूचना रिपोर्ट', english: 'FIR — First Information Report', hinglish: 'FIR kya hoti hai' },
     cards: [
       {
@@ -131,7 +146,7 @@ const TOPICS: Topic[] = [
     ],
   },
   {
-    id: 'sections', emoji: '⚖️', color: '#6D28D9', bg: 'rgba(167,139,250,0.12)',
+    id: 'sections', emoji: 'sections', color: '#6D28D9', bg: 'rgba(167,139,250,0.12)',
     title: { hindi: 'आम धाराएं (IPC)', english: 'Common IPC Sections', hinglish: 'Common IPC Sections' },
     cards: [
       {
@@ -155,7 +170,7 @@ const TOPICS: Topic[] = [
     ],
   },
   {
-    id: 'court', emoji: '🏛️', color: '#0F766E', bg: 'rgba(52,211,153,0.11)',
+    id: 'court', emoji: 'court', color: '#0F766E', bg: 'rgba(52,211,153,0.11)',
     title: { hindi: 'अदालती प्रक्रिया', english: 'Court Process', hinglish: 'Court ka Process' },
     cards: [
       {
@@ -179,7 +194,7 @@ const TOPICS: Topic[] = [
     ],
   },
   {
-    id: 'release', emoji: '🏠', color: '#15803D', bg: 'rgba(74,222,128,0.11)',
+    id: 'release', emoji: 'release', color: '#15803D', bg: 'rgba(74,222,128,0.11)',
     title: { hindi: 'रिहाई के बाद', english: 'After Release', hinglish: 'Jail se Baad' },
     cards: [
       {
@@ -202,7 +217,7 @@ const TOPICS: Topic[] = [
     ],
   },
   {
-    id: 'mental', emoji: '🧠', color: '#7C3AED', bg: 'rgba(216,180,254,0.11)',
+    id: 'mental', emoji: 'mental', color: '#7C3AED', bg: 'rgba(216,180,254,0.11)',
     title: { hindi: 'मानसिक स्वास्थ्य', english: 'Mental Health', hinglish: 'Mental Health' },
     cards: [
       {
@@ -212,24 +227,39 @@ const TOPICS: Topic[] = [
           { hindi: 'Vandrevala Foundation: 1860-2662-345 — 24/7, मुफ्त।', english: 'Vandrevala Foundation: 1860-2662-345 — 24/7, Free.', hinglish: 'Vandrevala: 1860-2662-345 — 24/7, Free.' },
           { hindi: 'NIMHANS: 080-46110007 — राष्ट्रीय मानसिक स्वास्थ्य संस्थान।', english: 'NIMHANS: 080-46110007 — National Mental Health Institute.', hinglish: 'NIMHANS: 080-46110007.' },
         ],
-        note: { hindi: '🚨 खुद को नुकसान पहुंचाने के विचार आ रहे हैं? तुरंत iCall या Vandrevala को फोन करें।', english: '🚨 Thoughts of harming yourself? Call iCall or Vandrevala IMMEDIATELY.', hinglish: '🚨 Khud ko hurt karne ke thoughts? TURANT call karo iCall ya Vandrevala.' },
+        note: { hindi: 'खुद को नुकसान पहुंचाने के विचार आ रहे हैं? तुरंत iCall या Vandrevala को फोन करें।', english: 'Thoughts of harming yourself? Call iCall or Vandrevala IMMEDIATELY.', hinglish: 'Khud ko hurt karne ke thoughts? TURANT call karo iCall ya Vandrevala.' },
       },
     ],
   },
 ];
 
 const NAV = [
-  { icon: '🏠', path: '/home',       label: { hindi: 'होम',      english: 'Home',     hinglish: 'Home'     } },
-  { icon: '⚖️', path: '/chat',       label: { hindi: 'मदद',      english: 'Chat',     hinglish: 'Chat'     } },
-  { icon: '📖', path: '/manual',     label: { hindi: 'गाइड',     english: 'Guide',    hinglish: 'Guide'    } },
-  { icon: '🎙️', path: '/voice-guide',label: { hindi: 'वॉइस',     english: 'Voice',    hinglish: 'Voice'    } },
-  { icon: '📞', path: '/helpline',   label: { hindi: 'हेल्पलाइन', english: 'Helpline', hinglish: 'Helpline' } },
+  { Icon: Scale, path: '/chat',       label: { hindi: 'मदद',      english: 'Chat',     hinglish: 'Chat'     } },
+  { Icon: BookOpen, path: '/manual',     label: { hindi: 'गाइड',     english: 'Guide',    hinglish: 'Guide'    } },
+  { Icon: House, path: '/home',       label: { hindi: 'होम',      english: 'Home',     hinglish: 'Home'     } },
+  { Icon: Mic, path: '/voice-guide',label: { hindi: 'वॉइस',     english: 'Voice',    hinglish: 'Voice'    } },
+  { Icon: Phone, path: '/helpline',   label: { hindi: 'हेल्पलाइन', english: 'Helpline', hinglish: 'Helpline' } },
 ];
 
 export default function Manual() {
   const { language } = useApp();
   const navigate = useNavigate();
   const [selected, setSelected] = useState<Topic | null>(null);
+  const [showAllTopics, setShowAllTopics] = useState(false);
+  const visibleTopics = showAllTopics ? TOPICS : TOPICS.slice(0, 6);
+  const topicIcon = (emoji: string) => {
+    const map: Record<string, any> = {
+      "doc-fields": FolderKanban,
+      "arrest": Siren,
+      "bail": LockOpen,
+      "fir": FileText,
+      "sections": Scale,
+      "court": Landmark,
+      "release": House,
+      "mental": Brain,
+    };
+    return map[emoji] ?? BookOpen;
+  };
 
   /* ── TOPIC GRID VIEW ── */
   if (!selected) {
@@ -242,20 +272,41 @@ export default function Manual() {
               className="w-8 h-8 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all text-sm">←</button>
             <div className="flex-1">
               <h1 className="font-extrabold text-base text-white leading-tight">
-                {t(language, { hindi: '📖 कानूनी गाइड', english: '📖 Legal Guide', hinglish: '📖 Legal Guide' })}
+                {t(language, { hindi: 'कानूनी गाइड', english: 'Legal Guide', hinglish: 'Legal Guide' })}
               </h1>
               <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
                 {t(language, { hindi: 'एक विषय चुनें', english: 'Tap a topic to learn', hinglish: 'Ek topic chunein' })}
               </p>
             </div>
-            <LangSwitcher dark />
+       
           </div>
         </div>
 
         {/* Topic grid */}
         <div className="flex-1 overflow-y-auto px-4 py-5 pb-24">
+          <div className="max-w-lg mx-auto mb-3 section-header-row">
+            <p className="section-helper">
+              {t(language, {
+                hindi: 'कम शब्दों में सीखें। जरूरत हो तो और विषय खोलें।',
+                english: 'Learn in simple points. Open more topics if needed.',
+                hinglish: 'Simple points mein seekhein. Zarurat ho to aur topics kholen.',
+              })}
+            </p>
+            {TOPICS.length > 6 && (
+              <button
+                onClick={() => setShowAllTopics((v) => !v)}
+                className="see-more-btn inline-flex items-center gap-1"
+                aria-label={showAllTopics ? "Show less" : "More topics"}
+              >
+                {showAllTopics ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+              </button>
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
-            {TOPICS.map((tp) => (
+            {visibleTopics.map((tp) => (
+              (() => {
+                const Icon = topicIcon(tp.emoji);
+                return (
               <button
                 key={tp.id}
                 onClick={() => setSelected(tp)}
@@ -268,7 +319,7 @@ export default function Manual() {
               >
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
                   style={{ background: tp.bg }}>
-                  {tp.emoji}
+                  <Icon size={22} />
                 </div>
                 <div>
                   <div className="font-extrabold text-sm leading-tight" style={{ color: 'var(--c-heading)' }}>
@@ -279,6 +330,8 @@ export default function Manual() {
                   </div>
                 </div>
               </button>
+                );
+              })()
             ))}
           </div>
         </div>
@@ -287,10 +340,11 @@ export default function Manual() {
         <div className="bottom-nav">
           {NAV.map((item) => (
             <button key={item.path} onClick={() => navigate(item.path)}
-              className={`flex-1 flex flex-col items-center py-3 gap-0.5 text-xs font-semibold transition-colors
+              aria-label={item.label[language as Language]}
+              className={`bottom-nav-item ${item.path === '/home' ? 'bottom-nav-home' : ''}
                          ${item.path === '/manual' ? 'nav-item-active' : 'nav-item-inactive'}`}>
-              <span className="text-xl">{item.icon}</span>
-              <span>{item.label[language as Language]}</span>
+              <span className="nav-icon"><item.Icon size={18} /></span>
+              <span className="nav-label">{item.label[language as Language]}</span>
             </button>
           ))}
         </div>
@@ -308,7 +362,10 @@ export default function Manual() {
             className="w-8 h-8 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all text-sm">←</button>
           <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
             style={{ background: `${selected.color}22` }}>
-            {selected.emoji}
+            {(() => {
+              const Icon = topicIcon(selected.emoji);
+              return <Icon size={18} />;
+            })()}
           </div>
           <div className="flex-1">
             <h1 className="font-extrabold text-sm text-white leading-tight">
@@ -318,7 +375,7 @@ export default function Manual() {
               {t(language, { hindi: 'वापस जाएं ←', english: '← Back to topics', hinglish: '← Wapas jaao' })}
             </p>
           </div>
-          <LangSwitcher dark />
+    
         </div>
       </div>
 
@@ -365,7 +422,7 @@ export default function Manual() {
           className="w-full rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98] transition-all"
           style={{ background: 'var(--c-primary-l)', border: '1px solid rgba(207,120,89,0.25)' }}>
           <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-            style={{ background: 'var(--c-primary)', color: 'white' }}>⚖️</div>
+            style={{ background: 'var(--c-primary)', color: 'white' }}><Scale size={18} /></div>
           <div className="flex-1 text-left">
             <p className="font-extrabold text-sm" style={{ color: 'var(--c-primary)' }}>
               {t(language, { hindi: 'और सवाल हैं? AI से पूछें', english: 'More questions? Ask AI', hinglish: 'Aur sawaal? AI se puchein' })}
@@ -382,10 +439,11 @@ export default function Manual() {
       <div className="bottom-nav">
         {NAV.map((item) => (
           <button key={item.path} onClick={() => { if (item.path === '/manual') setSelected(null); else navigate(item.path); }}
-            className={`flex-1 flex flex-col items-center py-3 gap-0.5 text-xs font-semibold transition-colors
+            aria-label={item.label[language as Language]}
+            className={`bottom-nav-item ${item.path === '/home' ? 'bottom-nav-home' : ''}
                        ${item.path === '/manual' ? 'nav-item-active' : 'nav-item-inactive'}`}>
-            <span className="text-xl">{item.icon}</span>
-            <span>{item.label[language as Language]}</span>
+            <span className="nav-icon"><item.Icon size={18} /></span>
+            <span className="nav-label">{item.label[language as Language]}</span>
           </button>
         ))}
       </div>
