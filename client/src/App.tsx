@@ -404,7 +404,7 @@ function DesktopControls() {
 function AppShell() {
   const location = useLocation();
   const isLangSelect = location.pathname === "/";
-  const { theme, setTheme } = useApp();
+  const { theme, setTheme, isMobileDevice } = useApp();
 
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
@@ -435,16 +435,20 @@ function AppShell() {
 
   /* Desktop/laptop layout — wide center on laptop, 3-column on xl */
   const centeredColumnClass = !isLangSelect
-    ? "md:max-w-[960px] md:w-full md:mx-auto md:pb-20 lg:pb-24 xl:max-w-none xl:mx-0 xl:pb-0 xl:w-[520px] xl:border-x xl:shadow-[0_0_0_1px_rgba(207,120,89,0.10),0_36px_96px_rgba(0,0,0,0.45)]"
+    ? isMobileDevice
+      ? "w-full px-[10px] md:pb-20 lg:pb-24"
+      : "w-full px-[10px] md:pb-20 lg:pb-24 xl:pb-0"
     : "";
 
   return (
     <>
       <div
-        className={`min-h-dvh xl:h-dvh flex items-stretch ${!isLangSelect ? "md:px-6 lg:px-10 xl:items-stretch xl:justify-start xl:px-0" : ""}`}
+        className={`min-h-dvh xl:h-dvh flex items-stretch ${
+          !isLangSelect ? "px-0 xl:items-stretch xl:justify-start" : ""
+        }`}
         style={{ background: outerBg }}
       >
-        {!isLangSelect && (
+        {!isLangSelect && !isMobileDevice && (
           <>
             <div className="hidden xl:flex flex-1 flex-col">
               <LeftPanel />
@@ -471,7 +475,7 @@ function AppShell() {
           {ROUTES}
         </div>
 
-        {!isLangSelect && (
+        {!isLangSelect && !isMobileDevice && (
           <>
             <PanelDivider />
             <div className="hidden xl:flex flex-1 flex-col">
@@ -482,7 +486,7 @@ function AppShell() {
       </div>
 
       {/* Bottom controls — only on desktop */}
-      {!isLangSelect && <DesktopControls />}
+      {!isLangSelect && !isMobileDevice && <DesktopControls />}
     </>
   );
 }

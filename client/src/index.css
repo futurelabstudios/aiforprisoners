@@ -270,7 +270,8 @@
   }
 
   /* ── Content shell ── */
-  .content-shell { @apply max-w-6xl mx-auto w-full px-4 md:px-6; }
+  /* Match bottom bar horizontal padding (10px) for consistent layout */
+  .content-shell { @apply mx-auto w-full px-[10px]; }
 
   /* ── Emergency / alert banners ── */
   .emergency-banner {

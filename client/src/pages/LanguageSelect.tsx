@@ -40,7 +40,7 @@ export default function LanguageSelect() {
 
       {/* ── Top hero section ── */}
       <div
-        className="flex flex-col items-center justify-center text-center px-6 pt-16 pb-10"
+        className="flex flex-col items-center justify-center text-center px-[10px] pt-16 pb-10"
         style={{
           background: 'linear-gradient(160deg, #0D0603 0%, #180A04 50%, #251006 100%)',
         }}
@@ -94,7 +94,7 @@ export default function LanguageSelect() {
       </div>
 
       {/* ── Language section ── */}
-      <div className="flex-1 px-5 pt-6 pb-6">
+      <div className="flex-1 px-[10px] pt-6 pb-6">
 
         {/* Label */}
         <div className="text-center mb-5">
@@ -158,7 +158,7 @@ export default function LanguageSelect() {
 
       {/* ── Footer helpline ── */}
       <div
-        className="px-5 py-5 text-center"
+        className="px-[10px] py-5 text-center"
         style={{
           background: 'var(--c-surface)',
           borderTop: '1px solid var(--c-border)',
