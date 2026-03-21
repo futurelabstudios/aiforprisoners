@@ -34,12 +34,12 @@ const AppContext = createContext<AppContextType>({
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
+  /**
+   * Compact layout: viewport below 1024px only (matches Tailwind `lg` and bottom nav visibility).
+   */
   const getIsMobileDevice = () => {
     if (typeof window === "undefined") return false;
-    const ua = navigator.userAgent || "";
-    const mobileByUa = /Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(ua);
-    const mobileByViewport = window.matchMedia?.("(max-width: 1024px)").matches;
-    return mobileByUa || !!mobileByViewport;
+    return !!window.matchMedia?.("(max-width: 1023px)").matches;
   };
   const getSystemDarkMode = () => {
     if (typeof window === "undefined") return false;

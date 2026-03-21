@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useApp, t, Language } from "../context/AppContext";
 import {
   ArrowLeft,
@@ -14,6 +14,9 @@ import {
   Flag,
   Phone,
   Mic,
+  BookOpen,
+  House,
+  ListChecks,
 } from "lucide-react";
 
 type StageId =
@@ -1203,6 +1206,7 @@ const DEFAULT_STATE: JourneyState = {
 export default function LegalJourney() {
   const { language } = useApp();
   const navigate = useNavigate();
+  const location = useLocation();
   const [journey, setJourney] = useState<JourneyState>(DEFAULT_STATE);
   const [situationInput, setSituationInput] = useState("");
   const [docType, setDocType] = useState<DocType>("fir");
@@ -1343,25 +1347,93 @@ export default function LegalJourney() {
     activeDocFieldValue,
   );
 
+  const journeySidebarSteps = [
+    t(language, {
+      hindi: "ऊपर से अपनी स्थिति लिखकर स्टेज चुनें या दाएँ सूची से स्टेज बदलें।",
+      english: "Describe your situation above or pick a stage from the list on the right.",
+      hinglish: "Upar situation likho ya right list se stage chuno.",
+    }),
+    t(language, {
+      hindi: "दस्तावेज़ गाइड में FIR/चार्जशीट/बेल के फील्ड समझें और स्टेप-बाय-स्टेप भरें।",
+      english: "Use the document guide to understand FIR, chargesheet, and bail fields.",
+      hinglish: "Document guide se FIR, chargesheet, bail fields samjho.",
+    }),
+    t(language, {
+      hindi: "संदेह हो तो AI चैट, कुंजी 1800-313-4963, या NALSA 1516 से मदद लें।",
+      english: "If unsure, use AI chat, Kunji 1800-313-4963, or NALSA 1516.",
+      hinglish: "Confusion ho to AI chat, Kunji ya NALSA use karo.",
+    }),
+  ];
+
+  const renderStageProgressList = () => (
+    <div className="space-y-2">
+      {STAGES.map((s, idx) => {
+        const isDone = idx < stageIndex;
+        const isCurrent = s.id === journey.currentStageId;
+        return (
+          <button
+            key={s.id}
+            type="button"
+            onClick={() => setCurrentStage(s.id)}
+            className="flex w-full items-center gap-3 rounded-xl border px-3 py-2 text-left transition-all active:scale-[0.99] lg:py-2.5"
+            style={{
+              background: isCurrent ? "var(--c-primary-l)" : "var(--c-surface)",
+              borderColor: isCurrent ? "rgba(207,120,89,0.35)" : "var(--c-border)",
+            }}
+          >
+            <div
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
+              style={{
+                color: isDone ? "var(--c-success)" : isCurrent ? "var(--c-primary)" : "var(--c-muted)",
+              }}
+            >
+              {isDone ? <CheckCircle2 size={16} /> : <Circle size={14} />}
+            </div>
+            <s.Icon size={15} />
+            <div className="min-w-0 flex-1">
+              <span className="text-sm font-semibold" style={{ color: "var(--c-heading)" }}>
+                {s.title[language]}
+              </span>
+              <div
+                className="mt-0.5 text-[11px]"
+                style={{
+                  color: isDone ? "var(--c-success)" : isCurrent ? "var(--c-primary)" : "var(--c-muted)",
+                }}
+              >
+                {isDone
+                  ? t(language, { hindi: "पूर्ण", english: "Completed", hinglish: "Completed" })
+                  : isCurrent
+                    ? t(language, { hindi: "वर्तमान", english: "Current", hinglish: "Current" })
+                    : t(language, { hindi: "आगामी", english: "Upcoming", hinglish: "Upcoming" })}
+              </div>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+
   return (
     <div
-      className="h-dvh overflow-y-auto"
+      className="legal-journey-page h-dvh min-h-0 overflow-y-auto lg:min-h-0"
       style={{ background: "var(--c-bg)" }}
     >
-      <div className="theme-header px-4 pt-10 pb-4">
-        <div className="flex items-center gap-3">
+      <div className="theme-header px-4 pb-4 pt-10 lg:hidden">
+        <div className="mb-2 flex items-center gap-3">
           <button
+            type="button"
             onClick={() => navigate("/home")}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-sm hover:bg-white/10 transition-all"
+            className="text-2xl"
             style={{ color: "rgba(255,255,255,0.78)" }}
+            aria-label={t(language, { hindi: "वापस", english: "Back", hinglish: "Back" })}
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={20} />
           </button>
-          <div className="text-2xl" style={{ color: "#FAF7F4" }}>
-            <Scale size={20} />
+          <div className="text-3xl" style={{ color: "#FAF7F4" }}>
+            <ListChecks size={26} />
           </div>
-          <div className="flex-1">
-            <h1 className="font-extrabold text-base leading-tight text-white">
+          <div>
+            <h1 className="text-lg font-extrabold text-white">
               {t(language, {
                 hindi: "कानूनी यात्रा",
                 english: "Legal Journey",
@@ -1379,49 +1451,143 @@ export default function LegalJourney() {
         </div>
       </div>
 
-      <div className="content-shell py-4 space-y-4 pb-28">
-        <div className="card-sm">
-          <p className="section-label mb-2">
+      <a href="tel:18003134963" className="emergency-banner lg:hidden">
+        <Phone size={14} className="mr-1 inline" />{" "}
+        {t(language, {
+          hindi: "कुंजी (मुफ्त): 1800-313-4963 | NALSA 1516",
+          english: "Kunji (free): 1800-313-4963 | NALSA 1516",
+          hinglish: "Kunji: 1800-313-4963 | NALSA 1516",
+        })}
+      </a>
+
+      <div className="min-h-0 lg:mx-auto lg:grid lg:w-full lg:max-w-[min(105rem,100%)] lg:grid-cols-[minmax(0,1fr)_minmax(19rem,26rem)] lg:gap-6 lg:px-12 lg:pb-8 2xl:max-w-[min(112rem,100%)] 2xl:px-14">
+        <div className="min-w-0">
+          <div className="content-shell pt-4 lg:!max-w-none lg:mx-0 lg:px-0 lg:pt-6">
+            <div className="glass-panel section-block p-3 lg:p-5">
+              <div className="section-header-row">
+                <div>
+                  <p className="mb-1 text-xs font-bold uppercase tracking-wide lg:text-sm" style={{ color: "var(--c-label)" }}>
+                    {t(language, {
+                      hindi: "आपकी कानूनी यात्रा",
+                      english: "Your legal journey",
+                      hinglish: "Aapki legal journey",
+                    })}
+                  </p>
+                  <p className="section-helper lg:text-base">
+                    {t(language, {
+                      hindi: "स्टेज, चेकपॉइंट और दस्तावेज़ एक ही जगह ट्रैक करें।",
+                      english: "Track stages, checkpoints, and documents in one place.",
+                      hinglish: "Stages, checkpoints aur documents ek jagah track karo.",
+                    })}
+                  </p>
+                </div>
+              </div>
+              <p className="section-label mb-2 mt-3">
+                {t(language, {
+                  hindi: "जर्नी प्रोग्रेस",
+                  english: "Journey progress",
+                  hinglish: "Journey progress",
+                })}
+              </p>
+              <div className="mb-2 flex items-center justify-between text-xs lg:text-sm" style={{ color: "var(--c-muted)" }}>
+                <span>
+                  {t(language, {
+                    hindi: `पूर्ण स्टेज: ${completedStageCount}/${STAGES.length}`,
+                    english: `Completed stages: ${completedStageCount}/${STAGES.length}`,
+                    hinglish: `Completed stages: ${completedStageCount}/${STAGES.length}`,
+                  })}
+                </span>
+                <span>
+                  {t(language, {
+                    hindi: `चेकपॉइंट: ${currentStageDoneCount}/${currentStage.checkpoints.length}`,
+                    english: `Checkpoints: ${currentStageDoneCount}/${currentStage.checkpoints.length}`,
+                    hinglish: `Checkpoints: ${currentStageDoneCount}/${currentStage.checkpoints.length}`,
+                  })}
+                </span>
+              </div>
+              <div
+                className="mb-4 h-2 w-full overflow-hidden rounded-full"
+                style={{
+                  background: "var(--c-surface-2)",
+                  border: "1px solid var(--c-border)",
+                }}
+              >
+                <div
+                  className="h-full"
+                  style={{
+                    width: `${((completedStageCount + currentStageDoneCount / Math.max(1, currentStage.checkpoints.length)) / STAGES.length) * 100}%`,
+                    background: "var(--c-primary)",
+                  }}
+                />
+              </div>
+
+              <div className="border-t pt-4" style={{ borderColor: "var(--c-border)" }}>
+                <p className="section-label mb-2">
+                  {t(language, {
+                    hindi: "कैसे शुरू करें",
+                    english: "How to start",
+                    hinglish: "Kaise start karein",
+                  })}
+                </p>
+                <p className="text-sm lg:text-base" style={{ color: "var(--c-text)" }}>
+                  {t(language, {
+                    hindi:
+                      "हर स्टेज में: (1) अगले कदम पूरे करें (2) ज़रूरी फील्ड भरें (3) AI से सवाल पूछें।",
+                    english:
+                      "Each stage: (1) complete next actions (2) fill required fields (3) ask AI targeted questions.",
+                    hinglish:
+                      "Har stage: (1) next actions (2) required fields (3) AI se sawaal.",
+                  })}
+                </p>
+              </div>
+
+              <div className="mt-4 border-t pt-4" style={{ borderColor: "var(--c-border)" }}>
+                <p className="section-label mb-2">
+                  {t(language, {
+                    hindi: "मेरी स्थिति",
+                    english: "My current situation",
+                    hinglish: "Meri situation",
+                  })}
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    value={situationInput}
+                    onChange={(e) => setSituationInput(e.target.value)}
+                    placeholder={t(language, {
+                      hindi: "उदाहरण: FIR filed, need bail",
+                      english: "Example: FIR filed, need bail",
+                      hinglish: "Example: FIR filed, need bail",
+                    })}
+                    className="min-w-0 flex-1 rounded-xl border px-3 py-2 text-sm outline-none"
+                    style={{
+                      background: "var(--c-bg)",
+                      color: "var(--c-text)",
+                      borderColor: "var(--c-border)",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={autoPlaceStage}
+                    className="see-more-btn shrink-0"
+                    aria-label={t(language, { hindi: "स्टेज लगाएं", english: "Match stage", hinglish: "Stage match" })}
+                  >
+                    <Search size={13} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="content-shell space-y-4 py-4 pb-28 lg:!max-w-none lg:mx-0 lg:space-y-6 lg:px-0 lg:py-6 lg:pb-8">
+        <div className="card-sm lg:hidden">
+          <p className="section-label mb-3">
             {t(language, {
-              hindi: "जर्नी प्रोग्रेस",
-              english: "Journey Progress",
-              hinglish: "Journey Progress",
+              hindi: "स्टेज प्रोग्रेस",
+              english: "Stage progress",
+              hinglish: "Stage progress",
             })}
           </p>
-          <div
-            className="flex items-center justify-between text-xs mb-2"
-            style={{ color: "var(--c-muted)" }}
-          >
-            <span>
-              {t(language, {
-                hindi: `पूर्ण स्टेज: ${completedStageCount}/${STAGES.length}`,
-                english: `Completed stages: ${completedStageCount}/${STAGES.length}`,
-                hinglish: `Completed stages: ${completedStageCount}/${STAGES.length}`,
-              })}
-            </span>
-            <span>
-              {t(language, {
-                hindi: `चेकपॉइंट: ${currentStageDoneCount}/${currentStage.checkpoints.length}`,
-                english: `Checkpoints: ${currentStageDoneCount}/${currentStage.checkpoints.length}`,
-                hinglish: `Checkpoints: ${currentStageDoneCount}/${currentStage.checkpoints.length}`,
-              })}
-            </span>
-          </div>
-          <div
-            className="w-full h-2 rounded-full overflow-hidden"
-            style={{
-              background: "var(--c-surface-2)",
-              border: "1px solid var(--c-border)",
-            }}
-          >
-            <div
-              className="h-full"
-              style={{
-                width: `${((completedStageCount + currentStageDoneCount / Math.max(1, currentStage.checkpoints.length)) / STAGES.length) * 100}%`,
-                background: "var(--c-primary)",
-              }}
-            />
-          </div>
+          {renderStageProgressList()}
         </div>
 
         <div className="card-sm">
@@ -1432,7 +1598,7 @@ export default function LegalJourney() {
               hinglish: "Document Guide (Sample)",
             })}
           </p>
-          <div className="grid grid-cols-3 gap-1.5 mb-3">
+          <div className="grid grid-cols-3 gap-1.5 mb-3 lg:gap-3 lg:max-w-2xl">
             {DOC_SCHEMAS.map((doc) => (
               <button
                 key={doc.id}
@@ -1739,141 +1905,6 @@ export default function LegalJourney() {
         <div className="card-sm">
           <p className="section-label mb-2">
             {t(language, {
-              hindi: "कैसे शुरू करें",
-              english: "How to Start",
-              hinglish: "Kaise Start Karein",
-            })}
-          </p>
-          <p className="text-sm" style={{ color: "var(--c-text)" }}>
-            {t(language, {
-              hindi:
-                "हर स्टेज में 3 चीज़ें करें: (1) अगले कदम पूरे करें (2) ज़रूरी फील्ड भरें (3) AI से targeted सवाल पूछें।",
-              english:
-                "For each stage do 3 things: (1) complete next actions (2) fill required fields (3) ask targeted questions to AI.",
-              hinglish:
-                "Har stage mein 3 kaam karo: (1) next actions complete karo (2) required fields bharo (3) AI se targeted sawaal pucho.",
-            })}
-          </p>
-        </div>
-
-        <div className="card-sm">
-          <p className="section-label mb-2">
-            {t(language, {
-              hindi: "मेरी स्थिति",
-              english: "My Current Situation",
-              hinglish: "Meri Current Situation",
-            })}
-          </p>
-          <div className="flex gap-2">
-            <input
-              value={situationInput}
-              onChange={(e) => setSituationInput(e.target.value)}
-              placeholder={t(language, {
-                hindi: "उदाहरण: FIR filed, need bail",
-                english: "Example: FIR filed, need bail",
-                hinglish: "Example: FIR filed, need bail",
-              })}
-              className="flex-1 rounded-xl px-3 py-2 text-sm border outline-none"
-              style={{
-                background: "var(--c-bg)",
-                color: "var(--c-text)",
-                borderColor: "var(--c-border)",
-              }}
-            />
-            <button
-              onClick={autoPlaceStage}
-              className="see-more-btn"
-              aria-label="Auto place stage"
-            >
-              <Search size={13} />
-            </button>
-          </div>
-        </div>
-
-        <div className="card-sm">
-          <p className="section-label mb-3">
-            {t(language, {
-              hindi: "स्टेज प्रोग्रेस",
-              english: "Stage Progress",
-              hinglish: "Stage Progress",
-            })}
-          </p>
-          <div className="space-y-2">
-            {STAGES.map((s, idx) => {
-              const isDone = idx < stageIndex;
-              const isCurrent = s.id === journey.currentStageId;
-              return (
-                <button
-                  key={s.id}
-                  onClick={() => setCurrentStage(s.id)}
-                  className="w-full rounded-xl px-3 py-2 border flex items-center gap-3 text-left"
-                  style={{
-                    background: isCurrent
-                      ? "var(--c-primary-l)"
-                      : "var(--c-surface)",
-                    borderColor: isCurrent
-                      ? "rgba(207,120,89,0.35)"
-                      : "var(--c-border)",
-                  }}
-                >
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center"
-                    style={{
-                      color: isDone
-                        ? "var(--c-success)"
-                        : isCurrent
-                          ? "var(--c-primary)"
-                          : "var(--c-muted)",
-                    }}
-                  >
-                    {isDone ? <CheckCircle2 size={16} /> : <Circle size={14} />}
-                  </div>
-                  <s.Icon size={15} />
-                  <div className="flex-1">
-                    <span
-                      className="text-sm font-semibold"
-                      style={{ color: "var(--c-heading)" }}
-                    >
-                      {s.title[language]}
-                    </span>
-                    <div
-                      className="text-[11px] mt-0.5"
-                      style={{
-                        color: isDone
-                          ? "var(--c-success)"
-                          : isCurrent
-                            ? "var(--c-primary)"
-                            : "var(--c-muted)",
-                      }}
-                    >
-                      {isDone
-                        ? t(language, {
-                            hindi: "Completed",
-                            english: "Completed",
-                            hinglish: "Completed",
-                          })
-                        : isCurrent
-                          ? t(language, {
-                              hindi: "Current Stage",
-                              english: "Current Stage",
-                              hinglish: "Current Stage",
-                            })
-                          : t(language, {
-                              hindi: "Upcoming",
-                              english: "Upcoming",
-                              hinglish: "Upcoming",
-                            })}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="card-sm">
-          <p className="section-label mb-2">
-            {t(language, {
               hindi: "वर्तमान स्टेज",
               english: "Current Stage",
               hinglish: "Current Stage",
@@ -2072,7 +2103,7 @@ export default function LegalJourney() {
                   hinglish: "Aap final stage par ho. Post-trial support dekho.",
                 })}
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 gap-2 lg:grid-cols-3 lg:gap-3">
             <button
               onClick={() =>
                 navigate("/chat", {
@@ -2127,6 +2158,148 @@ export default function LegalJourney() {
             </button>
           </div>
         </div>
+      </div>
+        </div>
+
+        <aside
+          className="sticky top-24 mt-4 hidden max-h-[min(720px,calc(100dvh-6rem))] min-h-0 w-full flex-col gap-4 self-start overflow-y-auto rounded-2xl border p-4 lg:mt-6 lg:flex"
+          style={{
+            background: "var(--c-surface)",
+            borderColor: "var(--c-border)",
+          }}
+          aria-label={t(language, {
+            hindi: "स्टेज सूची और मदद",
+            english: "Stage list and help",
+            hinglish: "Stage list aur help",
+          })}
+        >
+          <div className="border-b pb-4" style={{ borderColor: "var(--c-border)" }}>
+            <p className="section-label mb-3">
+              {t(language, {
+                hindi: "स्टेज प्रोग्रेस",
+                english: "Stage progress",
+                hinglish: "Stage progress",
+              })}
+            </p>
+            {renderStageProgressList()}
+          </div>
+
+          <div>
+            <p className="section-label">
+              {t(language, { hindi: "आपके कदम", english: "Your steps", hinglish: "Aapke steps" })}
+            </p>
+            <ol className="mt-2 list-none space-y-2.5 p-0">
+              {journeySidebarSteps.map((text, idx) => (
+                <li
+                  key={idx}
+                  className="flex gap-3 rounded-xl border px-3 py-2.5 text-sm leading-snug lg:text-base lg:leading-relaxed"
+                  style={{
+                    background: "var(--c-surface-2)",
+                    borderColor: "var(--c-border)",
+                    color: "var(--c-text)",
+                  }}
+                >
+                  <span
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-extrabold lg:h-8 lg:w-8 lg:text-sm"
+                    style={{
+                      background: "var(--c-primary-l)",
+                      color: "var(--c-primary)",
+                    }}
+                  >
+                    {idx + 1}
+                  </span>
+                  <span>{text}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <a
+            href="tel:18003134963"
+            className="flex shrink-0 flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-center text-xs font-semibold leading-snug lg:gap-2 lg:px-4 lg:py-3.5 lg:text-sm"
+            style={{
+              background: "rgba(251,191,36,0.08)",
+              color: "#FBBF24",
+              borderColor: "rgba(251,191,36,0.22)",
+            }}
+          >
+            <span className="inline-flex items-center justify-center gap-1.5">
+              <Phone size={14} className="shrink-0 lg:h-4 lg:w-4" />
+              <span>
+                Kunji <strong>1800-313-4963</strong>
+                <span className="mx-1 opacity-60">|</span>
+                NALSA <strong>1516</strong>
+              </span>
+            </span>
+            <span className="text-[0.65rem] font-semibold opacity-90 lg:text-xs">
+              {t(language, {
+                hindi: "कुंजी: रोज 8am–11pm • मुफ्त",
+                english: "Kunji: Daily 8am–11pm • Free",
+                hinglish: "Kunji: Daily 8am–11pm • Free",
+              })}
+            </span>
+          </a>
+
+          <div
+            className="rounded-2xl border px-3 py-3 lg:px-4 lg:py-4"
+            style={{
+              background: "var(--c-primary-l)",
+              borderColor: "rgba(184,82,30,0.18)",
+            }}
+          >
+            <p className="section-label" style={{ color: "var(--c-primary)" }}>
+              {t(language, { hindi: "AI व कानूनी मदद", english: "AI & legal help", hinglish: "AI aur legal help" })}
+            </p>
+            <p className="mt-1 text-xs font-medium leading-relaxed lg:mt-2 lg:text-sm" style={{ color: "var(--c-primary)" }}>
+              {t(language, {
+                hindi: "इस स्टेज के लिए सवाल तैयार है — एक टैप में भेजें।",
+                english: "A ready question for this stage — send it in one tap.",
+                hinglish: "Is stage ke liye sawaal ready hai — ek tap mein bhejo.",
+              })}
+            </p>
+            <button
+              type="button"
+              onClick={() =>
+                navigate("/chat", {
+                  state: { question: currentStage.aiPrompt[language] },
+                })
+              }
+              className="see-more-btn mt-3 inline-flex w-full items-center justify-center gap-2 lg:mt-4 lg:py-2.5 lg:text-sm"
+            >
+              <Scale size={16} className="lg:h-[1.125rem] lg:w-[1.125rem]" />
+              {t(language, {
+                hindi: "AI से इस स्टेज पर पूछें",
+                english: "Ask AI about this stage",
+                hinglish: "AI se is stage par pucho",
+              })}
+            </button>
+          </div>
+        </aside>
+      </div>
+
+      <div className="bottom-nav">
+        {[
+          { Icon: Scale, path: "/chat", label: { hindi: "मदद", english: "Chat", hinglish: "Chat" } },
+          { Icon: BookOpen, path: "/manual", label: { hindi: "गाइड", english: "Guide", hinglish: "Guide" } },
+          { Icon: House, path: "/home", label: { hindi: "होम", english: "Home", hinglish: "Home" } },
+          { Icon: Mic, path: "/voice-guide", label: { hindi: "वॉइस", english: "Voice", hinglish: "Voice" } },
+          { Icon: Phone, path: "/helpline", label: { hindi: "हेल्पलाइन", english: "Helpline", hinglish: "Helpline" } },
+        ].map((item) => (
+          <button
+            key={item.path}
+            type="button"
+            onClick={() => navigate(item.path)}
+            aria-label={item.label[language]}
+            className={`bottom-nav-item ${item.path === "/home" ? "bottom-nav-home" : ""} ${
+              location.pathname === item.path ? "nav-item-active" : "nav-item-inactive"
+            }`}
+          >
+            <span className="nav-icon">
+              <item.Icon size={18} />
+            </span>
+            <span className="nav-label">{item.label[language]}</span>
+          </button>
+        ))}
       </div>
     </div>
   );

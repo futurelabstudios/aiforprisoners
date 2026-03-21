@@ -298,11 +298,11 @@ export default function Home() {
 
   return (
     <div
-      className="min-h-dvh flex flex-col"
+  
       style={{ background: "var(--c-bg)" }}
     >
       {/* ── Top Nav Bar ── */}
-      <div className="theme-header px-4 py-3 flex items-center justify-between">
+      <div className="theme-header px-4 py-3 [@media(max-height:800px)]:py-2 flex items-center justify-between lg:hidden">
         <div className="flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
@@ -341,24 +341,27 @@ export default function Home() {
 
       {/* ── Hero greeting ── */}
       <div
-        className="px-5 pt-5 pb-6 text-center"
+        className="px-5 pt-5 pb-6 [@media(max-height:800px)]:pt-3 [@media(max-height:800px)]:pb-4 text-center lg:w-full lg:max-w-none lg:px-10 lg:pb-10 lg:pt-8 lg:text-left lg:rounded-none lg:border-b lg:border-white/10 xl:px-14 2xl:px-16"
         style={{ background: "var(--c-header)" }}
       >
-        <p className="text-white/50 text-xs font-semibold uppercase tracking-widest mb-1">
+        <p className="text-white/50 text-xs font-semibold uppercase tracking-widest mb-1 [@media(max-height:800px)]:mb-0 lg:text-[0.7rem]">
           {t(language, {
             hindi: "आपका स्वागत है",
             english: "Welcome",
             hinglish: "Aapka Swagat Hai",
           })}
         </p>
-        <h1 className="text-white text-2xl font-extrabold leading-tight mb-1">
+        <h1 className="text-white text-2xl [@media(max-height:800px)]:text-xl font-extrabold leading-tight mb-1 lg:text-3xl lg:font-bold">
           {t(language, {
             hindi: "नमस्ते 🙏",
             english: "Hello! 🙏",
             hinglish: "Namaste 🙏",
           })}
         </h1>
-        <p className="text-sm" style={{ color: "rgba(255,255,255,0.50)" }}>
+        <p
+          className="text-sm lg:text-base lg:max-w-xl"
+          style={{ color: "rgba(255,255,255,0.50)" }}
+        >
           {t(language, {
             hindi: "आज हम आपकी कैसे मदद करें?",
             english: "How can we help you today?",
@@ -367,8 +370,8 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Wave break */}
-      <div style={{ background: "var(--c-header)", lineHeight: 0 }}>
+      {/* Wave break — app-style divider; hidden on desktop where hero meets content flush */}
+      <div className="lg:hidden" style={{ background: "var(--c-header)", lineHeight: 0 }}>
         <svg
           viewBox="0 0 390 18"
           fill="none"
@@ -379,10 +382,12 @@ export default function Home() {
         </svg>
       </div>
 
-      {/* ── Scrollable content ── */}
-      <div className="flex-1 content-shell pt-4 pb-28 space-y-6">
+      {/* ── Scrollable content: main + aside on xl+ (website layout) ── */}
+      <div className="min-h-0 flex-1 overflow-y-auto content-shell pt-4 pb-28 lg:pb-12 [@media(max-height:800px)]:pt-3 [@media(max-height:800px)]:pb-24 xl:pt-10">
+        <div className="flex flex-col gap-8 xl:flex-row xl:items-start xl:gap-10 2xl:gap-12">
+          <div className="min-w-0 flex-1 space-y-6 [@media(max-height:800px)]:space-y-4 lg:space-y-0 lg:web-content-stack">
         <section className="section-block">
-          <div className="section-header-row">
+          <div className="section-header-row lg:items-center">
             <div>
               <span className="section-label">
                 {t(language, {
@@ -400,10 +405,10 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 lg:inline-flex lg:max-w-md lg:grid-cols-none lg:gap-3">
             <button
               onClick={() => setRole("official")}
-              className="rounded-xl px-3 py-2 text-xs font-bold border"
+              className="rounded-xl px-3 py-2 text-xs font-bold border lg:flex-1 lg:rounded-lg lg:py-2.5 lg:text-sm"
               style={{
                 borderColor:
                   currentExperience === "institutional"
@@ -427,7 +432,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => setRole("family")}
-              className="rounded-xl px-3 py-2 text-xs font-bold border"
+              className="rounded-xl px-3 py-2 text-xs font-bold border lg:flex-1 lg:rounded-lg lg:py-2.5 lg:text-sm"
               style={{
                 borderColor:
                   currentExperience === "citizen"
@@ -454,7 +459,7 @@ export default function Home() {
 
         {/* ── SOS: Urgency section ── */}
         <section className="section-block">
-          <div className="section-header-row">
+          <div className="section-header-row lg:items-center">
             <div>
               <span className="section-label">Turant Madad</span>
               <p className="section-helper">
@@ -466,13 +471,13 @@ export default function Home() {
               </p>
             </div>
             <span
-              className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
+              className="text-xs font-bold px-2 py-0.5 rounded-full text-white lg:text-sm lg:px-3"
               style={{ background: "var(--c-danger)" }}
             >
               Urgent
             </span>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 lg:gap-6 xl:gap-8">
             {SOS_ACTIONS.map((action, i) => (
               <button
                 key={i}
@@ -490,10 +495,10 @@ export default function Home() {
                 <div className="mb-2">
                   <action.Icon size={26} color="#fff" />
                 </div>
-                <div className="font-extrabold text-sm leading-tight">
+                <div className="font-extrabold text-sm leading-tight lg:text-base">
                   {action.titles[language as Language]}
                 </div>
-                <div className="text-white/70 text-xs mt-0.5 leading-tight">
+                <div className="text-white/70 text-xs mt-0.5 leading-tight lg:text-sm">
                   {action.subs[language as Language]}
                 </div>
               </button>
@@ -501,44 +506,45 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="grid grid-cols-1 gap-3 xl:grid-cols-2 xl:gap-5">
         {/* ── Helpline strip ── */}
         <a
           href="tel:18003134963"
-          className="emergency-banner rounded-2xl"
+          className="emergency-banner rounded-2xl xl:min-h-[4.5rem] xl:justify-between xl:text-left"
           style={{ borderRadius: "16px", border: "1px solid #FDE68A" }}
         >
           <Phone size={14} />
-          <span className="font-extrabold">Kunji: 1800-313-4963</span>
-          <span style={{ color: "#92400E", fontWeight: 500 }}>
+          <span className="font-extrabold xl:text-sm">Kunji: 1800-313-4963</span>
+          <span className="xl:text-sm" style={{ color: "#92400E", fontWeight: 500 }}>
             Free • 8am–11pm
           </span>
-          <span className="ml-auto text-amber-600 font-bold">Call →</span>
+          <span className="ml-auto text-amber-600 font-bold xl:text-sm">Call →</span>
         </a>
 
         {/* ── Legal Journey CTA ── */}
         <button
           onClick={() => navigate("/legal-journey")}
-          className="w-full rounded-2xl p-4 text-left flex items-center gap-3 active:scale-[0.98] transition-all border"
+          className="w-full rounded-2xl p-4 text-left flex items-center gap-3 active:scale-[0.98] transition-all border xl:p-5"
           style={{
             background: "var(--c-surface)",
             borderColor: "var(--c-border)",
           }}
         >
           <div
-            className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+            className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 xl:h-14 xl:w-14"
             style={{ background: "var(--c-primary-l)", color: "var(--c-primary)" }}
           >
             <ListChecks size={19} />
           </div>
-          <div className="flex-1">
-            <p className="font-extrabold text-sm" style={{ color: "var(--c-heading)" }}>
+          <div className="flex-1 min-w-0">
+            <p className="font-extrabold text-sm xl:text-base" style={{ color: "var(--c-heading)" }}>
               {t(language, {
                 hindi: "कानूनी यात्रा ट्रैक करें",
                 english: "Track Legal Journey",
                 hinglish: "Legal Journey Track Karo",
               })}
             </p>
-            <p className="text-xs mt-0.5" style={{ color: "var(--c-muted)" }}>
+            <p className="text-xs mt-0.5 xl:text-sm" style={{ color: "var(--c-muted)" }}>
               {t(language, {
                 hindi: "FIR से Judgment तक step-by-step मार्गदर्शन",
                 english: "Step-by-step guidance from FIR to Judgment",
@@ -546,12 +552,13 @@ export default function Home() {
               })}
             </p>
           </div>
-          <span style={{ color: "var(--c-primary)", fontWeight: 700 }}>→</span>
+          <span className="shrink-0 xl:text-lg" style={{ color: "var(--c-primary)", fontWeight: 700 }}>→</span>
         </button>
+        </div>
 
         {/* ── Services grid ── */}
         <section className="section-block">
-          <div className="section-header-row">
+          <div className="section-header-row lg:items-center">
             <div>
               <p className="section-label">
                 {t(language, {
@@ -578,7 +585,7 @@ export default function Home() {
               </button>
             )}
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
             {visibleServices.map((svc, i) => (
               <button
                 key={i}
@@ -586,20 +593,20 @@ export default function Home() {
                 className="feature-tile group"
               >
                 <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                  className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0 lg:h-14 lg:w-14 lg:rounded-[0.65rem]"
                   style={{ background: svc.iconBg, color: svc.iconColor }}
                 >
-                  <svc.Icon size={20} />
+                  <svc.Icon className="h-5 w-5 lg:h-6 lg:w-6" />
                 </div>
                 <div>
                   <div
-                    className="font-extrabold text-sm leading-tight transition-colors group-hover:text-[#B8521E]"
+                    className="font-extrabold text-sm leading-tight transition-colors group-hover:text-[#B8521E] lg:text-base"
                     style={{ color: "var(--c-heading)" }}
                   >
                     {svc.titles[language as Language]}
                   </div>
                   <div
-                    className="text-xs mt-0.5 leading-tight"
+                    className="text-xs mt-0.5 leading-tight lg:text-sm"
                     style={{ color: "var(--c-muted)" }}
                   >
                     {svc.subs[language as Language]}
@@ -613,7 +620,7 @@ export default function Home() {
         {/* ── Chat + Voice CTA ── */}
         <button
           onClick={() => navigate("/chat")}
-          className="w-full rounded-2xl p-4 text-left flex items-center gap-4 active:scale-[0.98] transition-all"
+          className="w-full rounded-2xl p-4 text-left flex items-center gap-4 active:scale-[0.98] transition-all xl:p-6 xl:gap-5"
           style={{
             background: "linear-gradient(145deg, #0D0603, #180A04)",
             boxShadow: "0 6px 28px rgba(13,6,3,0.28)",
@@ -663,8 +670,11 @@ export default function Home() {
           </div>
         </button>
 
+          </div>
+
+          <aside className="w-full min-w-0 shrink-0 space-y-6 xl:sticky xl:top-24 xl:w-80 xl:self-start xl:space-y-6 xl:border-l xl:border-[var(--c-border)] xl:pl-8 2xl:top-28 2xl:w-96 2xl:pl-10">
         {/* ── Aaj Ka Adhikar (Right of the Day) ── */}
-        <div className="rights-tip">
+        <div className="rights-tip xl:p-5">
           <div className="flex items-center gap-2 mb-2">
             <span className="chip">Aaj Ka Adhikar</span>
           </div>
@@ -711,13 +721,6 @@ export default function Home() {
               })}
             </p>
           </div>
-          <p className="section-label mb-0">
-            {t(language, {
-              hindi: "जल्दी पूछें",
-              english: "Quick Questions",
-              hinglish: "Jaldi Puchein",
-            })}
-          </p>
           <div className="space-y-2">
             {quickQs.map((q, i) => (
               <button
@@ -747,7 +750,7 @@ export default function Home() {
 
         {/* ── Capability building: Learn section ── */}
         <section className="section-block">
-          <div className="section-header-row">
+          <div className="section-header-row xl:items-start">
             <div>
               <p className="section-label">
                 {t(language, {
@@ -774,7 +777,7 @@ export default function Home() {
               </button>
             )}
           </div>
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-1 gap-2 xl:gap-3">
             {visibleLearnPathways.map((item, i) => (
               <button
                 key={i}
@@ -823,6 +826,8 @@ export default function Home() {
                 "Yeh general jaankari hai. Apne case ke liye vakeel se zaroor milein.",
             })}
           </p>
+        </div>
+          </aside>
         </div>
       </div>
 

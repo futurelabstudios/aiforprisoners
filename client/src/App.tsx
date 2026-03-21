@@ -5,7 +5,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { AppProvider, useApp, t, Theme } from "./context/AppContext";
+import { AppProvider, useApp, t } from "./context/AppContext";
 import LanguageSelect from "./pages/LanguageSelect";
 import Home from "./pages/Home";
 import LegalChat from "./pages/LegalChat";
@@ -14,6 +14,7 @@ import Helpline from "./pages/Helpline";
 import VoiceGuide from "./pages/VoiceGuide";
 import Manual from "./pages/Manual";
 import LegalJourney from "./pages/LegalJourney";
+import DesktopSiteHeader from "./components/DesktopSiteHeader";
 import {
   Scale,
   Mic,
@@ -25,9 +26,6 @@ import {
   Ambulance,
   FileText,
   AlertTriangle,
-  Moon,
-  Sun,
-  LucideIcon,
 } from "lucide-react";
 
 /* ── Left brand panel ── */
@@ -352,7 +350,7 @@ function RightPanel() {
 function PanelDivider() {
   return (
     <div
-      className="hidden xl:block w-px self-stretch my-8 flex-shrink-0"
+      className="hidden 2xl:block w-px self-stretch my-8 flex-shrink-0"
       style={{
         background:
           "linear-gradient(to bottom, transparent, rgba(255,255,255,0.07) 20%, rgba(255,255,255,0.07) 80%, transparent)",
@@ -361,56 +359,15 @@ function PanelDivider() {
   );
 }
 
-/* ── Bottom desktop controls — only on lg+ ── */
-function DesktopControls() {
-  const { theme, setTheme } = useApp();
-
-  return (
-    <div
-      className="hidden lg:flex fixed top-5 right-5 z-[9999] items-center gap-1 rounded-full px-1 py-1"
-      style={{
-        background: "rgba(17,14,12,0.88)",
-        border: "1px solid rgba(255,255,255,0.10)",
-        backdropFilter: "blur(20px)",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.50)",
-      }}
-    >
-      {/* Theme toggle */}
-      {(
-        [
-          ["dark", Moon],
-          ["light", Sun],
-        ] as [Theme, LucideIcon][]
-      ).map(([value, Icon]) => (
-        <button
-          key={value}
-          onClick={() => setTheme(value)}
-          title={value === "dark" ? "Dark theme" : "Light theme"}
-          className="rounded-full px-4 py-2 text-sm font-bold transition-all"
-          style={
-            theme === value
-              ? { background: "rgba(255,255,255,0.15)", color: "#FAF7F4" }
-              : { color: "rgba(255,255,255,0.35)" }
-          }
-        >
-          <Icon size={16} />
-        </button>
-      ))}
-    </div>
-  );
-}
-
 /* ── Inner app with route awareness ── */
 function AppShell() {
   const location = useLocation();
   const isLangSelect = location.pathname === "/";
-  const { theme, setTheme, isMobileDevice } = useApp();
+  const { isMobileDevice, theme } = useApp();
 
-  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
-
-  /* Outer background for desktop */
+  /* Language route: same as page bg so wide screens never show a dark “gutter” beside the column */
   const outerBg = isLangSelect
-    ? "var(--c-header)"
+    ? "var(--c-bg)"
     : theme === "light"
       ? `radial-gradient(ellipse at 30% 20%, rgba(184,90,60,0.07) 0%, transparent 55%),
          radial-gradient(ellipse at 75% 75%, rgba(60,80,130,0.05) 0%, transparent 55%),
@@ -433,60 +390,63 @@ function AppShell() {
     </Routes>
   );
 
-  /* Desktop/laptop layout — wide center on laptop, 3-column on xl */
+  /* Laptop (1024–1535px): full-width center like 1024×768. Side columns only at 2xl+. */
   const centeredColumnClass = !isLangSelect
     ? isMobileDevice
       ? "w-full px-[10px] md:pb-20 lg:pb-24"
-      : "w-full px-[10px] md:pb-20 lg:pb-24 xl:pb-0"
+      : "w-full px-[10px] md:pb-20 lg:pb-6 2xl:pb-0"
     : "";
 
   return (
     <>
       <div
-        className={`min-h-dvh xl:h-dvh flex items-stretch ${
-          !isLangSelect ? "px-0 xl:items-stretch xl:justify-start" : ""
+        className={`min-h-dvh 2xl:h-dvh flex items-stretch ${
+          !isLangSelect ? "px-0 2xl:items-stretch 2xl:justify-start" : ""
         }`}
         style={{ background: outerBg }}
       >
         {!isLangSelect && !isMobileDevice && (
           <>
-            <div className="hidden xl:flex flex-1 flex-col">
+            <div className="hidden 2xl:flex flex-1 flex-col min-w-0 overflow-y-auto">
               <LeftPanel />
             </div>
             <PanelDivider />
           </>
         )}
 
-        {/* Center content */}
+        {/* Center content — language page stays flex-1 at 2xl (no side rails) so width fills the viewport */}
         <div
           className={`
-            flex flex-col flex-1 xl:flex-none xl:overflow-y-auto xl:overflow-x-hidden
+            flex flex-col min-w-0
+            ${isLangSelect ? "w-full flex-1" : "flex-1 2xl:flex-none 2xl:overflow-y-auto 2xl:overflow-x-hidden"}
+            ${!isLangSelect && !isMobileDevice ? "website-main-column" : ""}
             ${centeredColumnClass}
           `}
-          style={
-            !isLangSelect
-              ? {
-                  background: "var(--c-bg)",
-                  borderColor: "rgba(207,120,89,0.18)",
-                }
-              : {}
-          }
+          style={{
+            background: "var(--c-bg)",
+            ...(!isLangSelect
+              ? { borderColor: "rgba(207,120,89,0.18)" }
+              : {}),
+          }}
         >
-          {ROUTES}
+          {!isLangSelect && <DesktopSiteHeader />}
+          <div
+            className={`min-h-0 min-w-0 flex-1 ${isLangSelect ? "flex w-full flex-col" : ""}`}
+          >
+            {ROUTES}
+          </div>
         </div>
 
         {!isLangSelect && !isMobileDevice && (
           <>
             <PanelDivider />
-            <div className="hidden xl:flex flex-1 flex-col">
+            <div className="hidden 2xl:flex flex-1 flex-col min-w-0 overflow-y-auto">
               <RightPanel />
             </div>
           </>
         )}
       </div>
 
-      {/* Bottom controls — only on desktop */}
-      {!isLangSelect && !isMobileDevice && <DesktopControls />}
     </>
   );
 }

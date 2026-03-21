@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp, t } from '../context/AppContext';
 import {
@@ -290,6 +290,17 @@ export default function PostRelease() {
   const [activeTab, setActiveTab] = useState(0);
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [showAllResources, setShowAllResources] = useState(false);
+  const [isLgUp, setIsLgUp] = useState(
+    typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches,
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => setIsLgUp(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   const cat = categories[activeTab];
   const categoryIcon = (key: string) => {
@@ -318,14 +329,37 @@ export default function PostRelease() {
     };
     return map[key] ?? "var(--c-primary)";
   };
-  const visibleCategories = showAllCategories ? categories : categories.slice(0, 4);
-  const visibleResources = showAllResources ? cat.resources : cat.resources.slice(0, 4);
+  const categoriesExpanded = showAllCategories || isLgUp;
+  const resourcesExpanded = showAllResources || isLgUp;
+  const visibleCategories = categoriesExpanded ? categories : categories.slice(0, 4);
+  const visibleResources = resourcesExpanded ? cat.resources : cat.resources.slice(0, 4);
+
+  const stepItems = [
+    t(language, {
+      hindi: 'ऊपर से वह क्षेत्र चुनें जो आपकी ज़रूरत से मेल खाता हो (आश्रय, खाना, नौकरी, आदि)।',
+      english: 'Choose the area that fits your need — shelter, food, jobs, documents, and more.',
+      hinglish: 'Upar se woh area chuno jo aapki zarurat ho — shelter, food, job, documents, wagairah.',
+    }),
+    t(language, {
+      hindi: 'सूची से संगठन को कॉल करें या मिलें — ये मदद के लिए हैं।',
+      english: 'Call or visit the organizations listed — they exist to support you.',
+      hinglish: 'Neeche diye orgs ko call karo ya jao — woh madad ke liye hain.',
+    }),
+    t(language, {
+      hindi: 'कानूनी सवाल या कागज़ों की समझ के लिए नीचे कुंजी / लीगल हेल्प उपयोग करें।',
+      english: 'For legal questions or help understanding papers, use Kunji or Legal Help (chat).',
+      hinglish: 'Legal sawaal ya papers samajhne ke liye Kunji ya Legal Help chat use karo.',
+    }),
+  ];
 
   return (
-    <div className="h-dvh overflow-y-auto" style={{ background: "var(--c-bg)" }}>
-      {/* Header */}
-      <div className="theme-header px-4 pt-10 pb-4">
-        <div className="flex items-center gap-3 mb-2">
+    <div
+      className="post-release-page h-dvh min-h-0 overflow-y-auto lg:min-h-0"
+      style={{ background: "var(--c-bg)" }}
+    >
+      {/* Header — mobile / tablet only (desktop: site header) */}
+      <div className="theme-header px-4 pb-4 pt-10 lg:hidden">
+        <div className="mb-2 flex items-center gap-3">
           <button
             onClick={() => navigate('/home')}
             className="text-2xl"
@@ -337,7 +371,7 @@ export default function PostRelease() {
             <House size={26} />
           </div>
           <div>
-            <h1 className="font-extrabold text-lg text-white">
+            <h1 className="text-lg font-extrabold text-white">
               {t(language, { hindi: 'जेल के बाद सहायता', english: 'After Release Support', hinglish: 'Jail Ke Baad Madad' })}
             </h1>
             <p className="text-xs" style={{ color: "rgba(255,255,255,0.58)" }}>
@@ -348,153 +382,268 @@ export default function PostRelease() {
         <div className="ai-chip">🤖 AI-Powered Reintegration Hub</div>
       </div>
 
-      {/* Emergency strip */}
-      <a href="tel:18003134963" className="emergency-banner">
-        <Phone size={14} className="inline mr-1" /> Kunji Helpline (Free): 1800-313-4963 | Daily 8am–11pm
+      {/* Emergency strip — mobile / tablet; desktop: sidebar */}
+      <a href="tel:18003134963" className="emergency-banner lg:hidden">
+        <Phone size={14} className="mr-1 inline" /> Kunji Helpline (Free): 1800-313-4963 | Daily 8am–11pm
       </a>
 
-      <div className="content-shell pt-4">
-        <div className="glass-panel p-3 section-block">
-          <div className="section-header-row">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wide mb-1" style={{ color: "var(--c-label)" }}>
-                {t(language, {
-                  hindi: 'सभी विकल्प (आसान पहुंच)',
-                  english: 'All Support Areas',
-                  hinglish: 'Saare Support Areas',
-                })}
-              </p>
-              <p className="section-helper">
-                {t(language, {
-                  hindi: 'पहले एक क्षेत्र चुनें, फिर नीचे संसाधन देखें',
-                  english: 'Pick one area first, then view resources below.',
-                  hinglish: 'Pehle ek area chunein, phir neeche resources dekhein.',
-                })}
-              </p>
-            </div>
-            {categories.length > 4 && (
-              <button
-                onClick={() => setShowAllCategories((v) => !v)}
-                className="see-more-btn inline-flex items-center gap-1"
-                aria-label={showAllCategories ? "Show less" : "See more"}
-              >
-                {showAllCategories ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-              </button>
-            )}
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {visibleCategories.map((c) => {
-              const Icon = categoryIcon(c.icon);
-              return (
-              <button
-                key={c.id}
-                onClick={() => setActiveTab(categories.findIndex((x) => x.id === c.id))}
-                className={`rounded-xl p-3 text-left border transition-all active:scale-95 ${c.id === cat.id ? 'text-white shadow-lg' : ''}`}
-                style={
-                  c.id === cat.id
-                    ? { background: '#C85828', borderColor: 'transparent' }
-                    : { background: 'var(--c-surface)', borderColor: 'var(--c-border)', color: 'var(--c-text)' }
-                }
-              >
-                <div className="text-xl"><Icon size={18} /></div>
-                <div className="font-bold text-xs mt-1">{c.label[language]}</div>
-                <div className="text-[11px] mt-1" style={{ color: c.id === cat.id ? "rgba(255,255,255,0.78)" : "var(--c-muted)" }}>
-                  {c.resources.length} {t(language, {
-                    hindi: 'विकल्प',
-                    english: 'options',
-                    hinglish: 'options',
-                  })}
+      <div className="min-h-0 lg:mx-auto lg:grid lg:w-full lg:max-w-[min(105rem,100%)] lg:grid-cols-[minmax(0,1fr)_minmax(19rem,26rem)] lg:gap-6 lg:px-12 lg:pb-8 2xl:max-w-[min(112rem,100%)] 2xl:px-14">
+        <div className="min-w-0">
+          <div className="content-shell pt-4 lg:!max-w-none lg:mx-0 lg:px-0 lg:pt-6">
+            <div className="glass-panel section-block p-3 lg:p-5">
+              <div className="section-header-row">
+                <div>
+                  <p className="mb-1 text-xs font-bold uppercase tracking-wide lg:text-sm" style={{ color: "var(--c-label)" }}>
+                    {t(language, {
+                      hindi: 'सभी विकल्प (आसान पहुंच)',
+                      english: 'All Support Areas',
+                      hinglish: 'Saare Support Areas',
+                    })}
+                  </p>
+                  <p className="section-helper lg:text-base">
+                    {t(language, {
+                      hindi: 'पहले एक क्षेत्र चुनें, फिर नीचे संसाधन देखें',
+                      english: 'Pick one area first, then view resources below.',
+                      hinglish: 'Pehle ek area chunein, phir neeche resources dekhein.',
+                    })}
+                  </p>
                 </div>
-              </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Resources */}
-      <div className="content-shell py-4 space-y-4 pb-28">
-        <h2 className="font-bold text-xl flex items-center justify-between gap-2" style={{ color: "var(--c-heading)" }}>
-          <span className="flex items-center gap-2">
-            {(() => {
-              const Icon = categoryIcon(cat.icon);
-              return <Icon size={18} />;
-            })()}
-            <span>{cat.label[language]}</span>
-          </span>
-          <span className="text-xs font-bold px-2 py-1 rounded-full border" style={{ color: "var(--c-label)", background: "var(--c-surface-2)", borderColor: "var(--c-border)" }}>
-            {cat.resources.length} {t(language, { hindi: 'सहायता', english: 'supports', hinglish: 'supports' })}
-          </span>
-        </h2>
-        <p className="section-helper">
-          {t(language, {
-            hindi: 'पहले ऊपर दिए गए विकल्प चुनें, फिर नीचे से जरूरत के अनुसार कॉल करें।',
-            english: 'Use these support options based on your current need.',
-            hinglish: 'Apni zarurat ke hisaab se neeche wale options use karein.',
-          })}
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {visibleResources.map((res, i) => (
-            <div
-              key={i}
-              className="premium-card border-l-4"
-              style={{ borderLeftColor: categoryAccent(cat.icon) }}
-            >
-              <h3 className="font-bold text-base mb-1 leading-tight" style={{ color: "var(--c-heading)" }}>{res.name}</h3>
-              <p className="text-sm leading-relaxed mb-2" style={{ color: "var(--c-text)" }}>{res.desc}</p>
-
-              {res.note && (
-                <p className="text-xs italic mb-2" style={{ color: "var(--c-muted)" }}>{res.note}</p>
-              )}
-
-              {res.phone && (
-                <a
-                  href={`tel:${res.phone.replace(/[-\s]/g, '')}`}
-                  className="inline-flex items-center justify-center w-full md:w-auto gap-2
-                             text-white rounded-xl px-4 py-2 text-sm font-bold
-                             active:scale-95 transition-all shadow-sm"
-                  style={{background:'#C85828'}}
-                >
-                  <Phone size={14} /> {t(language, { hindi: 'कॉल करें', english: 'Call Now', hinglish: 'Call Karo' })}: {res.phone}
-                </a>
-              )}
+                {categories.length > 4 && !isLgUp && (
+                  <button
+                    onClick={() => setShowAllCategories((v) => !v)}
+                    className="see-more-btn inline-flex items-center gap-1"
+                    aria-label={showAllCategories ? "Show less" : "See more"}
+                  >
+                    {showAllCategories ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-4">
+                {visibleCategories.map((c) => {
+                  const Icon = categoryIcon(c.icon);
+                  return (
+                  <button
+                    key={c.id}
+                    onClick={() => setActiveTab(categories.findIndex((x) => x.id === c.id))}
+                    className={`rounded-xl border p-3 text-left transition-all active:scale-95 lg:p-4 ${c.id === cat.id ? 'text-white shadow-lg' : ''}`}
+                    style={
+                      c.id === cat.id
+                        ? { background: '#C85828', borderColor: 'transparent' }
+                        : { background: 'var(--c-surface)', borderColor: 'var(--c-border)', color: 'var(--c-text)' }
+                    }
+                  >
+                    <div className="text-xl lg:text-2xl"><Icon size={18} className="lg:h-5 lg:w-5" /></div>
+                    <div className="mt-1 text-xs font-bold lg:mt-1.5 lg:text-sm">{c.label[language]}</div>
+                    <div className="mt-1 text-[11px] lg:text-xs" style={{ color: c.id === cat.id ? "rgba(255,255,255,0.78)" : "var(--c-muted)" }}>
+                      {c.resources.length} {t(language, {
+                        hindi: 'विकल्प',
+                        english: 'options',
+                        hinglish: 'options',
+                      })}
+                    </div>
+                  </button>
+                  );
+                })}
+              </div>
             </div>
-          ))}
-        </div>
-        {cat.resources.length > 4 && (
-          <button
-            onClick={() => setShowAllResources((v) => !v)}
-            className="see-more-btn inline-flex items-center gap-1"
-            aria-label={showAllResources ? "Show less" : "See more options"}
-          >
-            {showAllResources ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-          </button>
-        )}
+          </div>
 
-        {/* Kunji Footer */}
-        <div className="text-white rounded-2xl p-5 mt-4 shadow-xl" style={{background:'linear-gradient(135deg,#6B2010,#C85828)'}}>
-          <div className="text-center">
-            <div className="text-3xl mb-2 flex justify-center"><KeyRound size={26} /></div>
-            <h3 className="font-bold text-lg mb-1">Kunji Helpline</h3>
-            <p className="text-sm mb-3" style={{ color: "rgba(255,255,255,0.78)" }}>
+          {/* Resources */}
+          <div className="content-shell space-y-4 py-4 pb-28 lg:!max-w-none lg:mx-0 lg:space-y-6 lg:px-0 lg:py-6 lg:pb-8">
+            <h2 className="flex items-center justify-between gap-2 text-xl font-bold lg:text-2xl" style={{ color: "var(--c-heading)" }}>
+              <span className="flex items-center gap-2 lg:gap-3">
+                {(() => {
+                  const Icon = categoryIcon(cat.icon);
+                  return <Icon size={18} className="lg:h-6 lg:w-6" />;
+                })()}
+                <span>{cat.label[language]}</span>
+              </span>
+              <span className="rounded-full border px-2 py-1 text-xs font-bold lg:px-3 lg:py-1.5 lg:text-sm" style={{ color: "var(--c-label)", background: "var(--c-surface-2)", borderColor: "var(--c-border)" }}>
+                {cat.resources.length} {t(language, { hindi: 'सहायता', english: 'supports', hinglish: 'supports' })}
+              </span>
+            </h2>
+            <p className="section-helper lg:text-base">
               {t(language, {
-                hindi: 'किसी भी मदद के लिए कुंजी से बात करें',
-                english: 'Talk to Kunji for any help',
-                hinglish: 'Kisi bhi madad ke liye Kunji se baat karein',
+                hindi: 'पहले ऊपर दिए गए विकल्प चुनें, फिर नीचे से जरूरत के अनुसार कॉल करें।',
+                english: 'Use these support options based on your current need.',
+                hinglish: 'Apni zarurat ke hisaab se neeche wale options use karein.',
               })}
             </p>
-            <a
-              href="tel:18003134963"
-              className="btn-primary inline-block w-auto px-8 text-center"
-            >
-              <Phone size={14} className="inline mr-1" />1800-313-4963
-            </a>
-            <p className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.58)" }}>
-              Daily 8am–11pm • FREE • Project Second Chance
-            </p>
+
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:gap-6">
+              {visibleResources.map((res, i) => (
+                <div
+                  key={i}
+                  className="premium-card border-l-4 lg:p-5"
+                  style={{ borderLeftColor: categoryAccent(cat.icon) }}
+                >
+                  <h3 className="mb-1 text-base font-bold leading-tight lg:mb-2 lg:text-lg" style={{ color: "var(--c-heading)" }}>{res.name}</h3>
+                  <p className="mb-2 text-sm leading-relaxed lg:mb-3 lg:text-base" style={{ color: "var(--c-text)" }}>{res.desc}</p>
+
+                  {res.note && (
+                    <p className="mb-2 text-xs italic lg:mb-3 lg:text-sm" style={{ color: "var(--c-muted)" }}>{res.note}</p>
+                  )}
+
+                  {res.phone && (
+                    <a
+                      href={`tel:${res.phone.replace(/[-\s]/g, '')}`}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-white shadow-sm transition-all
+                                 active:scale-95 lg:w-auto lg:px-5 lg:py-3 lg:text-base"
+                      style={{background:'#C85828'}}
+                    >
+                      <Phone size={14} className="lg:h-[1.125rem] lg:w-[1.125rem]" /> {t(language, { hindi: 'कॉल करें', english: 'Call Now', hinglish: 'Call Karo' })}: {res.phone}
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+            {cat.resources.length > 4 && !isLgUp && (
+              <button
+                onClick={() => setShowAllResources((v) => !v)}
+                className="see-more-btn inline-flex items-center gap-1 lg:text-sm"
+                aria-label={showAllResources ? "Show less" : "See more options"}
+              >
+                {showAllResources ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+              </button>
+            )}
+
+            {/* Kunji Footer — mobile / tablet; desktop: sidebar */}
+            <div className="mt-4 rounded-2xl p-5 text-white shadow-xl lg:hidden" style={{background:'linear-gradient(135deg,#6B2010,#C85828)'}}>
+              <div className="text-center">
+                <div className="mb-2 flex justify-center text-3xl"><KeyRound size={26} /></div>
+                <h3 className="mb-1 text-lg font-bold">Kunji Helpline</h3>
+                <p className="mb-3 text-sm" style={{ color: "rgba(255,255,255,0.78)" }}>
+                  {t(language, {
+                    hindi: 'किसी भी मदद के लिए कुंजी से बात करें',
+                    english: 'Talk to Kunji for any help',
+                    hinglish: 'Kisi bhi madad ke liye Kunji se baat karein',
+                  })}
+                </p>
+                <a
+                  href="tel:18003134963"
+                  className="btn-primary inline-block w-auto px-8 text-center"
+                >
+                  <Phone size={14} className="mr-1 inline" />1800-313-4963
+                </a>
+                <p className="mt-2 text-xs" style={{ color: "rgba(255,255,255,0.58)" }}>
+                  Daily 8am–11pm • FREE • Project Second Chance
+                </p>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* Desktop sidebar: steps, helpline, legal / AI help */}
+        <aside
+          className="sticky top-24 mt-4 hidden max-h-[min(720px,calc(100dvh-6rem))] min-h-0 w-full flex-col gap-4 self-start overflow-y-auto rounded-2xl border p-4 lg:mt-6 lg:flex"
+          style={{
+            background: "var(--c-surface)",
+            borderColor: "var(--c-border)",
+          }}
+          aria-label={t(language, {
+            hindi: 'कदम, हेल्पलाइन और लीगल मदद',
+            english: 'Steps, helpline, and legal help',
+            hinglish: 'Steps, helpline aur legal help',
+          })}
+        >
+          <div>
+            <p className="section-label">
+              {t(language, {
+                hindi: 'आपके कदम',
+                english: 'Your steps',
+                hinglish: 'Aapke steps',
+              })}
+            </p>
+            <ol className="mt-2 list-none space-y-2.5 p-0">
+              {stepItems.map((text, idx) => (
+                <li
+                  key={idx}
+                  className="flex gap-3 rounded-xl border px-3 py-2.5 text-sm leading-snug lg:text-base lg:leading-relaxed"
+                  style={{
+                    background: "var(--c-surface-2)",
+                    borderColor: "var(--c-border)",
+                    color: "var(--c-text)",
+                  }}
+                >
+                  <span
+                    className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-xs font-extrabold lg:h-8 lg:w-8 lg:text-sm"
+                    style={{
+                      background: "var(--c-primary-l)",
+                      color: "var(--c-primary)",
+                    }}
+                  >
+                    {idx + 1}
+                  </span>
+                  <span>{text}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <a
+            href="tel:18003134963"
+            className="flex shrink-0 flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-center text-xs font-semibold leading-snug lg:gap-2 lg:px-4 lg:py-3.5 lg:text-sm"
+            style={{
+              background: "rgba(251,191,36,0.08)",
+              color: "#FBBF24",
+              borderColor: "rgba(251,191,36,0.22)",
+            }}
+          >
+            <span className="inline-flex items-center justify-center gap-1.5">
+              <Phone size={14} className="shrink-0 lg:h-4 lg:w-4" />
+              <span>
+                Kunji <strong>1800-313-4963</strong>
+                <span className="mx-1 opacity-60">|</span>
+                NALSA <strong>1516</strong>
+              </span>
+            </span>
+            <span className="text-[0.65rem] font-semibold opacity-90 lg:text-xs">
+              {t(language, {
+                hindi: 'कुंजी: रोज 8am–11pm • मुफ्त',
+                english: 'Kunji: Daily 8am–11pm • Free',
+                hinglish: 'Kunji: Daily 8am–11pm • Free',
+              })}
+            </span>
+          </a>
+
+          <div
+            className="rounded-2xl border px-3 py-3 lg:px-4 lg:py-4"
+            style={{
+              background: "var(--c-primary-l)",
+              borderColor: "rgba(184,82,30,0.18)",
+            }}
+          >
+            <p className="section-label" style={{ color: "var(--c-primary)" }}>
+              {t(language, {
+                hindi: 'AI व कानूनी मदद',
+                english: 'AI & legal help',
+                hinglish: 'AI aur legal help',
+              })}
+            </p>
+            <p className="mt-1 text-xs font-medium leading-relaxed lg:mt-2 lg:text-sm" style={{ color: "var(--c-primary)" }}>
+              {t(language, {
+                hindi:
+                  'FIR, जमानत या कागज़ों पर सवाल? लीगल हेल्प चैट सरल भाषा में समझाएगा।',
+                english:
+                  'Questions about rights, bail, or documents? Legal Help explains in simple language.',
+                hinglish:
+                  'Rights, bail ya papers par sawaal? Legal Help chat simple language mein samjhayega.',
+              })}
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate('/chat')}
+              className="see-more-btn mt-3 inline-flex w-full items-center justify-center gap-2 lg:mt-4 lg:py-2.5 lg:text-sm"
+            >
+              <Scale size={16} className="lg:h-[1.125rem] lg:w-[1.125rem]" />
+              {t(language, {
+                hindi: 'लीगल हेल्प खोलें',
+                english: 'Open Legal Help',
+                hinglish: 'Legal Help kholo',
+              })}
+            </button>
+          </div>
+        </aside>
       </div>
 
       {/* Bottom Nav */}

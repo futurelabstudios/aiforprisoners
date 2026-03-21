@@ -702,7 +702,7 @@ export default function LegalChat() {
         line.startsWith("* ")
       )
         return (
-          <div key={i} className="flex gap-2 my-1.5">
+          <div key={i} className="my-1.5 flex gap-2 lg:my-2">
             <span
               className="flex-shrink-0 font-bold mt-0.5"
               style={{ color: "var(--c-primary)" }}
@@ -716,7 +716,7 @@ export default function LegalChat() {
         return (
           <div
             key={i}
-            className="font-extrabold mt-3 mb-1"
+            className="font-extrabold mt-3 mb-1 lg:text-lg"
             style={{ color: "var(--c-heading)" }}
           >
             {line.replace(/\*\*/g, "")}
@@ -726,7 +726,7 @@ export default function LegalChat() {
         return (
           <div
             key={i}
-            className="font-extrabold text-base mt-3 mb-1"
+            className="font-extrabold text-base mt-3 mb-1 lg:text-lg"
             style={{ color: "var(--c-heading)" }}
           >
             {line.replace(/^#+\s/, "")}
@@ -738,9 +738,137 @@ export default function LegalChat() {
 
   const currentCat = QUICK_CATEGORIES[activeCategory];
 
+  const renderQuickQuestionsPanel = (compact: boolean) => (
+    <div
+      className="rounded-2xl border"
+      style={{
+        background: "var(--c-surface-2)",
+        borderColor: "var(--c-border)",
+      }}
+    >
+      <div className="px-3 pt-3 pb-1">
+        <p className="section-label">
+          {t(language, {
+            hindi: "जल्दी सवाल",
+            english: "Quick Questions",
+            hinglish: "Quick Questions",
+          })}
+        </p>
+        <p className="section-helper">
+          {t(language, {
+            hindi: "विषय चुनें, फिर सवाल टैप करके तुरंत भेजें।",
+            english: "Pick a topic, then tap a question to send.",
+            hinglish: "Topic choose karke sawaal tap karo aur turant bhejo.",
+          })}
+        </p>
+      </div>
+      <div className="flex gap-1.5 px-3 pt-2 pb-2 overflow-x-auto no-scrollbar">
+        {QUICK_CATEGORIES.map((cat, i) => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveCategory(i)}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-bold flex-shrink-0 transition-all lg:px-3.5 lg:py-2 lg:text-sm
+                        ${i === activeCategory ? "tab-active" : "tab-inactive"}`}
+          >
+            {cat.label[language as Language]}
+          </button>
+        ))}
+      </div>
+      <div
+        className={
+          compact
+            ? "grid grid-cols-1 gap-2 px-2.5 sm:px-3 pb-3"
+            : "grid grid-cols-1 sm:grid-cols-2 gap-2 px-2.5 sm:px-3 pb-3 lg:grid-cols-3 lg:gap-3"
+        }
+      >
+        {(currentCat.questions[language as Language] as string[]).map((q, i) => (
+          <button
+            key={i}
+            onClick={() =>
+              firFlowActive ? handleFirFlowInput(q) : void sendMessage(q)
+            }
+            className="quick-btn"
+            disabled={isLoading}
+          >
+            {q}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderFirVoicePanel = () => (
+    <div
+      className="rounded-2xl border p-3"
+      style={{
+        background: "var(--c-primary-l)",
+        borderColor: "rgba(207,120,89,0.25)",
+      }}
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0 flex-1">
+          <p className="section-label" style={{ color: "var(--c-primary)" }}>
+            FIR Voice Assist
+          </p>
+          <p className="text-xs mt-1 lg:text-sm lg:leading-snug" style={{ color: "var(--c-primary-d)" }}>
+            {t(language, {
+              hindi:
+                "आवाज़ से FIR details भरें: District, PS, FIR no, Year.",
+              english:
+                "Fill FIR details by voice: district, station, FIR no, year.",
+              hinglish:
+                "Voice se FIR details bharo: district, station, FIR no, year.",
+            })}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={startFirVoiceFlow}
+          className="see-more-btn inline-flex shrink-0 items-center gap-1 self-start sm:self-auto"
+          style={{ width: "auto", padding: "0 12px", height: "34px" }}
+        >
+          <SearchCheck size={14} />
+          {t(language, {
+            hindi: firFlowActive ? "रीसेट" : "शुरू",
+            english: firFlowActive ? "Reset" : "Start",
+            hinglish: firFlowActive ? "Reset" : "Start",
+          })}
+        </button>
+      </div>
+      {firFlowActive && (
+        <p className="text-xs mt-2 lg:text-sm lg:leading-snug" style={{ color: "var(--c-primary)" }}>
+          {t(language, {
+            hindi: `Step ${firStepIndex + 1}/4 चालू है। अपनी जानकारी बोलें या लिखें और Send दबाएं।`,
+            english: `Step ${firStepIndex + 1}/4 active. Speak or type and press send.`,
+            hinglish: `Step ${firStepIndex + 1}/4 active hai. Bolke ya likh ke send karo.`,
+          })}
+        </p>
+      )}
+      {lastFirLookupUrl && (
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={() =>
+              window.open(lastFirLookupUrl, "_blank", "noopener,noreferrer")
+            }
+            className="see-more-btn inline-flex items-center gap-1"
+            style={{ width: "auto", padding: "0 12px", height: "34px" }}
+          >
+            <ExternalLink size={13} />
+            {t(language, {
+              hindi: "Portal खोलें",
+              english: "Open Portal",
+              hinglish: "Portal kholo",
+            })}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div
-      className="flex flex-col h-dvh pb-16"
+      className="legal-chat-page flex min-h-0 flex-1 flex-col h-dvh pb-16 lg:h-auto lg:min-h-[calc(100dvh-4rem)] lg:pb-3"
       style={{ background: "var(--c-bg)" }}
     >
       {/* Hidden file inputs */}
@@ -760,8 +888,8 @@ export default function LegalChat() {
         onChange={handleFileSelect}
       />
 
-      {/* ── Header ── */}
-      <div className="theme-header px-3 sm:px-4 pt-9 sm:pt-10 pb-3 flex items-center gap-2.5 sm:gap-3">
+      {/* ── Header (mobile / tablet; desktop uses site header) ── */}
+      <div className="theme-header flex items-center gap-2.5 px-3 pb-3 pt-9 sm:gap-3 sm:px-4 sm:pt-10 lg:hidden">
         <button
           onClick={() => navigate("/home")}
           className="text-xl p-1 -ml-1 transition-colors"
@@ -793,41 +921,46 @@ export default function LegalChat() {
         </div>
       </div>
 
-      {/* ── Emergency banner ── */}
-      <div className="content-shell pt-2 px-3 sm:px-4">
+      {/* ── Emergency banner (mobile / tablet; desktop: sidebar) ── */}
+      <div className="content-shell pt-2 px-3 sm:px-4 xl:hidden">
         <a href="tel:18003134963" className="emergency-banner text-xs rounded-xl border" style={{ borderColor: "rgba(251,191,36,0.22)" }}>
           <Phone size={12} className="inline mr-1" />Kunji: <strong>1800-313-4963</strong> | NALSA: <strong>1516</strong>
         </a>
       </div>
 
-      {/* ── Document upload hint banner (shown once) ── */}
+      {/* ── Document upload hint (mobile / tablet; desktop: sidebar) ── */}
       {messages.length === 1 && (
-        <div
-          className="mx-3 mt-2 rounded-2xl px-4 py-3 flex items-center gap-3"
-          style={{
-            background: "var(--c-primary-l)",
-            border: "1px solid rgba(184,82,30,0.18)",
-          }}
-        >
-          <span className="text-2xl flex-shrink-0"><FileText size={20} /></span>
-          <p
-            className="text-xs leading-relaxed font-medium"
-            style={{ color: "var(--c-primary)" }}
+        <div className="content-shell mt-2 xl:hidden">
+          <div
+            className="rounded-2xl px-4 py-3 flex items-center gap-3"
+            style={{
+              background: "var(--c-primary-l)",
+              border: "1px solid rgba(184,82,30,0.18)",
+            }}
           >
-            {t(language, {
-              hindi:
-                "FIR, जमानत पत्र, या चार्जशीट की फोटो / PDF अपलोड करें — AI समझाएगा।",
-              english:
-                "Upload or photograph your FIR, bail order, or chargesheet — AI will explain it.",
-              hinglish:
-                "Apni FIR, bail order ya chargesheet ki photo / PDF upload karein — AI samjhayega.",
-            })}
-          </p>
+            <span className="text-2xl flex-shrink-0"><FileText size={20} /></span>
+            <p
+              className="text-xs leading-relaxed font-medium"
+              style={{ color: "var(--c-primary)" }}
+            >
+              {t(language, {
+                hindi:
+                  "FIR, जमानत पत्र, या चार्जशीट की फोटो / PDF अपलोड करें — AI समझाएगा।",
+                english:
+                  "Upload or photograph your FIR, bail order, or chargesheet — AI will explain it.",
+                hinglish:
+                  "Apni FIR, bail order ya chargesheet ki photo / PDF upload karein — AI samjhayega.",
+              })}
+            </p>
+          </div>
         </div>
       )}
 
+      {/* ── Main column + desktop quick sidebar ── */}
+      <div className="min-h-0 flex flex-1 flex-col xl:mx-auto xl:w-full xl:max-w-[min(105rem,100%)] xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(19rem,26rem)] xl:gap-6 xl:px-12 xl:pb-4 2xl:max-w-[min(112rem,100%)] 2xl:px-14">
+        <div className="min-h-0 flex min-w-0 flex-1 flex-col">
       {/* ── Messages ── */}
-      <div className="flex-1 overflow-y-auto content-shell px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
+      <div className="min-h-0 flex-1 overflow-y-auto content-shell space-y-3 px-3 py-3 sm:space-y-4 sm:px-4 sm:py-4 lg:space-y-5 lg:py-5 xl:!max-w-none xl:mx-0 xl:w-full xl:px-0">
         {messages.length <= 1 && (
           <div
             className="rounded-2xl px-4 py-3 border flex items-start gap-3"
@@ -839,14 +972,26 @@ export default function LegalChat() {
           >
             <MessageCircleQuestion size={16} className="mt-0.5 flex-shrink-0" />
             <p className="text-xs leading-relaxed">
-              {t(language, {
-                hindi:
-                  "टिप: ऊपर जल्दी सवाल चुनें या नीचे अपना सवाल सरल शब्दों में लिखें।",
-                english:
-                  "Tip: choose a quick question above, or type your question below in simple words.",
-                hinglish:
-                  "Tip: upar quick question chunein, ya neeche simple words mein sawaal likhein.",
-              })}
+              <span className="xl:hidden">
+                {t(language, {
+                  hindi:
+                    "टिप: ऊपर जल्दी सवाल चुनें या नीचे अपना सवाल सरल शब्दों में लिखें।",
+                  english:
+                    "Tip: choose a quick question above, or type your question below in simple words.",
+                  hinglish:
+                    "Tip: upar quick question chunein, ya neeche simple words mein sawaal likhein.",
+                })}
+              </span>
+              <span className="hidden xl:inline">
+                {t(language, {
+                  hindi:
+                    "टिप: दाईं ओर जल्दी सवाल चुनें, या नीचे सरल शब्दों में लिखें।",
+                  english:
+                    "Tip: pick a quick question on the right, or type below in simple words.",
+                  hinglish:
+                    "Tip: right side se quick question chuno, ya neeche simple words mein likho.",
+                })}
+              </span>
             </p>
           </div>
         )}
@@ -857,13 +1002,19 @@ export default function LegalChat() {
           >
             {msg.role === "assistant" && (
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0 mr-2 mt-1"
+                className="mt-1 mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm lg:mt-0.5 lg:h-10 lg:w-10"
                 style={{ background: "var(--c-primary)", color: "white" }}
               >
-                <Scale size={14} />
+                <Scale size={14} className="lg:h-[18px] lg:w-[18px]" />
               </div>
             )}
-            <div className={`${msg.role === "user" ? "chat-bubble-user" : "chat-bubble-ai"} max-w-[90%] sm:max-w-[84%]`}>
+            <div
+              className={`${msg.role === "user" ? "chat-bubble-user" : "chat-bubble-ai"} max-w-[90%] sm:max-w-[84%] ${
+                msg.role === "user"
+                  ? "lg:max-w-[min(88%,30rem)]"
+                  : "lg:max-w-[min(95%,52rem)] xl:max-w-[min(95%,62rem)]"
+              }`}
+            >
               {/* Attachment preview in message */}
               {msg.attachmentThumb && (
                 <img
@@ -883,13 +1034,13 @@ export default function LegalChat() {
                   }}
                 >
                   <span className="text-lg"><FileText size={15} /></span>
-                  <span className="text-xs font-semibold truncate">
+                  <span className="truncate text-xs font-semibold lg:text-sm">
                     {msg.attachmentName}
                   </span>
                 </div>
               )}
               <div
-                className={`text-sm leading-relaxed ${msg.role === "assistant" ? "chat-prose" : ""}`}
+                className={`text-sm leading-relaxed lg:text-inherit lg:leading-[1.65] ${msg.role === "assistant" ? "chat-prose" : ""}`}
               >
                 {msg.role === "assistant"
                   ? formatMessage(msg.content)
@@ -907,7 +1058,7 @@ export default function LegalChat() {
               {msg.role === "assistant" && msg.content && (
                 <button
                   onClick={() => speakWithElevenLabs(msg.content)}
-                  className="mt-2 text-xs font-semibold flex items-center gap-1 hover:opacity-70 transition-opacity"
+                  className="mt-2 flex items-center gap-1 text-xs font-semibold transition-opacity hover:opacity-70 lg:text-sm"
                   style={{ color: "var(--c-muted)" }}
                 >
                   <Volume2 size={12} className="inline" />{" "}
@@ -925,15 +1076,15 @@ export default function LegalChat() {
       </div>
 
       {/* ── Input area ── */}
-      <div className="px-2.5 sm:px-3 pt-2 pb-3">
+      <div className="content-shell px-2.5 sm:px-3 pt-2 pb-3 lg:px-4 xl:!max-w-none xl:mx-0 xl:w-full xl:px-0">
         <div
-          className="max-w-5xl mx-auto w-full space-y-2 rounded-2xl border p-2.5 sm:p-3"
+          className="w-full space-y-2 rounded-2xl border p-2.5 sm:p-3 lg:space-y-3 lg:p-5"
           style={{
             background: "var(--c-surface)",
             borderColor: "var(--c-border)",
           }}
         >
-          <div className="flex justify-end">
+          <div className="flex justify-end xl:hidden">
             <button
               onClick={() => setShowQuickQ((v) => !v)}
               aria-label={showQuickQ ? "Hide quick questions" : "Show quick questions"}
@@ -948,126 +1099,12 @@ export default function LegalChat() {
             </button>
           </div>
 
-          {/* ── FIR Voice Assistant (frontend guided flow) ── */}
-          <div
-            className="rounded-2xl border p-3"
-            style={{
-              background: "var(--c-primary-l)",
-              borderColor: "rgba(207,120,89,0.25)",
-            }}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="section-label" style={{ color: "var(--c-primary)" }}>
-                  FIR Voice Assist
-                </p>
-                <p className="text-xs mt-1" style={{ color: "var(--c-primary-d)" }}>
-                  {t(language, {
-                    hindi:
-                      "आवाज़ से FIR details भरें: District, PS, FIR no, Year.",
-                    english:
-                      "Fill FIR details by voice: district, station, FIR no, year.",
-                    hinglish:
-                      "Voice se FIR details bharo: district, station, FIR no, year.",
-                  })}
-                </p>
-              </div>
-              <button
-                onClick={startFirVoiceFlow}
-                className="see-more-btn inline-flex items-center gap-1"
-                style={{ width: "auto", padding: "0 12px", height: "34px" }}
-              >
-                <SearchCheck size={14} />
-                {t(language, {
-                  hindi: firFlowActive ? "रीसेट" : "शुरू",
-                  english: firFlowActive ? "Reset" : "Start",
-                  hinglish: firFlowActive ? "Reset" : "Start",
-                })}
-              </button>
-            </div>
-            {firFlowActive && (
-              <p className="text-xs mt-2" style={{ color: "var(--c-primary)" }}>
-                {t(language, {
-                  hindi: `Step ${firStepIndex + 1}/4 चालू है। अपनी जानकारी बोलें या लिखें और Send दबाएं।`,
-                  english: `Step ${firStepIndex + 1}/4 active. Speak or type and press send.`,
-                  hinglish: `Step ${firStepIndex + 1}/4 active hai. Bolke ya likh ke send karo.`,
-                })}
-              </p>
-            )}
-            {lastFirLookupUrl && (
-              <div className="mt-2">
-                <button
-                  onClick={() =>
-                    window.open(lastFirLookupUrl, "_blank", "noopener,noreferrer")
-                  }
-                  className="see-more-btn inline-flex items-center gap-1"
-                  style={{ width: "auto", padding: "0 12px", height: "34px" }}
-                >
-                  <ExternalLink size={13} />
-                  {t(language, {
-                    hindi: "Portal खोलें",
-                    english: "Open Portal",
-                    hinglish: "Portal kholo",
-                  })}
-                </button>
-              </div>
-            )}
-          </div>
+          {/* ── FIR Voice Assistant (mobile / tablet; desktop: sidebar) ── */}
+          <div className="xl:hidden">{renderFirVoicePanel()}</div>
 
-          {/* ── Quick Questions Panel (moved near input) ── */}
+          {/* ── Quick Questions (inline below lg; xl uses sidebar) ── */}
           {showQuickQ && (
-            <div
-              className="rounded-2xl border"
-              style={{
-                background: "var(--c-surface-2)",
-                borderColor: "var(--c-border)",
-              }}
-            >
-              <div className="px-3 pt-3 pb-1">
-                <p className="section-label">
-                  {t(language, {
-                    hindi: "जल्दी सवाल",
-                    english: "Quick Questions",
-                    hinglish: "Quick Questions",
-                  })}
-                </p>
-                <p className="section-helper">
-                  {t(language, {
-                    hindi: "विषय चुनें, फिर सवाल टैप करके तुरंत भेजें।",
-                    english: "Pick a topic, then tap a question to send.",
-                    hinglish: "Topic choose karke sawaal tap karo aur turant bhejo.",
-                  })}
-                </p>
-              </div>
-              <div className="flex gap-1.5 px-3 pt-2 pb-2 overflow-x-auto no-scrollbar">
-                {QUICK_CATEGORIES.map((cat, i) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setActiveCategory(i)}
-                    className={`whitespace-nowrap px-3 py-1.5 text-xs font-bold flex-shrink-0 transition-all
-                                ${i === activeCategory ? "tab-active" : "tab-inactive"}`}
-                  >
-                    {cat.label[language as Language]}
-                  </button>
-                ))}
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 px-2.5 sm:px-3 pb-3">
-                {(currentCat.questions[language as Language] as string[]).map(
-                  (q, i) => (
-                    <button
-                      key={i}
-                  onClick={() =>
-                    firFlowActive ? handleFirFlowInput(q) : void sendMessage(q)
-                  }
-                      className="quick-btn"
-                      disabled={isLoading}
-                    >
-                      {q}
-                    </button>
-                  ),
-                )}
-              </div>
-            </div>
+            <div className="xl:hidden">{renderQuickQuestionsPanel(false)}</div>
           )}
 
           {/* Attachment preview strip */}
@@ -1095,12 +1132,12 @@ export default function LegalChat() {
               )}
               <div className="flex-1 min-w-0">
                 <p
-                  className="text-xs font-bold truncate"
+                  className="truncate text-xs font-bold lg:text-sm"
                   style={{ color: "var(--c-primary)" }}
                 >
                   {attachment.name}
                 </p>
-                <p className="text-xs" style={{ color: "var(--c-primary)" }}>
+                <p className="text-xs lg:text-sm" style={{ color: "var(--c-primary)" }}>
                   {t(language, {
                     hindi: "तैयार — सवाल लिखें या सीधे भेजें",
                     english: "Ready — type a question or send now",
@@ -1121,7 +1158,7 @@ export default function LegalChat() {
           {/* Error message */}
           {attachError && (
             <p
-              className="text-xs font-semibold px-1"
+              className="px-1 text-xs font-semibold lg:text-sm"
               style={{ color: "var(--c-danger)" }}
             >
               <AlertTriangle size={12} className="inline" /> {attachError}
@@ -1129,12 +1166,12 @@ export default function LegalChat() {
           )}
 
           {/* Main input row */}
-          <div className="flex items-end gap-1.5 sm:gap-2">
+          <div className="flex items-end gap-1.5 sm:gap-2 lg:gap-2.5 [&_svg]:h-4 [&_svg]:w-4 lg:[&_svg]:h-[1.125rem] lg:[&_svg]:w-[1.125rem]">
             {/* Mic */}
             <button
               onClick={startVoice}
               title="Voice input"
-              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 text-base transition-all
+              className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-base transition-all sm:h-10 sm:w-10 lg:h-12 lg:w-12
                          ${isRecording ? "mic-recording" : ""}`}
               style={
                 isRecording
@@ -1159,8 +1196,7 @@ export default function LegalChat() {
               onChange={(e) => setInput(e.target.value)}
               placeholder={placeholders[language]}
               rows={1}
-              className="flex-1 min-w-0 rounded-2xl px-3.5 sm:px-4 py-2.5 text-sm resize-none border outline-none
-                         focus:ring-2 max-h-24 leading-relaxed"
+              className="max-h-24 min-h-[2.75rem] flex-1 resize-none rounded-2xl border px-3.5 py-2.5 text-sm leading-relaxed outline-none focus:ring-2 sm:px-4 lg:min-h-[3rem] lg:px-4 lg:py-3 lg:text-base"
               style={{
                 background: "var(--c-bg)",
                 color: "var(--c-text)",
@@ -1183,7 +1219,7 @@ export default function LegalChat() {
                 english: "Upload document",
                 hinglish: "Document upload",
               })}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 text-base transition-all active:scale-90"
+              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-base transition-all active:scale-90 sm:h-10 sm:w-10 lg:h-12 lg:w-12"
               style={{
                 background: "var(--c-bg)",
                 color: "var(--c-muted)",
@@ -1201,7 +1237,7 @@ export default function LegalChat() {
                 english: "Take photo",
                 hinglish: "Photo lo",
               })}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 text-base transition-all active:scale-90"
+              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-base transition-all active:scale-90 sm:h-10 sm:w-10 lg:h-12 lg:w-12"
               style={{
                 background: "var(--c-bg)",
                 color: "var(--c-muted)",
@@ -1215,14 +1251,13 @@ export default function LegalChat() {
             <button
               onClick={handleSubmitInput}
               disabled={(!input.trim() && !attachment) || isLoading}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full text-white flex items-center justify-center text-base
-                         flex-shrink-0 active:scale-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-base text-white transition-all active:scale-90 disabled:cursor-not-allowed disabled:opacity-40 sm:h-10 sm:w-10 lg:h-12 lg:w-12"
               style={{ background: "var(--c-primary)" }}
             >
               {isLoading ? "..." : <SendHorizontal size={16} />}
             </button>
           </div>
-          <p className="section-helper px-1">
+          <p className="section-helper px-1 lg:px-0.5">
             {t(language, {
               hindi: "सरल भाषा में पूछें। उदाहरण: मेरी जमानत कैसे होगी?",
               english: "Ask in simple words. Example: How can I get bail?",
@@ -1232,7 +1267,7 @@ export default function LegalChat() {
 
           {isRecording && (
             <p
-              className="text-center text-xs font-semibold animate-pulse"
+              className="text-center text-xs font-semibold animate-pulse lg:text-sm"
               style={{ color: "var(--c-danger)" }}
             >
               <Circle size={10} className="inline mr-1" />{" "}
@@ -1247,14 +1282,14 @@ export default function LegalChat() {
           {/* Stop TTS */}
           <button
             onClick={stopTTS}
-            className="w-full rounded-xl py-2 text-xs font-semibold border transition-colors"
+            className="w-full rounded-xl border py-2 text-xs font-semibold transition-colors lg:py-2.5 lg:text-sm"
             style={{
               borderColor: "var(--c-border)",
               color: "var(--c-label)",
               background: "transparent",
             }}
           >
-            <Square size={12} className="inline mr-1" />{" "}
+            <Square size={12} className="mr-1 inline lg:h-3.5 lg:w-3.5" />{" "}
             {t(language, {
               hindi: "आवाज़ बंद करें",
               english: "Stop Voice",
@@ -1262,6 +1297,60 @@ export default function LegalChat() {
             })}
           </button>
         </div>
+      </div>
+        </div>
+
+        <aside
+          className="hidden min-h-0 w-full shrink-0 xl:flex xl:max-h-[min(720px,calc(100dvh-5rem))] xl:w-auto xl:flex-col xl:gap-4 xl:self-start xl:overflow-y-auto xl:rounded-2xl xl:border xl:p-4"
+          style={{
+            background: "var(--c-surface)",
+            borderColor: "var(--c-border)",
+          }}
+          aria-label={t(language, {
+            hindi: "FIR, हेल्पलाइन, दस्तावेज़ और जल्दी सवाल",
+            english: "FIR steps, helpline, document help, and quick questions",
+            hinglish: "FIR, helpline, document aur quick questions",
+          })}
+        >
+          {renderFirVoicePanel()}
+          <a
+            href="tel:18003134963"
+            className="emergency-banner text-xs rounded-xl border shrink-0"
+            style={{ borderColor: "rgba(251,191,36,0.22)" }}
+          >
+            <Phone size={12} className="inline mr-1 shrink-0" />
+            Kunji: <strong>1800-313-4963</strong>
+            <span className="mx-1 opacity-60">|</span>
+            NALSA: <strong>1516</strong>
+          </a>
+          {messages.length === 1 && (
+            <div
+              className="flex shrink-0 items-start gap-2 rounded-2xl border px-3 py-3"
+              style={{
+                background: "var(--c-primary-l)",
+                borderColor: "rgba(184,82,30,0.18)",
+              }}
+            >
+              <span className="flex-shrink-0 pt-0.5" style={{ color: "var(--c-primary)" }}>
+                <FileText size={18} />
+              </span>
+              <p
+                className="text-xs font-medium leading-relaxed lg:text-sm lg:leading-relaxed"
+                style={{ color: "var(--c-primary)" }}
+              >
+                {t(language, {
+                  hindi:
+                    "FIR, जमानत पत्र, या चार्जशीट की फोटो / PDF अपलोड करें — AI समझाएगा।",
+                  english:
+                    "Upload or photograph your FIR, bail order, or chargesheet — AI will explain it.",
+                  hinglish:
+                    "Apni FIR, bail order ya chargesheet ki photo / PDF upload karein — AI samjhayega.",
+                })}
+              </p>
+            </div>
+          )}
+          {renderQuickQuestionsPanel(true)}
+        </aside>
       </div>
 
       {/* ── Bottom nav (chat) ── */}

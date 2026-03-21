@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useApp, t, Language } from '../context/AppContext';
 import {
   Scale,
@@ -15,6 +15,7 @@ import {
   Brain,
   ChevronDown,
   ChevronUp,
+  ArrowLeft,
 } from 'lucide-react';
 
 
@@ -241,12 +242,66 @@ const NAV = [
   { Icon: Phone, path: '/helpline',   label: { hindi: 'हेल्पलाइन', english: 'Helpline', hinglish: 'Helpline' } },
 ];
 
+const DESKTOP_GRID =
+  "min-h-0 lg:mx-auto lg:grid lg:w-full lg:max-w-[min(105rem,100%)] lg:grid-cols-[minmax(0,1fr)_minmax(19rem,26rem)] lg:gap-6 lg:px-12 lg:pb-8 2xl:max-w-[min(112rem,100%)] 2xl:px-14";
+
+const ASIDE_CLASS =
+  "sticky top-24 mt-4 hidden max-h-[min(720px,calc(100dvh-6rem))] min-h-0 w-full flex-col gap-4 self-start overflow-y-auto rounded-2xl border p-4 lg:mt-6 lg:flex";
+
 export default function Manual() {
   const { language } = useApp();
   const navigate = useNavigate();
+  const location = useLocation();
   const [selected, setSelected] = useState<Topic | null>(null);
   const [showAllTopics, setShowAllTopics] = useState(false);
-  const visibleTopics = showAllTopics ? TOPICS : TOPICS.slice(0, 6);
+  const [isLgUp, setIsLgUp] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => setIsLgUp(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  const visibleTopics =
+    showAllTopics || isLgUp ? TOPICS : TOPICS.slice(0, 6);
+
+  const guideGridSteps = [
+    t(language, {
+      hindi: "नीचे से वह विषय चुनें जो आपकी ज़रूरत से मेल खाता हो।",
+      english: "Choose the topic that matches what you need to understand.",
+      hinglish: "Neeche se woh topic chuno jo aapki zarurat ho.",
+    }),
+    t(language, {
+      hindi: "हर विषय में छोटे-छोटे पॉइंट — धीरे-धीरे पढ़ें।",
+      english: "Each topic uses short points — read at your own pace.",
+      hinglish: "Har topic mein chhote points — aaram se padho.",
+    }),
+    t(language, {
+      hindi: "गहरा सवाल हो तो लीगल हेल्प चैट या हेल्पलाइन इस्तेमाल करें।",
+      english: "For deeper questions, use Legal Help chat or the helpline page.",
+      hinglish: "Gehra sawaal ho to Legal Help chat ya helpline use karo.",
+    }),
+  ];
+
+  const guideDetailSteps = [
+    t(language, {
+      hindi: "नीचे दिए पॉइंट ध्यान से पढ़ें — ये सामान्य जानकारी है, वकील की जगह नहीं।",
+      english: "Read the points below — this is general information, not legal advice.",
+      hinglish: "Neeche points padho — yeh general info hai, vakeel ki jagah nahi.",
+    }),
+    t(language, {
+      hindi: "दूसरा विषय देखने के लिए वापस जाएँ; बड़ी स्क्रीन पर दाएँ सूची से भी बदल सकते हैं।",
+      english: "Go back to switch topics; on large screens you can also use the list on the right.",
+      hinglish: "Topic badalne ke liye wapas jao; badi screen par right list bhi use kar sakte ho.",
+    }),
+    t(language, {
+      hindi: "संदेह हो तो AI चैट में अपनी भाषा में पूछें।",
+      english: "If unsure, ask in your own language in AI chat.",
+      hinglish: "Confusion ho to AI chat mein apni bhasha mein pucho.",
+    }),
+  ];
   const topicIcon = (emoji: string) => {
     const map: Record<string, any> = {
       "doc-fields": FolderKanban,
@@ -264,86 +319,228 @@ export default function Manual() {
   /* ── TOPIC GRID VIEW ── */
   if (!selected) {
     return (
-      <div className="flex flex-col h-dvh xl:h-full overflow-hidden" style={{ background: 'var(--c-bg)' }}>
-        {/* Header */}
-        <div className="theme-header px-4 pt-10 pb-4">
-          <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/home')}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all text-sm">←</button>
-            <div className="flex-1">
-              <h1 className="font-extrabold text-base text-white leading-tight">
-                {t(language, { hindi: 'कानूनी गाइड', english: 'Legal Guide', hinglish: 'Legal Guide' })}
+      <div
+        className="manual-page h-dvh min-h-0 overflow-y-auto lg:min-h-0 lg:flex-1"
+        style={{ background: "var(--c-bg)" }}
+      >
+        <div className="theme-header px-4 pb-4 pt-10 lg:hidden">
+          <div className="mb-2 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => navigate("/home")}
+              className="text-2xl"
+              style={{ color: "rgba(255,255,255,0.78)" }}
+              aria-label={t(language, { hindi: "वापस", english: "Back", hinglish: "Back" })}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="text-3xl" style={{ color: "#FAF7F4" }}>
+              <BookOpen size={26} />
+            </div>
+            <div>
+              <h1 className="text-lg font-extrabold text-white">
+                {t(language, { hindi: "कानूनी गाइड", english: "Legal Guide", hinglish: "Legal Guide" })}
               </h1>
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                {t(language, { hindi: 'एक विषय चुनें', english: 'Tap a topic to learn', hinglish: 'Ek topic chunein' })}
+              <p className="text-xs" style={{ color: "rgba(255,255,255,0.58)" }}>
+                {t(language, { hindi: "एक विषय चुनें", english: "Tap a topic to learn", hinglish: "Ek topic chunein" })}
               </p>
             </div>
-       
           </div>
         </div>
 
-        {/* Topic grid */}
-        <div className="flex-1 overflow-y-auto px-4 py-5 pb-24">
-          <div className="max-w-lg mx-auto mb-3 section-header-row">
-            <p className="section-helper">
-              {t(language, {
-                hindi: 'कम शब्दों में सीखें। जरूरत हो तो और विषय खोलें।',
-                english: 'Learn in simple points. Open more topics if needed.',
-                hinglish: 'Simple points mein seekhein. Zarurat ho to aur topics kholen.',
-              })}
-            </p>
-            {TOPICS.length > 6 && (
-              <button
-                onClick={() => setShowAllTopics((v) => !v)}
-                className="see-more-btn inline-flex items-center gap-1"
-                aria-label={showAllTopics ? "Show less" : "More topics"}
-              >
-                {showAllTopics ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-              </button>
-            )}
-          </div>
-          <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
-            {visibleTopics.map((tp) => (
-              (() => {
-                const Icon = topicIcon(tp.emoji);
-                return (
-              <button
-                key={tp.id}
-                onClick={() => setSelected(tp)}
-                className="rounded-2xl p-5 text-left flex flex-col gap-3 active:scale-95 transition-all"
-                style={{
-                  background: 'var(--c-surface)',
-                  border: `1px solid var(--c-border)`,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
-                }}
-              >
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
-                  style={{ background: tp.bg }}>
-                  <Icon size={22} />
-                </div>
-                <div>
-                  <div className="font-extrabold text-sm leading-tight" style={{ color: 'var(--c-heading)' }}>
-                    {tp.title[language as Language]}
+        <a href="tel:18003134963" className="emergency-banner lg:hidden">
+          <Phone size={14} className="mr-1 inline" />{" "}
+          {t(language, {
+            hindi: "कुंजी (मुफ्त): 1800-313-4963 | NALSA 1516",
+            english: "Kunji (free): 1800-313-4963 | NALSA 1516",
+            hinglish: "Kunji: 1800-313-4963 | NALSA 1516",
+          })}
+        </a>
+
+        <div className={DESKTOP_GRID}>
+          <div className="min-w-0">
+            <div className="content-shell pt-4 lg:!max-w-none lg:mx-0 lg:px-0 lg:pt-6">
+              <div className="glass-panel section-block p-3 lg:p-5">
+                <div className="section-header-row">
+                  <div>
+                    <p className="mb-1 text-xs font-bold uppercase tracking-wide lg:text-sm" style={{ color: "var(--c-label)" }}>
+                      {t(language, {
+                        hindi: "सभी विषय",
+                        english: "All topics",
+                        hinglish: "Saare topics",
+                      })}
+                    </p>
+                    <p className="section-helper lg:text-base">
+                      {t(language, {
+                        hindi: "कम शब्दों में सीखें। जरूरत हो तो और विषय खोलें।",
+                        english: "Learn in simple points. Open more topics if needed.",
+                        hinglish: "Simple points mein seekhein. Zarurat ho to aur topics kholen.",
+                      })}
+                    </p>
                   </div>
-                  <div className="text-xs mt-1" style={{ color: 'var(--c-label)' }}>
-                    {tp.cards.reduce((n, c) => n + c.items.length, 0)} {t(language, { hindi: 'बातें', english: 'points', hinglish: 'points' })}
-                  </div>
+                  {TOPICS.length > 6 && !isLgUp && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAllTopics((v) => !v)}
+                      className="see-more-btn inline-flex items-center gap-1"
+                      aria-label={showAllTopics ? "Show less" : "More topics"}
+                    >
+                      {showAllTopics ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                    </button>
+                  )}
                 </div>
-              </button>
-                );
-              })()
-            ))}
+              </div>
+            </div>
+
+            <div className="content-shell space-y-4 py-4 pb-28 lg:!max-w-none lg:mx-0 lg:space-y-6 lg:px-0 lg:py-6 lg:pb-8">
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-5 xl:grid-cols-3">
+                {visibleTopics.map((tp) => {
+                  const Icon = topicIcon(tp.emoji);
+                  return (
+                    <button
+                      key={tp.id}
+                      type="button"
+                      onClick={() => setSelected(tp)}
+                      className="flex flex-col gap-3 rounded-2xl p-5 text-left transition-all active:scale-95 lg:p-6"
+                      style={{
+                        background: "var(--c-surface)",
+                        border: `1px solid var(--c-border)`,
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+                      }}
+                    >
+                      <div
+                        className="flex h-12 w-12 items-center justify-center rounded-2xl text-2xl lg:h-14 lg:w-14"
+                        style={{ background: tp.bg }}
+                      >
+                        <Icon className="h-[22px] w-[22px] lg:h-6 lg:w-6" strokeWidth={2} />
+                      </div>
+                      <div>
+                        <div className="text-sm font-extrabold leading-tight lg:text-base" style={{ color: "var(--c-heading)" }}>
+                          {tp.title[language as Language]}
+                        </div>
+                        <div className="mt-1 text-xs" style={{ color: "var(--c-label)" }}>
+                          {tp.cards.reduce((n, c) => n + c.items.length, 0)}{" "}
+                          {t(language, { hindi: "बातें", english: "points", hinglish: "points" })}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
+
+          <aside
+            className={ASIDE_CLASS}
+            style={{
+              background: "var(--c-surface)",
+              borderColor: "var(--c-border)",
+            }}
+            aria-label={t(language, {
+              hindi: "कदम और मदद",
+              english: "Steps and help",
+              hinglish: "Steps aur help",
+            })}
+          >
+            <div>
+              <p className="section-label">
+                {t(language, { hindi: "आपके कदम", english: "Your steps", hinglish: "Aapke steps" })}
+              </p>
+              <ol className="mt-2 list-none space-y-2.5 p-0">
+                {guideGridSteps.map((text, idx) => (
+                  <li
+                    key={idx}
+                    className="flex gap-3 rounded-xl border px-3 py-2.5 text-sm leading-snug lg:text-base lg:leading-relaxed"
+                    style={{
+                      background: "var(--c-surface-2)",
+                      borderColor: "var(--c-border)",
+                      color: "var(--c-text)",
+                    }}
+                  >
+                    <span
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-extrabold lg:h-8 lg:w-8 lg:text-sm"
+                      style={{
+                        background: "var(--c-primary-l)",
+                        color: "var(--c-primary)",
+                      }}
+                    >
+                      {idx + 1}
+                    </span>
+                    <span>{text}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            <a
+              href="tel:18003134963"
+              className="flex shrink-0 flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-center text-xs font-semibold leading-snug lg:gap-2 lg:px-4 lg:py-3.5 lg:text-sm"
+              style={{
+                background: "rgba(251,191,36,0.08)",
+                color: "#FBBF24",
+                borderColor: "rgba(251,191,36,0.22)",
+              }}
+            >
+              <span className="inline-flex items-center justify-center gap-1.5">
+                <Phone size={14} className="shrink-0 lg:h-4 lg:w-4" />
+                <span>
+                  Kunji <strong>1800-313-4963</strong>
+                  <span className="mx-1 opacity-60">|</span>
+                  NALSA <strong>1516</strong>
+                </span>
+              </span>
+              <span className="text-[0.65rem] font-semibold opacity-90 lg:text-xs">
+                {t(language, {
+                  hindi: "कुंजी: रोज 8am–11pm • मुफ्त",
+                  english: "Kunji: Daily 8am–11pm • Free",
+                  hinglish: "Kunji: Daily 8am–11pm • Free",
+                })}
+              </span>
+            </a>
+
+            <div
+              className="rounded-2xl border px-3 py-3 lg:px-4 lg:py-4"
+              style={{
+                background: "var(--c-primary-l)",
+                borderColor: "rgba(184,82,30,0.18)",
+              }}
+            >
+              <p className="section-label" style={{ color: "var(--c-primary)" }}>
+                {t(language, { hindi: "AI व कानूनी मदद", english: "AI & legal help", hinglish: "AI aur legal help" })}
+              </p>
+              <p className="mt-1 text-xs font-medium leading-relaxed lg:mt-2 lg:text-sm" style={{ color: "var(--c-primary)" }}>
+                {t(language, {
+                  hindi: "किसी भी विषय पर गहरा सवाल? लीगल हेल्प चैट खोलें।",
+                  english: "Deeper questions on any topic? Open Legal Help chat.",
+                  hinglish: "Gehra sawaal? Legal Help chat kholo.",
+                })}
+              </p>
+              <button
+                type="button"
+                onClick={() => navigate("/chat")}
+                className="see-more-btn mt-3 inline-flex w-full items-center justify-center gap-2 lg:mt-4 lg:py-2.5 lg:text-sm"
+              >
+                <Scale size={16} className="lg:h-[1.125rem] lg:w-[1.125rem]" />
+                {t(language, { hindi: "लीगल हेल्प खोलें", english: "Open Legal Help", hinglish: "Legal Help kholo" })}
+              </button>
+            </div>
+          </aside>
         </div>
 
-        {/* Bottom nav */}
         <div className="bottom-nav">
           {NAV.map((item) => (
-            <button key={item.path} onClick={() => navigate(item.path)}
+            <button
+              key={item.path}
+              type="button"
+              onClick={() => navigate(item.path)}
               aria-label={item.label[language as Language]}
-              className={`bottom-nav-item ${item.path === '/home' ? 'bottom-nav-home' : ''}
-                         ${item.path === '/manual' ? 'nav-item-active' : 'nav-item-inactive'}`}>
-              <span className="nav-icon"><item.Icon size={18} /></span>
+              className={`bottom-nav-item ${item.path === "/home" ? "bottom-nav-home" : ""} ${
+                location.pathname === item.path ? "nav-item-active" : "nav-item-inactive"
+              }`}
+            >
+              <span className="nav-icon">
+                <item.Icon size={18} />
+              </span>
               <span className="nav-label">{item.label[language as Language]}</span>
             </button>
           ))}
@@ -353,96 +550,294 @@ export default function Manual() {
   }
 
   /* ── TOPIC DETAIL VIEW ── */
+  const SelectedIcon = topicIcon(selected.emoji);
+  const otherTopics = TOPICS.filter((tp) => tp.id !== selected.id);
+
   return (
-    <div className="flex flex-col h-dvh xl:h-full overflow-hidden" style={{ background: 'var(--c-bg)' }}>
-      {/* Header */}
-      <div className="theme-header px-4 pt-10 pb-4">
-        <div className="flex items-center gap-3">
-          <button onClick={() => setSelected(null)}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all text-sm">←</button>
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-            style={{ background: `${selected.color}22` }}>
-            {(() => {
-              const Icon = topicIcon(selected.emoji);
-              return <Icon size={18} />;
-            })()}
+    <div
+      className="manual-page h-dvh min-h-0 overflow-y-auto lg:min-h-0 lg:flex-1"
+      style={{ background: "var(--c-bg)" }}
+    >
+      <div className="theme-header px-4 pb-4 pt-10 lg:hidden">
+        <div className="mb-2 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setSelected(null)}
+            className="text-2xl"
+            style={{ color: "rgba(255,255,255,0.78)" }}
+            aria-label={t(language, { hindi: "विषय सूची", english: "Back to topics", hinglish: "Topics wapas" })}
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <div
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg"
+            style={{ background: `${selected.color}22` }}
+          >
+            <SelectedIcon className="h-[18px] w-[18px]" strokeWidth={2} />
           </div>
-          <div className="flex-1">
-            <h1 className="font-extrabold text-sm text-white leading-tight">
+          <div className="min-w-0">
+            <h1 className="text-lg font-extrabold leading-tight text-white">
               {selected.title[language as Language]}
             </h1>
-            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.40)' }}>
-              {t(language, { hindi: 'वापस जाएं ←', english: '← Back to topics', hinglish: '← Wapas jaao' })}
+            <p className="text-xs" style={{ color: "rgba(255,255,255,0.58)" }}>
+              {t(language, { hindi: "वापस सभी विषयों पर", english: "Back to all topics", hinglish: "Saare topics par wapas" })}
             </p>
           </div>
-    
         </div>
       </div>
 
-      {/* Content — all cards as a simple flat list, no accordion */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-24 max-w-lg mx-auto w-full">
-        {selected.cards.map((card, ci) => (
-          <div key={ci}>
-            {/* Section heading */}
-            <p className="text-xs font-extrabold uppercase tracking-widest mb-3 px-1"
-              style={{ color: selected.color }}>
-              {card.heading[language as Language]}
-            </p>
+      <a href="tel:18003134963" className="emergency-banner lg:hidden">
+        <Phone size={14} className="mr-1 inline" />{" "}
+        {t(language, {
+          hindi: "कुंजी (मुफ्त): 1800-313-4963 | NALSA 1516",
+          english: "Kunji (free): 1800-313-4963 | NALSA 1516",
+          hinglish: "Kunji: 1800-313-4963 | NALSA 1516",
+        })}
+      </a>
 
-            {/* Items */}
-            <div className="space-y-2">
-              {card.items.map((item, ii) => (
-                <div key={ii} className="flex gap-3 rounded-2xl px-4 py-3"
-                  style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}>
-                  <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-extrabold flex-shrink-0 mt-0.5"
-                    style={{ background: `${selected.color}18`, color: selected.color }}>
-                    {ii + 1}
-                  </span>
-                  <p className="text-sm leading-relaxed flex-1" style={{ color: 'var(--c-text)' }}>
-                    {item[language as Language]}
-                  </p>
+      <div className={DESKTOP_GRID}>
+        <div className="min-w-0">
+          <div className="content-shell space-y-4 py-4 pb-28 lg:!max-w-none lg:mx-0 lg:space-y-6 lg:px-0 lg:py-6 lg:pb-8">
+            {selected.cards.map((card, ci) => (
+              <div key={ci}>
+                <p
+                  className="mb-3 px-1 text-xs font-extrabold uppercase tracking-widest lg:mb-4 lg:text-sm"
+                  style={{ color: selected.color }}
+                >
+                  {card.heading[language as Language]}
+                </p>
+
+                <div className="space-y-2 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
+                  {card.items.map((item, ii) => (
+                    <div
+                      key={ii}
+                      className="flex gap-3 rounded-2xl border px-4 py-3 lg:px-5 lg:py-4"
+                      style={{ background: "var(--c-surface)", borderColor: "var(--c-border)" }}
+                    >
+                      <span
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-extrabold lg:h-6 lg:w-6 lg:text-sm"
+                        style={{ background: `${selected.color}18`, color: selected.color }}
+                      >
+                        {ii + 1}
+                      </span>
+                      <p className="flex-1 text-sm leading-relaxed lg:text-base" style={{ color: "var(--c-text)" }}>
+                        {item[language as Language]}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            {/* Note box */}
-            {card.note && (
-              <div className="rounded-2xl px-4 py-3 mt-2"
-                style={{ background: `${selected.color}10`, border: `1px solid ${selected.color}22` }}>
-                <p className="text-sm font-semibold leading-relaxed" style={{ color: selected.color }}>
-                  {card.note[language as Language]}
+                {card.note && (
+                  <div
+                    className="mt-2 rounded-2xl px-4 py-3"
+                    style={{ background: `${selected.color}10`, border: `1px solid ${selected.color}22` }}
+                  >
+                    <p className="text-sm font-semibold leading-relaxed" style={{ color: selected.color }}>
+                      {card.note[language as Language]}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => navigate("/chat")}
+              className="flex w-full items-center gap-3 rounded-2xl p-4 transition-all active:scale-[0.98]"
+              style={{ background: "var(--c-primary-l)", border: "1px solid rgba(207,120,89,0.25)" }}
+            >
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl"
+                style={{ background: "var(--c-primary)", color: "white" }}
+              >
+                <Scale size={18} />
+              </div>
+              <div className="min-w-0 flex-1 text-left">
+                <p className="text-sm font-extrabold" style={{ color: "var(--c-primary)" }}>
+                  {t(language, {
+                    hindi: "और सवाल हैं? AI से पूछें",
+                    english: "More questions? Ask AI",
+                    hinglish: "Aur sawaal? AI se puchein",
+                  })}
+                </p>
+                <p className="mt-0.5 text-xs" style={{ color: "var(--c-muted)" }}>
+                  {t(language, {
+                    hindi: "अपनी स्थिति बताएं — तुरंत जवाब",
+                    english: "Describe your case — instant answer",
+                    hinglish: "Apni situation batao — turant jawab",
+                  })}
                 </p>
               </div>
-            )}
+              <span className="font-bold" style={{ color: "var(--c-primary)" }}>
+                →
+              </span>
+            </button>
           </div>
-        ))}
+        </div>
 
-        {/* Ask AI CTA */}
-        <button onClick={() => navigate('/chat')}
-          className="w-full rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98] transition-all"
-          style={{ background: 'var(--c-primary-l)', border: '1px solid rgba(207,120,89,0.25)' }}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-            style={{ background: 'var(--c-primary)', color: 'white' }}><Scale size={18} /></div>
-          <div className="flex-1 text-left">
-            <p className="font-extrabold text-sm" style={{ color: 'var(--c-primary)' }}>
-              {t(language, { hindi: 'और सवाल हैं? AI से पूछें', english: 'More questions? Ask AI', hinglish: 'Aur sawaal? AI se puchein' })}
+        <aside
+          className={ASIDE_CLASS}
+          style={{
+            background: "var(--c-surface)",
+            borderColor: "var(--c-border)",
+          }}
+          aria-label={t(language, {
+            hindi: "अन्य विषय और मदद",
+            english: "Other topics and help",
+            hinglish: "Aur topics aur help",
+          })}
+        >
+          <div className="border-b pb-4" style={{ borderColor: "var(--c-border)" }}>
+            <p className="section-label mb-3">
+              {t(language, { hindi: "अन्य विषय", english: "Other topics", hinglish: "Aur topics" })}
             </p>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>
-              {t(language, { hindi: 'अपनी स्थिति बताएं — तुरंत जवाब', english: 'Describe your case — instant answer', hinglish: 'Apni situation batao — turant jawab' })}
-            </p>
+            <div className="max-h-48 space-y-1.5 overflow-y-auto pr-0.5 lg:max-h-56">
+              <button
+                type="button"
+                onClick={() => setSelected(null)}
+                className="w-full rounded-lg border px-2.5 py-2 text-left text-xs font-bold lg:text-sm"
+                style={{
+                  background: "var(--c-surface-2)",
+                  borderColor: "var(--c-border)",
+                  color: "var(--c-primary)",
+                }}
+              >
+                {t(language, { hindi: "← सभी विषय", english: "← All topics", hinglish: "← Saare topics" })}
+              </button>
+              {otherTopics.map((tp) => {
+                const Icon = topicIcon(tp.emoji);
+                return (
+                  <button
+                    key={tp.id}
+                    type="button"
+                    onClick={() => setSelected(tp)}
+                    className="flex w-full items-center gap-2 rounded-lg border px-2.5 py-2 text-left text-xs font-semibold transition-colors lg:text-sm"
+                    style={{
+                      background: "var(--c-surface-2)",
+                      borderColor: "var(--c-border)",
+                      color: "var(--c-text)",
+                    }}
+                  >
+                    <Icon className="h-3.5 w-3.5 shrink-0 opacity-80" strokeWidth={2} />
+                    <span className="min-w-0 leading-snug">{tp.title[language as Language]}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <span style={{ color: 'var(--c-primary)', fontWeight: 700 }}>→</span>
-        </button>
+
+          <div>
+            <p className="section-label">
+              {t(language, { hindi: "आपके कदम", english: "Your steps", hinglish: "Aapke steps" })}
+            </p>
+            <ol className="mt-2 list-none space-y-2.5 p-0">
+              {guideDetailSteps.map((text, idx) => (
+                <li
+                  key={idx}
+                  className="flex gap-3 rounded-xl border px-3 py-2.5 text-sm leading-snug lg:text-base lg:leading-relaxed"
+                  style={{
+                    background: "var(--c-surface-2)",
+                    borderColor: "var(--c-border)",
+                    color: "var(--c-text)",
+                  }}
+                >
+                  <span
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-extrabold lg:h-8 lg:w-8 lg:text-sm"
+                    style={{
+                      background: "var(--c-primary-l)",
+                      color: "var(--c-primary)",
+                    }}
+                  >
+                    {idx + 1}
+                  </span>
+                  <span>{text}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <a
+            href="tel:18003134963"
+            className="flex shrink-0 flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-center text-xs font-semibold leading-snug lg:gap-2 lg:px-4 lg:py-3.5 lg:text-sm"
+            style={{
+              background: "rgba(251,191,36,0.08)",
+              color: "#FBBF24",
+              borderColor: "rgba(251,191,36,0.22)",
+            }}
+          >
+            <span className="inline-flex items-center justify-center gap-1.5">
+              <Phone size={14} className="shrink-0 lg:h-4 lg:w-4" />
+              <span>
+                Kunji <strong>1800-313-4963</strong>
+                <span className="mx-1 opacity-60">|</span>
+                NALSA <strong>1516</strong>
+              </span>
+            </span>
+            <span className="text-[0.65rem] font-semibold opacity-90 lg:text-xs">
+              {t(language, {
+                hindi: "कुंजी: रोज 8am–11pm • मुफ्त",
+                english: "Kunji: Daily 8am–11pm • Free",
+                hinglish: "Kunji: Daily 8am–11pm • Free",
+              })}
+            </span>
+          </a>
+
+          <div
+            className="rounded-2xl border px-3 py-3 lg:px-4 lg:py-4"
+            style={{
+              background: "var(--c-primary-l)",
+              borderColor: "rgba(184,82,30,0.18)",
+            }}
+          >
+            <p className="section-label" style={{ color: "var(--c-primary)" }}>
+              {t(language, { hindi: "इस विषय पर AI", english: "AI on this topic", hinglish: "Is topic par AI" })}
+            </p>
+            <p className="mt-1 text-xs font-medium leading-relaxed lg:mt-2 lg:text-sm" style={{ color: "var(--c-primary)" }}>
+              {t(language, {
+                hindi: `"${selected.title[language as Language]}" से जुड़ा सवाल पूछें।`,
+                english: `Ask a question related to "${selected.title[language as Language]}".`,
+                hinglish: `"${selected.title[language as Language]}" se related sawaal pucho.`,
+              })}
+            </p>
+            <button
+              type="button"
+              onClick={() =>
+                navigate("/chat", {
+                  state: {
+                    question: t(language, {
+                      hindi: `${selected.title[language as Language]} — मुझे सरल भाषा में समझाएं।`,
+                      english: `Explain ${selected.title[language as Language]} in simple language.`,
+                      hinglish: `${selected.title[language as Language]} simple mein samjhao.`,
+                    }),
+                  },
+                })
+              }
+              className="see-more-btn mt-3 inline-flex w-full items-center justify-center gap-2 lg:mt-4 lg:py-2.5 lg:text-sm"
+            >
+              <Scale size={16} className="lg:h-[1.125rem] lg:w-[1.125rem]" />
+              {t(language, { hindi: "AI से पूछें", english: "Ask AI", hinglish: "AI se pucho" })}
+            </button>
+          </div>
+        </aside>
       </div>
 
-      {/* Bottom nav */}
       <div className="bottom-nav">
         {NAV.map((item) => (
-          <button key={item.path} onClick={() => { if (item.path === '/manual') setSelected(null); else navigate(item.path); }}
+          <button
+            key={item.path}
+            type="button"
+            onClick={() => {
+              if (item.path === "/manual") setSelected(null);
+              else navigate(item.path);
+            }}
             aria-label={item.label[language as Language]}
-            className={`bottom-nav-item ${item.path === '/home' ? 'bottom-nav-home' : ''}
-                       ${item.path === '/manual' ? 'nav-item-active' : 'nav-item-inactive'}`}>
-            <span className="nav-icon"><item.Icon size={18} /></span>
+            className={`bottom-nav-item ${item.path === "/home" ? "bottom-nav-home" : ""} ${
+              location.pathname === item.path ? "nav-item-active" : "nav-item-inactive"
+            }`}
+          >
+            <span className="nav-icon">
+              <item.Icon size={18} />
+            </span>
             <span className="nav-label">{item.label[language as Language]}</span>
           </button>
         ))}
