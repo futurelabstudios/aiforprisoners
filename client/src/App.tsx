@@ -417,16 +417,13 @@ function AppShell() {
         {/* Center content — language page stays flex-1 at 2xl (no side rails) so width fills the viewport */}
         <div
           className={`
-            flex flex-col min-w-0
-            ${isLangSelect ? "w-full flex-1" : "flex-1 2xl:flex-none 2xl:overflow-y-auto 2xl:overflow-x-hidden"}
-            ${!isLangSelect && !isMobileDevice ? "website-main-column" : ""}
-            ${centeredColumnClass}
-          `}
+    flex flex-col min-w-0 w-full max-w-none px-0
+    ${isLangSelect ? "flex-1" : "flex-1 2xl:flex-none 2xl:overflow-y-auto 2xl:overflow-x-hidden"}
+    ${!isLangSelect && !isMobileDevice ? "website-main-column" : ""}
+  `}
           style={{
             background: "var(--c-bg)",
-            ...(!isLangSelect
-              ? { borderColor: "rgba(207,120,89,0.18)" }
-              : {}),
+            ...(!isLangSelect ? { borderColor: "rgba(207,120,89,0.18)" } : {}),
           }}
         >
           {!isLangSelect && <DesktopSiteHeader />}
@@ -446,7 +443,6 @@ function AppShell() {
           </>
         )}
       </div>
-
     </>
   );
 }
